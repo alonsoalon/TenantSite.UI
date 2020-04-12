@@ -273,7 +273,7 @@ export default {
       let parentTitles = [];
       const fullPath = this.$route.fullPath;
       const menu = this.info.menus?.find(m => m.path === fullPath);
-      if (menu && menu.id > 0) {
+      if (menu && menu.id !== "") {
         const parents = getTreeParents(this.menuTree, menu.id);
         parentTitles = parents.map(p => p.label);
         parentTitles.push(menu.label);

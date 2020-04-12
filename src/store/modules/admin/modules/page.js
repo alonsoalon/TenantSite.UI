@@ -63,6 +63,11 @@ export default {
     }
   },
   actions: {
+    /**
+     * 设置打开的Tabs
+     * @param {Object} param0 vuex command
+     * @param {Array} openedTabs 打开页面列表
+     */
     async setOpenedTabs({ commit, dispatch }, openedTabs) {
       // store 赋值
       commit("set_opened_tabs", openedTabs);
@@ -81,6 +86,10 @@ export default {
       commit("keep_alive_refresh");
     },
 
+    /**
+     * 载入上次打开的Tabs
+     * @param {Object} param0 vuex command
+     */
     async loadOpenedTabs({ commit, dispatch }) {
       // 从存储中取出
       var openedTabs = await dispatch(

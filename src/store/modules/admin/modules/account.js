@@ -46,6 +46,19 @@ const menus = [
     external: false
   },
   {
+    id: "1-2",
+    parentId: "1",
+    path: "/user/index",
+    viewPath: "/admin/user/index",
+    label: "用户管理",
+    icon: "el-icon-notebook-2",
+    opened: false,
+    closable: false,
+    hidden: false,
+    newWindow: false,
+    external: false
+  },
+  {
     id: "2-1",
     parentId: "2",
     path: "/admin/403",
