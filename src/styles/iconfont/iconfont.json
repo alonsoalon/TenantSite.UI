@@ -1,0 +1,23 @@
+{
+  "id": "1746561",
+  "name": "MultiTenantSite",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "12004552",
+      "name": "Full Screen",
+      "font_class": "FullScreen",
+      "unicode": "ea9d",
+      "unicode_decimal": 60061
+    },
+    {
+      "icon_id": "12004557",
+      "name": "Exit Full Screen",
+      "font_class": "ExitFullScreen",
+      "unicode": "ea9c",
+      "unicode_decimal": 60060
+    }
+  ]
+}

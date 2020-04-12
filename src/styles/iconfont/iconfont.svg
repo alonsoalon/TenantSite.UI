@@ -1,0 +1,32 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd" >
+<!--
+2013-9-30: Created.
+-->
+<svg>
+<metadata>
+Created by iconfont
+</metadata>
+<defs>
+
+<font id="iconfont" horiz-adv-x="1024" >
+  <font-face
+    font-family="iconfont"
+    font-weight="500"
+    font-stretch="normal"
+    units-per-em="1024"
+    ascent="896"
+    descent="-128"
+  />
+    <missing-glyph />
+    
+    <glyph glyph-name="FullScreen" unicode="&#60061;" d="M245.76 486.4H204.8V629.76A61.44 61.44 0 0 0 266.24 691.2H409.6v-40.96H266.24a20.48 20.48 0 0 1-20.48-20.48zM409.6 76.8H266.24A61.44 61.44 0 0 0 204.8 138.24V281.6h40.96v-143.36a20.48 20.48 0 0 1 20.48-20.48H409.6zM757.76 76.8H614.4v40.96h143.36a20.48 20.48 0 0 1 20.48 20.48V281.6h40.96v-143.36a61.44 61.44 0 0 0-61.44-61.44zM819.2 486.4h-40.96V629.76a20.48 20.48 0 0 1-20.48 20.48H614.4V691.2h143.36A61.44 61.44 0 0 0 819.2 629.76z"  horiz-adv-x="1024" />
+
+    
+    <glyph glyph-name="ExitFullScreen" unicode="&#60060;" d="M348.16 486.4H204.8V527.36h143.36a20.48 20.48 0 0 1 20.48 20.48V691.2h40.96v-143.36A61.44 61.44 0 0 0 348.16 486.4zM409.6 76.8H368.64v143.36a20.48 20.48 0 0 1-20.48 20.48H204.8v40.96h143.36a61.44 61.44 0 0 0 61.44-61.44zM655.36 76.8h-40.96v143.36a61.44 61.44 0 0 0 61.44 61.44H819.2v-40.96h-143.36a20.48 20.48 0 0 1-20.48-20.48zM819.2 486.4h-143.36A61.44 61.44 0 0 0 614.4 547.84V691.2h40.96v-143.36a20.48 20.48 0 0 1 20.48-20.48H819.2z"  horiz-adv-x="1024" />
+
+    
+
+
+  </font>
+</defs></svg>
