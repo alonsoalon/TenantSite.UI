@@ -174,8 +174,8 @@ router.beforeEach(async (to, from, next) => {
         return;
       }
       // 载入租户信息
-      await store.dispatch("admin/user/loadTenant");
-      var oldTenant = store.state.admin.user.tenant;
+      await store.dispatch("admin/account/loadTenant");
+      var oldTenant = store.state.admin.account.tenant;
 
       if (oldTenant !== newTenant) {
         //证明是用户直接修改了HOST后 直接访问目标地址，此时将需重新登录
@@ -188,8 +188,9 @@ router.beforeEach(async (to, from, next) => {
       }
     } else {
       // 载入租户信息
-      await store.dispatch("admin/user/loadTenant");
-      var tenant = store.state.admin.user.tenant;
+      await store.dispatch("admin/account/loadTenant");
+      var tenant = store.state.admin.account.tenant;
+      console.log(tenant);
       if (tenant === "") {
         next({ name: "login", query: { redirect: to.fullPath } });
         return;

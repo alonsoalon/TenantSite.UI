@@ -13,7 +13,14 @@ function showErrorMessage(message, type = "error") {
 }
 
 function getBaseUrl() {
-  var tenant = store.state.admin.user.tenant;
+  var tenant = store.state.admin.account.tenant;
+  if (tenant === "") {
+    Message({
+      message: "租户信息获取失败",
+      type: type
+    });
+    throw new error("租户信息获取失败");
+  }
   var baseURL = `${Setting.apiBaseURL}`;
   var str = baseURL.replace(/\$\{tenant\}/, tenant);
   return str;

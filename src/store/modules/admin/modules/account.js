@@ -88,7 +88,15 @@ const menus = [
 
 export default {
   namespaced: true,
-  state: {},
+  state: {
+    tenant: ""
+  },
+
+  mutations: {
+    set_tenant: (state, tenant) => {
+      state.tenant = tenant;
+    }
+  },
   actions: {
     /**
      * @description 登录
@@ -103,7 +111,7 @@ export default {
     ) {
       var params = { userName, password, tenant };
       // 设置 vuex 租户信息 必须在登录前设置，不然不能准确请求对应租户后台API
-      await dispatch("admin/user/setTenant", tenant, { root: true });
+      await dispatch("admin/account/setTenant", tenant, { root: true });
       var res = await login(params);
       if (res && res.success) {
         util.cookies.set("uuid", res.data.uuid);
@@ -148,7 +156,7 @@ export default {
     logout({ commit, dispatch }, { confirm = false, vm } = {}) {
       var logout = async () => {
         // 清空 vuex 租户信息
-        await dispatch("admin/user/setTenant", "", { root: true });
+        await dispatch("admin/account/setTenant", "", { root: true });
         // 清空 vuex 用户信息
         await dispatch("admin/user/setUserInfo", {}, { root: true });
         // 清空 vuex 缓存的打开页面
@@ -182,6 +190,46 @@ export default {
       } else {
         logout();
       }
+    },
+    /**
+     * 设置租户信息
+     * @param {Object} commit vuex commit
+     * @param {Object} dispatch vuex dispatch
+     */
+    async setTenant({ commit, dispatch }, tenant) {
+      // 持久化
+      await dispatch(
+        "admin/db/set",
+        {
+          dbName: "sys",
+          path: "account.tenant",
+          value: tenant,
+          user: false
+        },
+        { root: true }
+      );
+      // store 赋值
+      commit("set_tenant", tenant);
+    },
+    /**
+     * 载入租户信息
+     * @param {Object} commit vuex commit
+     * @param {Object} dispatch vuex dispatch
+     */
+    async loadTenant({ commit, dispatch }) {
+      // 从存储取出
+      var tenant = await dispatch(
+        "admin/db/get",
+        {
+          dbName: "sys",
+          path: "account.tenant",
+          defaultValue: "",
+          user: false
+        },
+        { root: true }
+      );
+      // store 赋值
+      commit("set_tenant", tenant);
     }
   }
 };

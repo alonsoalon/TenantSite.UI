@@ -2,15 +2,11 @@ export default {
   namespaced: true,
   state: {
     // 用户信息
-    info: {},
-    tenant: ""
+    info: {}
   },
   mutations: {
     set_user_info: (state, userInfo) => {
       state.info = userInfo;
-    },
-    set_tenant: (state, tenant) => {
-      state.tenant = tenant;
     }
   },
   actions: {
@@ -54,46 +50,6 @@ export default {
         { root: true }
       );
       commit("set_user_info", info);
-    },
-    /**
-     * 设置租户信息
-     * @param {Object} commit vuex commit
-     * @param {Object} dispatch vuex dispatch
-     */
-    async setTenant({ commit, dispatch }, tenant) {
-      // 持久化
-      await dispatch(
-        "admin/db/set",
-        {
-          dbName: "sys",
-          path: "user.tenant",
-          value: tenant,
-          user: true
-        },
-        { root: true }
-      );
-      // store 赋值
-      commit("set_tenant", tenant);
-    },
-    /**
-     * 载入租户信息
-     * @param {Object} commit vuex commit
-     * @param {Object} dispatch vuex dispatch
-     */
-    async loadTenant({ commit, dispatch }) {
-      // 从存储取出
-      var tenant = await dispatch(
-        "admin/db/get",
-        {
-          dbName: "sys",
-          path: "user.tenant",
-          defaultValue: "",
-          user: true
-        },
-        { root: true }
-      );
-      // store 赋值
-      commit("set_tenant", tenant);
     }
   }
 };

@@ -19,7 +19,7 @@ const Setting = {
   // 租户策略
   // 0:login 登录时指定
   // 1:Host 通过Host获取
-  tenantMode: 1,
+  tenantMode: 0,
 
   // 接口请求地址
   // host 方式形如 http://{tenant}.localhost/
