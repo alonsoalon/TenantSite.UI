@@ -39,8 +39,11 @@ service.interceptors.request.use(
     config.headers["Authorization"] = "Bearer " + token;
     let baseUrl = getBaseUrl();
     baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-    config.url = baseUrl + config.url;
-    // console.log(config.url);
+    let apiUrl = config.url.startsWith("/")
+      ? config.url.substring(1, config.url.length)
+      : config.url;
+    config.url = baseUrl + apiUrl;
+    console.log(config.url);
     return config;
   },
   error => {

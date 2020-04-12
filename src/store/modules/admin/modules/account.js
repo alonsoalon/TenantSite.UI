@@ -37,7 +37,7 @@ const menus = [
     parentId: "1",
     path: "/",
     viewPath: "/admin/dashboard/index",
-    label: "更新日志",
+    label: "欢迎页",
     icon: "el-icon-notebook-2",
     opened: false,
     closable: false,
@@ -53,7 +53,7 @@ const menus = [
     label: "用户管理",
     icon: "el-icon-notebook-2",
     opened: false,
-    closable: false,
+    closable: true,
     hidden: false,
     newWindow: false,
     external: false

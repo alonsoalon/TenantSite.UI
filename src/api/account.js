@@ -25,7 +25,7 @@ export function getTenants() {
 
 export function login(data) {
   return request({
-    url: "api/v1/auth/login",
+    url: "api/v1/system/auth/login",
     method: "post",
     data
   });
@@ -33,7 +33,7 @@ export function login(data) {
 
 export function getLoginInfo() {
   return request({
-    url: "api/v1/auth/UserInfo",
+    url: "api/v1/system/auth/UserInfo",
     method: "get"
   });
 }
