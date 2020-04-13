@@ -4,7 +4,6 @@ import request from "@/request";
  * 得到分页列表数据
  */
 export const getPageList = params => {
-  console.log(123);
   return request.post("api/v1/system/user/pagelist", params);
 };
 

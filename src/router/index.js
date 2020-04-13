@@ -63,11 +63,12 @@ function generateRoutes(menus = []) {
     if (m.viewPath) {
       try {
         const route = {
-          name: m.path,
+          name: m.viewName ? m.viewName : m.path,
           path: m.path,
           component: _import(m.viewPath),
           meta: {
             auth: true,
+            cache: m.cache,
             title: m.label,
             icon: m.icon,
             closable: m.closable
@@ -156,6 +157,7 @@ var refrashUserInfo = async (to, from, next) => {
 let count = 0;
 
 router.beforeEach(async (to, from, next) => {
+  // 覆盖默认标题
   document.title = getPageTitle(to.meta.title);
 
   // count === 0 代表刷新（刷新包括：浏览器刷新和直接输入了网址进入）,这种情况下通过token重新从后台刷新数据，但排除跳转到登录页和从登录页来两个情况（原因在登录页本身就会获取最新的信息）
@@ -190,7 +192,6 @@ router.beforeEach(async (to, from, next) => {
       // 载入租户信息
       await store.dispatch("admin/account/loadTenant");
       var tenant = store.state.admin.account.tenant;
-      console.log(tenant);
       if (tenant === "") {
         next({ name: "login", query: { redirect: to.fullPath } });
         return;

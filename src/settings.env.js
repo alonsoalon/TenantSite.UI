@@ -1,5 +1,5 @@
 /**
- * tenant.admin.ui 开发配置
+ * tenant.site.ui 开发配置
  * */
 
 const env = process.env.NODE_ENV;
@@ -13,7 +13,9 @@ const Setting = {
   assetsDir: "",
   // 开发环境每次保存时 lint 代码，会将 lint 错误输出为编译警告
   // true || false || error
-  lintOnSave: env === "development"
+  lintOnSave: env === "development",
+  // 页面默认标题
+  defaultTitle: "Tenant Site"
 };
 
 module.exports = Setting;

@@ -56,7 +56,7 @@
 <script>
 import { getPageList } from "@/api/admin/user";
 export default {
-  name: "User",
+  name: "admin--user--index",
   components: {},
 
   data() {
@@ -138,9 +138,7 @@ export default {
         filter: this.filter
       };
       this.listLoading = true;
-      console.log(1111);
       const res = await getPageList(para);
-      console.log(res);
       this.listLoading = false;
 
       if (!res.success) {

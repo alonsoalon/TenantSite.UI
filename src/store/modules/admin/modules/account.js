@@ -37,6 +37,7 @@ const menus = [
     parentId: "1",
     path: "/",
     viewPath: "/admin/dashboard/index",
+    viewName: "admin--dashboard--index",
     label: "欢迎页",
     icon: "el-icon-notebook-2",
     opened: false,
@@ -50,13 +51,15 @@ const menus = [
     parentId: "1",
     path: "/user/index",
     viewPath: "/admin/user/index",
+    viewName: "admin--user--index",
     label: "用户管理",
     icon: "el-icon-notebook-2",
     opened: false,
     closable: true,
     hidden: false,
     newWindow: false,
-    external: false
+    external: false,
+    cache: false
   },
   {
     id: "2-1",
@@ -175,7 +178,7 @@ export default {
         // 清空 vuex 缓存的打开页面
         await dispatch("admin/page/setOpenedTabs", [], { root: true });
         // 清空 vuex 缓存的打开页面中cahced的页面
-        await dispatch("admin/page/cleanKeepAlive", {}, { root: true });
+        await dispatch("admin/page/keepAliveClean", {}, { root: true });
 
         // 删除cookie
         util.cookies.remove("token");

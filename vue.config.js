@@ -80,6 +80,11 @@ module.exports = {
       });
       config.optimization.runtimeChunk("single");
     });
+
+    config.plugin("html").tap(args => {
+      args[0].title = Setting.defaultTitle;
+      return args;
+    });
   },
   // css相关配置
   css: {

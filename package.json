@@ -1,5 +1,5 @@
 {
-  "name": "tenant.admin.ui",
+  "name": "tenant.site.ui",
   "version": "0.1.0",
   "private": true,
   "scripts": {

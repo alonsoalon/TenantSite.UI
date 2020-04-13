@@ -42,6 +42,9 @@
                 "
               />
             </div>
+            <div class="left-menu-item fold-btn" @click="handleReload">
+              <i class="el-icon-refresh-right" />
+            </div>
             <el-breadcrumb
               separator-class="el-icon-arrow-right"
               class="breadcrumb-inner breadcrumb-container"
@@ -114,7 +117,8 @@
         <el-scrollbar class="page-component__scroll" style="height:100%">
           <section style="padding:10px;overflow:hidden;">
             <keep-alive :include="keepAlive">
-              <router-view :key="key" />
+              <!-- <router-view :key="key" /> -->
+              <router-view v-if="loadRouter" />
             </keep-alive>
           </section>
         </el-scrollbar>
@@ -151,22 +155,12 @@
         :style="{ left: rightMenu.left + 'px', top: rightMenu.top + 'px' }"
         class="contextmenu"
       >
-        <li @click="refreshCurrentTab">
-          <i class="el-icon-refresh-right" />
-          {{ $t("basicLayout.tabs.refrash") }}
-        </li>
-        <el-divider
-          v-if="
-            canClose ||
-              canCloseOthers ||
-              canCloseRight ||
-              canCloseLeft ||
-              canCloseAll
-          "
-        />
         <li v-if="canClose" @click="closecurrentTab">
           <span>{{ $t("basicLayout.tabs.close") }}</span>
         </li>
+
+        <el-divider v-if="canClose" />
+
         <li v-if="canCloseOthers" @click="closeOthersTabs">
           <i class="el-icon-more" />{{ $t("basicLayout.tabs.other") }}
         </li>
@@ -196,24 +190,13 @@
         <li v-if="canCloseRight" @click="closeRightTabs">
           <i class="el-icon-right" />{{ $t("basicLayout.tabs.right") }}
         </li>
+
         <li v-if="canCloseOthers" @click="closeOthersTabs">
           <i class="el-icon-more" />{{ $t("basicLayout.tabs.other") }}
         </li>
+        <el-divider v-if="canClose" />
         <li v-if="canClose" @click="closecurrentTab">
           <span>{{ $t("basicLayout.tabs.close") }}</span>
-        </li>
-        <el-divider
-          v-if="
-            canClose ||
-              canCloseOthers ||
-              canCloseRight ||
-              canCloseLeft ||
-              canCloseAll
-          "
-        />
-        <li @click="refreshCurrentTab">
-          <i class="el-icon-refresh-right" />
-          {{ $t("basicLayout.tabs.refrash") }}
         </li>
       </ul>
     </el-container>
@@ -228,6 +211,8 @@ import MenuItem from "./components/menu-item";
 import Sortable from "sortablejs";
 import { listToTree, getTreeParents } from "@/libs/util";
 // import { isExternalLink } from "@/utils/validate";
+
+import Setting from "@/settings";
 
 export default {
   name: "AppMain",
@@ -252,7 +237,8 @@ export default {
         left: 0,
         visible: false,
         selectedTab: {}
-      }
+      },
+      loadRouter: true
       //tabPosition: "top", // top | bottom
       //tabType: "border-card" // '' | border-card
     };
@@ -357,8 +343,17 @@ export default {
     this.setSort();
   },
   watch: {
-    $route() {
+    // $route() {
+    //   this.addTab();
+    // },
+    $route(to, from) {
       this.addTab();
+      if (to.name === from.name) {
+        // 相同路由，不同参数，跳转时，重载页面
+        if (Setting.sameRouteForceUpdate) {
+          this.handleReload();
+        }
+      }
     },
     "rightMenu.visible"(value) {
       if (value) {
@@ -375,7 +370,12 @@ export default {
   },
   methods: {
     ...mapActions("admin/account", ["logout"]),
-    ...mapActions("admin/page", ["setOpenedTabs", "loadOpenedTabs"]),
+    ...mapActions("admin/page", [
+      "setOpenedTabs",
+      "loadOpenedTabs",
+      "keepAliveRemove",
+      "keepAlivePush"
+    ]),
     // 点击选项卡
     tabClick(tab) {
       if (tab.name && tab.name !== this.tabName) {
@@ -513,13 +513,7 @@ export default {
     closeRightMenu() {
       this.rightMenu.visible = false;
     },
-    refreshCurrentTab() {
-      const tab = this.tabsList.find(
-        t => t.fullPath === this.rightMenu.selectedTab.fullPath
-      );
-      tab._k = tab._k ? ++tab._k : 1;
-      this.$store.commit("admin/saveTabsData", JSON.stringify(this.tabsList));
-    },
+
     closecurrentTab() {
       this.rightMenu.selectedTab &&
         this.removeTab(this.rightMenu.selectedTab.fullPath);
@@ -569,6 +563,26 @@ export default {
       } else {
         this.$router.push("/");
       }
+    },
+
+    /**
+     * 刷新
+     */
+    handleReload() {
+      // 针对缓存的页面也生效
+      const isCurrentPageCache = this.keepAlive.indexOf(this.$route.name) > -1;
+
+      const pageName = this.$route.name;
+      if (isCurrentPageCache) {
+        this.keepAliveRemove(pageName);
+      }
+      this.loadRouter = false;
+      this.$nextTick(() => {
+        this.loadRouter = true;
+        if (isCurrentPageCache) {
+          this.keepAlivePush(pageName);
+        }
+      });
     }
   }
 };

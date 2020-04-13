@@ -42,7 +42,9 @@ const Setting = {
     showI18n: true,
     // 退出登录时，是否二次确认
     logoutConfirm: true
-  }
+  },
+  // 相同路由，不同参数间进行切换，是否强力更新
+  sameRouteForceUpdate: false
 };
 
 export default Setting;

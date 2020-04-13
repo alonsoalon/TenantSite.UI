@@ -112,9 +112,16 @@ export default {
       commit("keep_alive_refresh");
     },
 
-    async cleanKeepAlive({ commit }) {
-      // store 赋值
+    async keepAliveClean({ commit }) {
       commit("keep_alive_clean");
+    },
+
+    async keepAliveRemove({ commit }, name) {
+      commit("keep_alive_remove", name);
+    },
+
+    async keepAlivePush({ commit }, name) {
+      commit("keep_alive_push", name);
     }
   }
 };

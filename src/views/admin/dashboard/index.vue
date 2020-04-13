@@ -11,7 +11,7 @@
 </template>
 <script>
 export default {
-  name: "dashboard"
+  name: "admin--dashboard--index"
 };
 </script>
 <style lang="scss" scoped>

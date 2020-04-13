@@ -7,7 +7,7 @@
         class="login-card"
         :body-style="{ padding: '0px' }"
       >
-        <div class="title">Admin</div>
+        <div class="title">Tenant Site</div>
         <div class="desc">Tenant Site 用户登录入口</div>
         <el-form ref="form" :model="form" :rules="formRules">
           <el-form-item prop="userName">
