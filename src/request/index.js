@@ -66,15 +66,19 @@ service.interceptors.response.use(
   },
   async error => {
     let res = { success: false, code: 0, message: "" };
-    console.log(error);
+
     if (error.response) {
       var data = error.response.data;
       if (_.isPlainObject(data)) {
         res = {
           success: false,
-          code: 0,
+          code: error?.response?.data?.status
+            ? error?.response?.data?.status
+            : 0,
+          message: error.message,
           ...error.response.data
         };
+        //console.log(res);
       } else if (_.isString(data)) {
         if (_.isNumber(error.response.status)) {
           res.code = error.response.status;

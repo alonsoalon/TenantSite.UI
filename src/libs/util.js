@@ -1,6 +1,7 @@
 import cookies from "./util.cookies";
 import log from "./util.log";
 import db from "./util.db";
+import dayjs from "dayjs";
 
 export function treeToList(
   tree = [],
@@ -124,6 +125,11 @@ export function getTenantByHost() {
   return tenant;
 }
 
+export function formatTime(time, format = "YYYY-MM-DD HH:mm") {
+  let timeFormat = dayjs(time).format(format);
+  return timeFormat;
+}
+
 const util = {
   cookies,
   log,
@@ -132,7 +138,8 @@ const util = {
   treeToList,
   listToTree,
   getListParents,
-  getTreeParents
+  getTreeParents,
+  formatTime
 };
 
 export default util;

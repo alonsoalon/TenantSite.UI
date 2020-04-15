@@ -3,7 +3,7 @@ import request from "@/request";
 /**
  * 得到分页列表数据
  */
-export const getPageList = params => {
+export const getList = params => {
   return request.post("api/v1/system/user/pagelist", params);
 };
 

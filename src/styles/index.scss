@@ -159,23 +159,37 @@ input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #fff inset;
 }
 
-.drawer-footer{
-    position: absolute;
-    left: 0px;
-    bottom: 0px;
-    width: 100%;
-    border-top: 1px solid rgb(233, 233, 233);
-    padding: 16px;
-    background: rgb(255, 255, 255);
-    text-align: right;
-    z-index: 1;
-}
-
 .pagination{
     margin-top: 15px;
     margin-bottom: 5px;
 }
 
+
+
+
+
+//抽屉//去掉element-ui的drawer标题选中状态
 :focus{
      outline:0;
 }  
+
+
+.drawer .el-drawer__body {    
+    overflow-y: auto;
+    margin-bottom: 57px;
+}
+
+.drawer .drawer-body{
+    padding: 20px;
+}
+
+.drawer .drawer-footer {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-top: 1px solid #e8e8e8;
+    padding: 10px 10px;
+    text-align: right;
+    background-color: white;
+}

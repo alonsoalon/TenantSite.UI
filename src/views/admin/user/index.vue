@@ -1,12 +1,39 @@
 <template>
   <section>
     <!--工具条-->
+    <!--工具条-->
     <el-row>
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-        123
+        <el-form
+          size="small"
+          :inline="true"
+          :model="filter"
+          @submit.native.prevent
+        >
+          <el-form-item>
+            <el-input
+              v-model="filter.name"
+              placeholder="用户名/昵称"
+              clearable
+              @keyup.enter.native="getUsers"
+            >
+              <i slot="prefix" class="el-input__icon el-icon-search" />
+            </el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getUsers">查询</el-button>
+            <el-button type="primary" @click="onAdd">新增</el-button>
+          </el-form-item>
+        </el-form>
       </el-col>
     </el-row>
 
+    <add-panl
+      title="添加用户"
+      :data="addForm"
+      :visible="addVisible"
+      @changeDrawer="changeDrawerAdd"
+    ></add-panl>
     <!--列表-->
     <el-table
       v-loading="listLoading"
@@ -17,20 +44,26 @@
       <el-table-column type="selection" align="center" width="50" />
       <el-table-column type="index" width="80" label="#" />
       <el-table-column prop="userName" label="用户名" width />
-      <el-table-column prop="name" label="姓名" width />
-      <el-table-column prop="roleNames" label="角色" width>
+      <el-table-column prop="displayName" label="姓名" width />
+      <el-table-column prop="userType" label="用户类型" width>
         <template v-slot="{ row }">
-          {{ row.roleNames ? row.roleNames.join(",") : "" }}
+          {{ row.userType == 1 ? "超管" : "普通用户" }}
         </template>
       </el-table-column>
-      <el-table-column prop="createdTime" label="创建时间" width />
-      <el-table-column prop="status" label="状态" width>
+      <el-table-column
+        prop="createdTime"
+        label="创建时间"
+        :formatter="formatDt"
+        width
+      />
+      <el-table-column prop="isDisabled" label="状态" width>
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.status == 0 ? 'success' : 'danger'"
+            :type="scope.row.isDisabled ? 'danger' : 'success'"
             disable-transitions
-            >{{ scope.row.status == 0 ? "正常" : "禁用" }}</el-tag
           >
+            {{ scope.row.isDisabled ? "禁用" : "正常" }}
+          </el-tag>
         </template>
       </el-table-column>
     </el-table>
@@ -53,11 +86,15 @@
     </el-row>
   </section>
 </template>
+
 <script>
+import { formatTime } from "@/libs/util";
 import { getPageList } from "@/api/admin/user";
+// import ConfirmButton from "@/components/confirm-button";
+import AddPanl from "./add/index";
 export default {
   name: "admin--user--index",
-  components: {},
+  components: { AddPanl },
 
   data() {
     return {
@@ -70,7 +107,10 @@ export default {
       pageSize: 10,
       currentPage: 1,
       listLoading: false,
-      sels: [], // 列表选中列
+      sels: [], // 列表选中列,
+
+      addVisible: false,
+      editVisible: false,
 
       addDialogFormVisible: false,
       editFormVisible: false, // 编辑界面是否显示
@@ -130,6 +170,9 @@ export default {
     this.getUsers();
   },
   methods: {
+    formatDt: function(row, column, time) {
+      return formatTime(time);
+    },
     // 获取用户列表
     async getUsers() {
       const para = {
@@ -139,12 +182,13 @@ export default {
       };
       this.listLoading = true;
       const res = await getPageList(para);
+      console.log(res);
       this.listLoading = false;
 
       if (!res.success) {
-        if (res.msg) {
+        if (res.message) {
           this.$message({
-            message: res.msg,
+            message: res.message,
             type: "error"
           });
         }
@@ -157,6 +201,14 @@ export default {
         d._loading = false;
       });
       this.users = data;
+    },
+
+    async onAdd() {
+      console.log(1213);
+      this.addVisible = true;
+    },
+    changeDrawerAdd(v) {
+      this.addVisible = v;
     }
   }
 };
