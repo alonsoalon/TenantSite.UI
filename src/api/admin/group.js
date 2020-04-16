@@ -8,7 +8,7 @@ const controller = "group";
 const path = `${module}/${controller}`;
 
 /**
- * 01 exec 执行命令 - 创建
+ * exec 执行命令 - 创建
  * @param {Object} params 参数
  */
 export const execCreate = params => {
@@ -16,7 +16,7 @@ export const execCreate = params => {
 };
 
 /**
- * 02 exec 执行命令 - 更新
+ * exec 执行命令 - 更新
  * @param {Object} params 参数
  */
 export const execUpdate = params => {
@@ -32,7 +32,7 @@ export const execDelete = params => {
 };
 
 /**
- * 04 exec 执行命令 - 物理删除 批量
+ * exec 执行命令 - 物理删除 批量
  * @param {Object} params 参数
  */
 export const execDeleteBatch = params => {
@@ -40,7 +40,7 @@ export const execDeleteBatch = params => {
 };
 
 /**
- * 05 exec 执行命令 - 软删除 单条
+ * exec 执行命令 - 软删除 单条
  * @param {Object} params 参数
  */
 export const execSoftDelete = params => {
@@ -48,7 +48,7 @@ export const execSoftDelete = params => {
 };
 
 /**
- * 06 exec 执行命令 - 软删除 批量
+ * exec 执行命令 - 软删除 批量
  * @param {Object} params 参数
  */
 export const execSoftDeleteBatch = params => {
@@ -56,7 +56,7 @@ export const execSoftDeleteBatch = params => {
 };
 
 /**
- * 07 get 查询 - 得到实体对象
+ * get 查询 - 得到实体对象
  * @param {Object} params 参数
  */
 export const getItem = params => {
@@ -64,7 +64,7 @@ export const getItem = params => {
 };
 
 /**
- * 08 get 查询 - 得到分页列表数据
+ * get 查询 - 得到分页列表数据
  * @param {Object} params 查询参数
  */
 export const getList = params => {
@@ -72,13 +72,13 @@ export const getList = params => {
 };
 
 /**
- * 09 get 查询 - 得到列表数据不分页
+ * get 查询 - 得到列表数据不分页
  * @param {Object} params 查询参数
  */
 export const getAll = params => {
   return request.post(`api/v1/${path}/getAll`, params);
 };
 
-//---------------------- 上面为通用方法 和后台规约好了 上面8个通用 -----
+//---------------------- 上面为通用方法 和后台规约好了------------------------------
 //---------------------- 巨完美的分割线 -------------------------------------------
-//---------------------- 下面为特殊方法 编写区 -----
+//---------------------- 下面为特殊方法 如有需求请写在以下区域-----------------------
