@@ -1,0 +1,192 @@
+<template>
+  <section>
+    <!--工具条-->
+    <el-row>
+      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
+        <el-form
+          size="small"
+          :inline="true"
+          :model="filter"
+          @submit.native.prevent
+        >
+          <el-form-item>
+            <el-input
+              v-model="filter.name"
+              placeholder="用户名/昵称"
+              clearable
+              @keyup.enter.native="getUsers"
+            >
+              <i slot="prefix" class="el-input__icon el-icon-search" />
+            </el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-button type="primary" @click="getUsers">查询</el-button>
+            <el-button type="primary" @click="onAdd">新增</el-button>
+          </el-form-item>
+        </el-form>
+      </el-col>
+    </el-row>
+
+    <add-panl
+      title="新增"
+      :data="addForm"
+      :visible="addVisible"
+      @changeDrawer="changeDrawerAdd"
+    ></add-panl>
+    <!--列表-->
+    <el-table
+      v-loading="listLoading"
+      :data="users"
+      highlight-current-row
+      style="width: 100%;"
+    >
+      <el-table-column type="selection" align="center" width="50" />
+      <el-table-column type="index" width="80" label="#" />
+      <el-table-column prop="userName" label="用户名" width />
+      <el-table-column prop="displayName" label="姓名" width />
+      <el-table-column prop="userType" label="用户类型" width>
+        <template v-slot="{ row }">
+          {{ row.userType == 1 ? "超管" : "普通用户" }}
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="createdTime"
+        label="创建时间"
+        :formatter="formatTime"
+        width
+      />
+      <el-table-column prop="isDisabled" label="状态" width>
+        <template slot-scope="scope">
+          <el-tag
+            :type="scope.row.isDisabled ? 'danger' : 'success'"
+            disable-transitions
+          >
+            {{ scope.row.isDisabled ? "禁用" : "正常" }}
+          </el-tag>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <!--工具条-->
+    <el-row>
+      <el-col :span="24" class="pagination">
+        <el-pagination
+          layout="total, slot, sizes, prev, jumper, next"
+          :current-page.sync="currentPage"
+          :page-size.sync="pageSize"
+          :total="total"
+          :page-count="pageCount"
+          background
+          style="text-align:right;"
+        >
+          <span class="el-pagination__count">，{{ pageCount }} 页</span>
+        </el-pagination>
+      </el-col>
+    </el-row>
+  </section>
+</template>
+
+<script>
+import dayjs from "dayjs";
+import { getPageList } from "@/api/admin/user";
+// import ConfirmButton from "@/components/confirm-button";
+import AddPanl from "./add/index";
+export default {
+  name: "admin--group--index",
+  components: { AddPanl },
+
+  data() {
+    return {
+      filter: {
+        name: ""
+      },
+      users: [],
+      roles: [],
+      total: 0,
+      pageSize: 10,
+      currentPage: 1,
+      listLoading: false,
+
+      // 新增面板显示属性
+      addVisible: false,
+      // 新增界面数据
+      addForm: {
+        code: "",
+        title: "",
+        description: "",
+        parentId: ""
+      },
+      addFormRules: {
+        userName: [
+          { required: true, message: "请输入用户名", trigger: "blur" }
+        ],
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }]
+      }
+    };
+  },
+  computed: {
+    pageCount() {
+      return this.total > 0 && this.pageSize > 0
+        ? Math.ceil(this.total / this.pageSize)
+        : 1;
+    }
+  },
+  watch: {
+    currentPage() {
+      this.getUsers();
+    },
+    pageSize() {
+      this.getUsers();
+    }
+  },
+  async mounted() {
+    this.getUsers();
+  },
+  methods: {
+    formatTime: function(row, column, time) {
+      let timeFormat = dayjs(time).format("YYYY-MM-DD HH:mm");
+      return timeFormat;
+    },
+    // 获取用户列表
+    async getUsers() {
+      const para = {
+        currentPage: this.currentPage,
+        pageSize: this.pageSize,
+        filter: this.filter
+      };
+      this.listLoading = true;
+      const res = await getPageList(para);
+      console.log(res);
+      this.listLoading = false;
+
+      if (!res.success) {
+        if (res.msg) {
+          this.$message({
+            message: res.msg,
+            type: "error"
+          });
+        }
+        return;
+      }
+
+      this.total = res.data.total;
+      const data = res.data.list;
+      data.forEach(d => {
+        d._loading = false;
+      });
+      this.users = data;
+    },
+
+    async onAdd() {
+      console.log(1213);
+      this.addVisible = true;
+    },
+    changeDrawerAdd(v) {
+      this.addVisible = v;
+    }
+  }
+};
+</script>
+
+<style lang="scss" scoped></style>
