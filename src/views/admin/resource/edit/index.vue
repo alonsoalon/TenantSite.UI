@@ -47,6 +47,29 @@
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />
           </el-form-item>
+          <el-form-item v-if="data.children" label="展开" prop="opened">
+            <el-switch v-model="data.opened" />
+          </el-form-item>
+          <el-form-item label="排序" prop="orderIndex">
+            <el-input-number
+              v-model="data.orderIndex"
+              :min="0"
+            ></el-input-number>
+          </el-form-item>
+
+          <el-divider content-position="left"></el-divider>
+          <el-form-item label="创建人" prop="createdByName">
+            <el-input v-model="data.createdByName" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="创建时间" prop="createdTime">
+            <el-input v-model="data.createdTime" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="更新人" prop="updatedByName">
+            <el-input v-model="data.createdByName" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="更新时间" prop="updatedTime">
+            <el-input v-model="data.createdTime" :disabled="true" />
+          </el-form-item>
         </el-form>
       </section>
       <div class="drawer-footer">
@@ -66,10 +89,10 @@
 <script>
 import ConfirmButton from "@/components/confirm-button";
 import { cloneDeep } from "lodash";
-import { execCreate } from "@/api/admin/resource";
+import { execUpdate } from "@/api/admin/resource";
 
 export default {
-  name: "admin-resource-add",
+  name: "admin-resource-edit",
   components: {
     ConfirmButton
   },
@@ -95,7 +118,12 @@ export default {
       default: false
     },
     groupTree: {
-      type: Array
+      type: Array,
+      default: () => []
+    },
+    data: {
+      type: Object,
+      default: () => {}
     }
   },
   computed: {
@@ -111,17 +139,9 @@ export default {
   data() {
     return {
       loading: false,
-      data: {
-        code: "",
-        title: "",
-        description: "",
-        parentId: "",
-        isDisabled: false
-      },
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }]
       }
-      //groupTree: []
     };
   },
 
@@ -145,11 +165,11 @@ export default {
     async onSubmit() {
       this.loading = true;
       const para = cloneDeep(this.data);
-      const res = await execCreate(para);
+      const res = await execUpdate(para);
       this.loading = false;
 
       if (res.success) {
-        this.$message({ message: this.$t("common.addOk"), type: "success" });
+        this.$message({ message: this.$t("common.updateOk"), type: "success" });
         this.$refs.refForm.resetFields();
         this.drawerVisible = false;
         // 成功后钩子，共父级调用
