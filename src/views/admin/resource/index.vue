@@ -39,25 +39,82 @@
       style="width: 100%;"
     >
       <el-table-column type="selection" align="center" width="50" />
-      <el-table-column type="index" width="80" label="#" />
-      <el-table-column prop="title" label="名称" width />
+      <el-table-column type="index" width="40" label="#" />
+      <el-table-column prop="title" label="名称" width>
+        <template slot-scope="scope">
+          <i :class="scope.row.icon" />
+          {{ scope.row.title }}
+        </template>
+      </el-table-column>
       <el-table-column prop="code" label="编码" width />
-      <el-table-column prop="isDisabled" label="状态">
+      <el-table-column prop="resourceType" label="资源类型">
+        <template slot-scope="scope">
+          <span v-if="scope.row.resourceType === 1">
+            资源分组
+          </span>
+          <span v-if="scope.row.resourceType === 2">
+            资源菜单
+          </span>
+          <span v-if="scope.row.resourceType === 3">
+            功能点
+          </span>
+        </template>
+      </el-table-column>
+
+      <!-- <el-table-column prop="linkType" label="连接类型">
+        <template slot-scope="scope">
+          <span v-if="scope.row.resourceType === 2 && scope.row.linkType === 1">
+            视图组件
+          </span>
+          <span v-if="scope.row.resourceType === 2 && scope.row.linkType === 2">
+            外部链接
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="openMode" label="打开模式">
+        <template slot-scope="scope">
+          <span
+            v-if="
+              scope.row.resourceType === 2 &&
+                scope.row.linkType === 2 &&
+                scope.row.openMode === 1
+            "
+          >
+            内部窗口
+          </span>
+          <span
+            v-if="
+              scope.row.resourceType === 2 &&
+                scope.row.linkType === 2 &&
+                scope.row.openMode === 2
+            "
+          >
+            内部窗口
+          </span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="path" label="Path" width /> -->
+
+      <el-table-column prop="isDisabled" label="启用状态" width="80">
         <template slot-scope="scope">
           <el-tag
             :type="scope.row.isDisabled ? 'danger' : 'success'"
             disable-transitions
           >
-            {{ scope.row.isDisabled ? "禁用" : "正常" }}
+            {{ scope.row.isDisabled ? "禁用" : "启用" }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="createdByName" label="创建人" width />
-      <el-table-column
-        prop="createdTime"
-        label="创建时间"
-        :formatter="formatDt"
-      />
+      <el-table-column prop="hidden" label="显示状态" width="80">
+        <template slot-scope="scope">
+          <el-tag
+            :type="scope.row.hidden ? 'danger' : 'success'"
+            disable-transitions
+          >
+            {{ scope.row.hidden ? "隐藏" : "显示" }}
+          </el-tag>
+        </template>
+      </el-table-column>
 
       <el-table-column label="操作" width="170">
         <template v-slot="{ $index, row }">
@@ -76,7 +133,7 @@
     <add-panl
       title="新增"
       :visible="addVisible"
-      :groupTree="treeData"
+      :parentOptions="treeData"
       @onChangeDrawer="onAddChangeDrawer"
       @onSuccess="onAddSuccess"
       @onError="onAddError"
@@ -85,7 +142,7 @@
     <edit-panl
       title="编辑"
       :visible="editVisible"
-      :groupTree="editGroupTreeData"
+      :parentOptions="editTreeData"
       :data="editItem"
       @onChangeDrawer="onEditChangeDrawer"
       @onSuccess="onEditSuccess"
@@ -118,7 +175,7 @@ export default {
 
       editVisible: false,
       editItem: {},
-      editGroupTreeData: []
+      editTreeData: []
     };
   },
   computed: {},
@@ -188,9 +245,9 @@ export default {
           });
       };
 
-      this.editGroupTreeData = [];
+      this.editTreeData = [];
       let treeData = cloneDeep(this.treeData);
-      this.editGroupTreeData = filterEditItem(treeData, this.editItem.id);
+      this.editTreeData = filterEditItem(treeData, this.editItem.id);
     },
     onEditSuccess() {
       this.getTreeList();

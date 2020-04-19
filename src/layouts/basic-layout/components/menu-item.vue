@@ -6,7 +6,7 @@
     >
       <template slot="title">
         <i :class="item.icon" />
-        <span slot="title">{{ item.label }}</span>
+        <span slot="title">{{ item.title }}</span>
       </template>
       <menu-item v-for="child in item.children" :key="child.id" :item="child" />
     </el-submenu>
@@ -14,19 +14,19 @@
       <a v-if="item.newWindow" :href="item.path" target="_blank" rel="noopener">
         <el-menu-item :index="item.path">
           <i :class="item.icon" />
-          <span slot="title">{{ item.label }}</span>
+          <span slot="title">{{ item.title }}</span>
         </el-menu-item>
       </a>
       <router-link v-else-if="item.external" :to="item.path">
         <el-menu-item :index="item.path">
           <i :class="item.icon" />
-          <span slot="title">{{ item.label }}</span>
+          <span slot="title">{{ item.title }}</span>
         </el-menu-item>
       </router-link>
       <router-link v-else :to="item.path" tag="div">
         <el-menu-item :index="item.path">
           <i :class="item.icon" />
-          <span slot="title">{{ item.label }}</span>
+          <span slot="title">{{ item.title }}</span>
         </el-menu-item>
       </router-link>
     </template>

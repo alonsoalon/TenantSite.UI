@@ -42,13 +42,13 @@
       <el-table-column type="index" width="80" label="#" />
       <el-table-column prop="title" label="名称" width />
       <el-table-column prop="code" label="编码" width />
-      <el-table-column prop="isDisabled" label="状态">
+      <el-table-column prop="isDisabled" label="可用">
         <template slot-scope="scope">
           <el-tag
             :type="scope.row.isDisabled ? 'danger' : 'success'"
             disable-transitions
           >
-            {{ scope.row.isDisabled ? "禁用" : "正常" }}
+            {{ scope.row.isDisabled ? "禁用" : "启用" }}
           </el-tag>
         </template>
       </el-table-column>
@@ -76,7 +76,7 @@
     <add-panl
       title="新增"
       :visible="addVisible"
-      :groupTree="treeData"
+      :parentOptions="treeData"
       @onChangeDrawer="onAddChangeDrawer"
       @onSuccess="onAddSuccess"
       @onError="onAddError"
@@ -85,7 +85,7 @@
     <edit-panl
       title="编辑"
       :visible="editVisible"
-      :groupTree="editGroupTreeData"
+      :parentOptions="editTreeData"
       :data="editItem"
       @onChangeDrawer="onEditChangeDrawer"
       @onSuccess="onEditSuccess"
@@ -107,7 +107,8 @@ export default {
   data() {
     return {
       filter: {
-        key: ""
+        key: "", // 查询关键字
+        withDisable: true // 告诉后台包括禁用的数据一起返回
       },
       treeData: [],
       expandRowKeys: [],
@@ -118,7 +119,7 @@ export default {
 
       editVisible: false,
       editItem: {},
-      editGroupTreeData: []
+      editTreeData: []
     };
   },
   computed: {},
@@ -188,9 +189,9 @@ export default {
           });
       };
 
-      this.editGroupTreeData = [];
+      this.editTreeData = [];
       let treeData = cloneDeep(this.treeData);
-      this.editGroupTreeData = filterEditItem(treeData, this.editItem.id);
+      this.editTreeData = filterEditItem(treeData, this.editItem.id);
     },
     onEditSuccess() {
       this.getTreeList();

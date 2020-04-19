@@ -12,6 +12,8 @@
     >
       <section class="drawer-body">
         <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
+
+        <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
         <el-form
           ref="refForm"
           :model="data"
@@ -23,10 +25,100 @@
           <el-form-item label="标题" prop="title">
             <el-input v-model="data.title" />
           </el-form-item>
+
+          <el-form-item label="描述" prop="description">
+            <el-input v-model="data.description" type="textarea" rows="2" />
+          </el-form-item>
+          <el-form-item label="编码" prop="code">
+            <el-input v-model="data.code" autocomplete="off" />
+          </el-form-item>
+          <el-form-item label="ICON" prop="icon">
+            <el-input v-model="data.icon" />
+          </el-form-item>
+          <el-divider content-position="left"></el-divider>
+          <el-form-item label="资源类型" prop="resourceType">
+            <el-radio-group v-model="data.resourceType">
+              <el-radio :label="1">资源分组</el-radio>
+              <el-radio :label="2">资源菜单</el-radio>
+              <el-radio :label="3">功能点</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item
+            label="菜单类型"
+            prop="linkType"
+            v-if="data.resourceType === 2"
+          >
+            <el-radio-group
+              v-model="data.linkType"
+              v-if="data.resourceType === 2"
+            >
+              <el-radio :label="1">视图组件</el-radio>
+              <el-radio :label="2">外部链接</el-radio>
+            </el-radio-group>
+          </el-form-item>
+          <el-form-item
+            label="打开模式"
+            prop="openMode"
+            v-if="data.resourceType === 2 && data.linkType === 2"
+          >
+            <el-radio-group v-model="data.openMode">
+              <el-radio :label="1">内部窗口</el-radio>
+              <el-radio :label="2">外部窗口</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-form-item
+            label="URL"
+            prop="path"
+            v-if="
+              data.resourceType === 2 &&
+                data.linkType &&
+                data.resourceType === 2
+            "
+          >
+            <el-input v-model="data.path" />
+          </el-form-item>
+          <el-form-item
+            label="视图路径"
+            prop="viewPath"
+            v-if="data.resourceType === 2 && data.linkType === 1"
+          >
+            <el-input v-model="data.viewPath" />
+          </el-form-item>
+          <el-form-item
+            label="视图名称"
+            prop="viewName"
+            v-if="data.resourceType === 2 && data.linkType === 1"
+          >
+            <el-input v-model="data.viewName">
+              <el-button
+                slot="append"
+                icon="el-icon-bottom"
+                @click="generateViewName"
+              ></el-button>
+            </el-input>
+          </el-form-item>
+          <el-form-item
+            label="是否缓存"
+            prop="viewCache"
+            v-if="data.resourceType === 2 && data.linkType === 1"
+          >
+            <el-switch v-model="data.viewCache" />
+          </el-form-item>
+          <el-form-item
+            label="可否关闭"
+            prop="closable"
+            v-if="data.openMode === 1"
+          >
+            <el-switch v-model="data.closable" />
+          </el-form-item>
+
+          <el-divider content-position="left"></el-divider>
+
           <el-form-item label="父级" prop="parentId">
             <el-cascader
               v-model="data.parentId"
-              :options="groupTree"
+              :options="parentOptions"
               :props="{
                 checkStrictly: true,
                 value: 'id',
@@ -34,15 +126,12 @@
                 emitPath: false
               }"
               style="width:100%"
+              filterable
               clearable
             ></el-cascader>
           </el-form-item>
-
-          <el-form-item label="描述" prop="description">
-            <el-input v-model="data.description" type="textarea" rows="2" />
-          </el-form-item>
-          <el-form-item label="编码" prop="code">
-            <el-input v-model="data.code" autocomplete="off" />
+          <el-form-item label="隐藏" prop="hidden">
+            <el-switch v-model="data.hidden" />
           </el-form-item>
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />
@@ -56,7 +145,12 @@
               :min="0"
             ></el-input-number>
           </el-form-item>
-
+          <el-divider content-position="left">
+            <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
+          </el-divider>
+          <el-form-item label="归属组" prop="groupId">
+            <group-select v-model="data.groupId"></group-select>
+          </el-form-item>
           <el-divider content-position="left"></el-divider>
           <el-form-item label="创建人" prop="createdByName">
             <el-input v-model="data.createdByName" :disabled="true" />
@@ -87,14 +181,19 @@
 </template>
 
 <script>
+// 组件
 import ConfirmButton from "@/components/confirm-button";
+import GroupSelect from "@/components/group-select";
+// 工具
 import { cloneDeep } from "lodash";
+// apis
 import { execUpdate } from "@/api/admin/resource";
 
 export default {
   name: "admin-resource-edit",
   components: {
-    ConfirmButton
+    ConfirmButton,
+    GroupSelect
   },
   props: {
     title: {
@@ -117,9 +216,8 @@ export default {
       type: Boolean,
       default: false
     },
-    groupTree: {
-      type: Array,
-      default: () => []
+    parentOptions: {
+      type: Array
     },
     data: {
       type: Object,
@@ -144,10 +242,7 @@ export default {
       }
     };
   },
-
-  async mounted() {
-    // this.getGroupTree();
-  },
+  async mounted() {},
 
   methods: {
     // 验证表单
@@ -179,6 +274,19 @@ export default {
         // 失败后钩子，共父级调用
         this.$emit("onError", para, res);
       }
+    },
+    generateViewName() {
+      if (!this.data.viewPath || this.data.viewPath === "") {
+        this.$message({
+          message: "视图路径为空，不能生成视图名称",
+          type: "warning"
+        });
+        return;
+      }
+      let str = this.data.viewPath;
+      str = str.startsWith("/") ? str.replace(/\//, "") : str;
+      str = str.replace(/\//g, "--");
+      this.data.viewName = str;
     }
   }
 };

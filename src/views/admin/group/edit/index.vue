@@ -26,7 +26,7 @@
           <el-form-item label="父级" prop="parentId">
             <el-cascader
               v-model="data.parentId"
-              :options="groupTree"
+              :options="parentOptions"
               :props="{
                 checkStrictly: true,
                 value: 'id',
@@ -44,6 +44,7 @@
           <el-form-item label="编码" prop="code">
             <el-input v-model="data.code" autocomplete="off" />
           </el-form-item>
+
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />
           </el-form-item>
@@ -56,7 +57,12 @@
               :min="0"
             ></el-input-number>
           </el-form-item>
-
+          <el-divider content-position="left">
+            <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
+          </el-divider>
+          <el-form-item label="归属组" prop="groupId">
+            <group-select v-model="data.groupId"></group-select>
+          </el-form-item>
           <el-divider content-position="left"></el-divider>
           <el-form-item label="创建人" prop="createdByName">
             <el-input v-model="data.createdByName" :disabled="true" />
@@ -88,13 +94,15 @@
 
 <script>
 import ConfirmButton from "@/components/confirm-button";
+import GroupSelect from "@/components/group-select";
 import { cloneDeep } from "lodash";
 import { execUpdate } from "@/api/admin/group";
 
 export default {
   name: "admin-group-edit",
   components: {
-    ConfirmButton
+    ConfirmButton,
+    GroupSelect
   },
   props: {
     title: {
@@ -117,7 +125,7 @@ export default {
       type: Boolean,
       default: false
     },
-    groupTree: {
+    parentOptions: {
       type: Array,
       default: () => []
     },

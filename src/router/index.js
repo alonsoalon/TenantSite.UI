@@ -68,8 +68,8 @@ function generateRoutes(menus = []) {
           component: _import(m.viewPath),
           meta: {
             auth: true,
-            cache: m.cache,
-            title: m.label,
+            cache: m.viewCache,
+            title: m.title,
             icon: m.icon,
             closable: m.closable
           }
