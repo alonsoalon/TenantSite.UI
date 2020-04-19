@@ -107,6 +107,21 @@ const menus = [
     viewCache: false
   },
   {
+    id: "1-6",
+    parentId: "1",
+    path: "/admin/role/index",
+    viewPath: "/admin/role/index",
+    viewName: "admin--role--index",
+    title: "角色管理",
+    icon: "el-icon-notebook-2",
+    opened: false,
+    closable: true,
+    hidden: false,
+    newWindow: false,
+    external: false,
+    viewCache: false
+  },
+  {
     id: "2-1",
     parentId: "2",
     path: "/admin/403",

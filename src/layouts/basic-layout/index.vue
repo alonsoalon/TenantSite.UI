@@ -103,7 +103,7 @@
               :key="tab.path"
               :name="tab.path"
               :label="tab.meta.title"
-              :closable="tab.meta.closable"
+              :closable="tab.meta.closable || true"
             >
               <span slot="label">
                 <i :class="tab.meta.icon" />
@@ -139,7 +139,7 @@
             :key="tab.path"
             :name="tab.path"
             :label="tab.meta.title"
-            :closable="tab.meta.closable"
+            :closable="tab.meta.closable || true"
           >
             <span slot="label">
               <i :class="tab.meta.icon" />
