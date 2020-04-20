@@ -122,6 +122,21 @@ const menus = [
     viewCache: false
   },
   {
+    id: "1-7",
+    parentId: "1",
+    path: "/admin/role-power/index",
+    viewPath: "/admin/role-power/index",
+    viewName: "admin--role-power--index",
+    title: "角色赋权",
+    icon: "el-icon-notebook-2",
+    opened: false,
+    closable: true,
+    hidden: false,
+    newWindow: false,
+    external: false,
+    viewCache: false
+  },
+  {
     id: "2-1",
     parentId: "2",
     path: "/admin/403",

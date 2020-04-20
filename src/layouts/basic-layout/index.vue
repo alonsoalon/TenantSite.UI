@@ -50,9 +50,9 @@
               class="breadcrumb-inner breadcrumb-container"
             >
               <template v-for="(title, index) in menueTitles">
-                <el-breadcrumb-item v-if="title" :key="index">{{
-                  title
-                }}</el-breadcrumb-item>
+                <el-breadcrumb-item v-if="title" :key="index">
+                  {{ title }}
+                </el-breadcrumb-item>
               </template>
             </el-breadcrumb>
           </el-col>
@@ -261,8 +261,8 @@ export default {
       const menu = this.info.menus?.find(m => m.path === fullPath);
       if (menu && menu.id !== "") {
         const parents = getTreeParents(this.menuTree, menu.id);
-        parentTitles = parents.map(p => p.label);
-        parentTitles.push(menu.label);
+        parentTitles = parents.map(p => p.title);
+        parentTitles.push(menu.title);
       }
       return parentTitles;
     },

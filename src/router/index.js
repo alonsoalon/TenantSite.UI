@@ -82,6 +82,19 @@ function generateRoutes(menus = []) {
     }
   });
 
+  var iframe = {
+    path: "baidu",
+    name: "baidu",
+    meta: {
+      icon: "ios-hammer",
+      title: "百度",
+      src: "https://www.baidu.com/"
+    },
+    component: _import("/iframe/index") //() => import("@/views/iframe/index.vue")
+  };
+
+  routes.children.push(iframe);
+
   var e403 = {
     path: "/403",
     name: "403",
