@@ -66,7 +66,6 @@ service.interceptors.response.use(
   },
   async error => {
     let res = { success: false, code: 0, message: "" };
-
     if (error.response) {
       var data = error.response.data;
       if (_.isPlainObject(data)) {

@@ -105,19 +105,22 @@
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="hidden" label="显示状态" width="80">
+      <el-table-column prop="isHidden" label="显示状态" width="80">
         <template slot-scope="scope">
           <el-tag
-            :type="scope.row.hidden ? 'danger' : 'success'"
+            :type="scope.row.isHidden ? 'danger' : 'success'"
             disable-transitions
           >
-            {{ scope.row.hidden ? "隐藏" : "显示" }}
+            {{ scope.row.isHidden ? "隐藏" : "显示" }}
           </el-tag>
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="170">
+      <el-table-column label="操作" width="250">
         <template v-slot="{ $index, row }">
+          <el-button size="small" @click="onAddSub($index, row)">
+            添加
+          </el-button>
           <el-button size="small" @click="onEdit($index, row)">编辑</el-button>
           <confirm-button
             type="delete"
@@ -133,6 +136,7 @@
     <add-panl
       title="新增"
       :visible="addVisible"
+      :data="addDefaultItem"
       :parentOptions="treeData"
       @onChangeDrawer="onAddChangeDrawer"
       @onSuccess="onAddSuccess"
@@ -164,7 +168,8 @@ export default {
   data() {
     return {
       filter: {
-        key: ""
+        key: "",
+        withDisable: true
       },
       treeData: [],
       expandRowKeys: [],
@@ -172,7 +177,14 @@ export default {
 
       // 新增面板显示属性
       addVisible: false,
-
+      addDefaultItem: {
+        resourceType: 2,
+        linkType: 1,
+        parentId: "",
+        viewPath: "",
+        viewName: "",
+        viewCache: false
+      },
       editVisible: false,
       editItem: {},
       editTreeData: []
@@ -215,6 +227,17 @@ export default {
     },
     // -- add 事件 start --
     onAdd() {
+      this.addVisible = true;
+    },
+    onAddSub(index, row) {
+      this.addDefaultItem.parentId = row.id;
+      if (row.resourceType === 1) {
+        this.addDefaultItem.resourceType = 2;
+        this.addDefaultItem.linkType = 1;
+      } else if (row.resourceType === 2) {
+        this.addDefaultItem.resourceType = 3;
+        this.addDefaultItem.linkType = 1;
+      }
       this.addVisible = true;
     },
     onAddSuccess() {
@@ -260,8 +283,11 @@ export default {
     // 删除验证
     deleteValidate(row) {
       let isValid = true;
-      if (row && row.code === "SYSTEM") {
-        this.$message({ message: row.title + " 禁止删除！", type: "warning" });
+      if (row && row.createdByName.toUpperCase() === "INSTALL") {
+        this.$message({
+          message: row.title + " 为种子数据,禁止删除！如果不需要可禁用",
+          type: "warning"
+        });
         isValid = false;
       }
 

@@ -20,6 +20,7 @@ export const execCreate = params => {
  * @param {Object} params 参数
  */
 export const execUpdate = params => {
+  console.log(params);
   return request.put(`/api/v1/${path}/update`, params);
 };
 
@@ -82,3 +83,11 @@ export const getAll = params => {
 //---------------------- 上面为通用方法 和后台规约好了------------------------------
 //---------------------- 巨完美的分割线 -------------------------------------------
 //---------------------- 下面为特殊方法 如有需求请写在以下区域-----------------------
+
+export const getResources = params => {
+  return request.get(`api/v1/${path}/GetResources`, { params });
+};
+
+export const getResourceIdsByRoleId = params => {
+  return request.get(`api/v1/${path}/GetResourceIdsByRoleId`, { params });
+};

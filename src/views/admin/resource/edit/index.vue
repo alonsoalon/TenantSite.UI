@@ -68,7 +68,7 @@
           </el-form-item>
 
           <el-form-item
-            label="URL"
+            label="Path"
             prop="path"
             v-if="
               data.resourceType === 2 &&
@@ -79,9 +79,9 @@
             <el-input v-model="data.path" />
           </el-form-item>
           <el-form-item
-            label="视图路径"
+            :label="data.linkType === 2 ? '外链URL' : '视图路径'"
             prop="viewPath"
-            v-if="data.resourceType === 2 && data.linkType === 1"
+            v-if="data.resourceType === 2"
           >
             <el-input v-model="data.viewPath" />
           </el-form-item>
@@ -130,8 +130,8 @@
               clearable
             ></el-cascader>
           </el-form-item>
-          <el-form-item label="隐藏" prop="hidden">
-            <el-switch v-model="data.hidden" />
+          <el-form-item label="隐藏" prop="isHidden">
+            <el-switch v-model="data.isHidden" />
           </el-form-item>
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />

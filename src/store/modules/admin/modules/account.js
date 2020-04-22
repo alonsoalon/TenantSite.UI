@@ -207,13 +207,14 @@ export default {
       if (res && res.success) {
         util.cookies.set("uuid", res.data.uuid);
         util.cookies.set("token", res.data.token);
+
         if (!res.data.info?.menus?.length > 0) {
           res.data.info.menus = menus;
         }
 
         // 设置 vuex 用户信息
         await dispatch("admin/user/setUserInfo", res.data.info, { root: true });
-        addRoutes(menus);
+        addRoutes(res.data.info.menus);
       }
       return res;
     },
@@ -227,6 +228,7 @@ export default {
       if (res && res.success) {
         util.cookies.set("uuid", res.data.uuid);
         util.cookies.set("token", res.data.token);
+        console.log(12122, res.data.info.menus);
         if (!res.data.info?.menus?.length > 0) {
           res.data.info.menus = menus;
         }
@@ -234,7 +236,7 @@ export default {
         // 设置 vuex 用户信息
         await dispatch("admin/user/setUserInfo", res.data.info, { root: true });
 
-        addRoutes(menus);
+        addRoutes(res.data.info.menus);
       }
       return res;
     },

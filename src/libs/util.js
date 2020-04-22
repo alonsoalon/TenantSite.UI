@@ -56,7 +56,7 @@ export function listToTree(
   for (let i = 0, l = list.length; i < l; i++) {
     const d = list[i];
     const parentID = d[parentIdField];
-    if (parentID === "" || parentID === 0) {
+    if (parentID === "" || parentID === 0 || parentID === null) {
       tree.push(d);
       continue;
     }

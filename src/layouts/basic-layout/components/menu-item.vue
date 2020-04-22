@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!item.hidden">
+  <div v-if="!item.isHidden">
     <el-submenu
       v-if="item.children && item.children.length > 0"
       :index="item.id + ''"
@@ -11,19 +11,18 @@
       <menu-item v-for="child in item.children" :key="child.id" :item="child" />
     </el-submenu>
     <template v-else-if="item.path">
-      <a v-if="item.newWindow" :href="item.path" target="_blank" rel="noopener">
+      <a
+        v-if="item.linkType === 2 && item.openMode === 2"
+        :href="item.viewPath"
+        target="_blank"
+        rel="noopener"
+      >
         <el-menu-item :index="item.path">
           <i :class="item.icon" />
           <span slot="title">{{ item.title }}</span>
         </el-menu-item>
       </a>
-      <router-link v-else-if="item.external" :to="item.path">
-        <el-menu-item :index="item.path">
-          <i :class="item.icon" />
-          <span slot="title">{{ item.title }}</span>
-        </el-menu-item>
-      </router-link>
-      <router-link v-else :to="item.path" tag="div">
+      <router-link v-else :to="item.path">
         <el-menu-item :index="item.path">
           <i :class="item.icon" />
           <span slot="title">{{ item.title }}</span>

@@ -327,12 +327,17 @@ export default {
       // eslint-disable-next-line no-undef
       const cloneMenus = _.cloneDeep(this.info.menus);
       // 检查外链
-      cloneMenus.forEach(m => {
-        if (!m.newWindow) {
-          m.newWindow = /^(http?:|https?:|mailto:|tel:)/.test(m.path);
-        }
-      });
-      this.menuTree = listToTree(cloneMenus);
+      // cloneMenus.forEach(m => {
+      //   if (!m.newWindow) {
+      //     m.newWindow = /^(http?:|https?:|mailto:|tel:)/.test(m.path);
+      //   }
+      // });
+
+      this.menuTree = listToTree(cloneMenus).filter(
+        x => x.parentId === null || x.parentId === ""
+      );
+      console.log("menu", cloneMenus);
+      console.log("menu1", this.menuTree);
 
       this.openeds = this.info.menus.filter(l => l.opened).map(l => l.id + "");
     }

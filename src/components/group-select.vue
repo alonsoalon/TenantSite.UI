@@ -48,7 +48,11 @@ export default {
         }
         return;
       }
-      this.groupOptions = listToTree(res.data);
+      let treeData = listToTree(res.data);
+      // 去除父级被禁用，导致找不到父级 ，经过listToTree 将自动提到顶级，过滤掉这部分数据
+      this.groupOptions = treeData.filter(
+        x => x.parentId === null || x.parentId === ""
+      );
     }
   }
 };

@@ -82,3 +82,11 @@ export const getAll = params => {
 //---------------------- 上面为通用方法 和后台规约好了------------------------------
 //---------------------- 巨完美的分割线 -------------------------------------------
 //---------------------- 下面为特殊方法 如有需求请写在以下区域-----------------------
+
+/**
+ * 为角色赋权
+ * @param {Object} params 参数
+ */
+export const roleAssignResources = params => {
+  return request.post(`api/v1/${path}/RoleAssignResources`, params);
+};

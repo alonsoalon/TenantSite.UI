@@ -1,107 +1,362 @@
 <template>
-  <section ref="refPane" class="multiPaneRoot">
-    <multipane class="multiPane" layout="vertical">
+  <main class="flexMain">
+    <multipane class="splitPane">
       <div
         class="pane leftPane"
-        :style="{ width: '300px', minWidth: '200px', maxWidth: '700px' }"
+        :style="{ width: '300px', minWidth: '200px', maxWidth: '600px' }"
       >
-        <div style="padding:10px;">
-          <el-input v-model="input" placeholder="请输入内容">
-            <el-button slot="append" icon="el-icon-search"></el-button>
-          </el-input>
+        <div class="toolbar top">
+          <el-form
+            size="small"
+            :inline="true"
+            :model="filter"
+            @submit.native.prevent
+          >
+            <el-input
+              v-model="filter.key"
+              placeholder="名称/编号/描述"
+              clearable
+              @keyup.enter.native="getRoles"
+            >
+              <el-button
+                slot="append"
+                icon="el-icon-search"
+                @click="getRoles"
+              ></el-button>
+            </el-input>
+          </el-form>
         </div>
 
-        <el-scrollbar style="height:100%">
-          <el-table :data="tableData">
-            <el-table-column type="index" width="40" label="#" />
-            <el-table-column prop="name" label="姓名"> </el-table-column>
+        <scroll-bar>
+          <el-table
+            v-loading="rolesLoading"
+            :data="roles"
+            highlight-current-row
+            :stripe="true"
+            :show-header="false"
+            @row-click="onRowClick"
+          >
+            <el-table-column type="expand">
+              <template slot-scope="props">
+                <div class="detail">
+                  <span v-if="props.row.code && props.row.code !== ''">
+                    [{{ props.row.code }}]
+                  </span>
+                  {{ props.row.description }}
+                </div>
+              </template>
+            </el-table-column>
+            <el-table-column prop="title" label="角色名称"> </el-table-column>
           </el-table>
-        </el-scrollbar>
+        </scroll-bar>
       </div>
-      <multipane-resizer></multipane-resizer>
+      <!-- <multipane-resizer></multipane-resizer> -->
       <div class="pane rightPane" :style="{ flexGrow: 1 }">
-        <div style="padding:10px;">
-          <el-button type="primary" icon="el-icon-check">保存</el-button>
-          <el-button>刷新资源</el-button>
+        <div class="toolbar top">
+          <div style="line-height:35px">
+            {{
+              this.currentItemTitle === ""
+                ? "请选择需要赋权的角色"
+                : "[" + this.currentItemTitle + "] 资源分配"
+            }}
+          </div>
         </div>
-        <el-scrollbar style="height:100%">
-          <el-table :data="tableData">
-            <el-table-column type="index" width="40" label="#" />
-            <el-table-column prop="name" label="姓名"> </el-table-column>
-          </el-table>
-        </el-scrollbar>
+        <scroll-bar>
+          <div>
+            <el-table
+              ref="multipleTable"
+              v-loading="ResourcesLoading"
+              :data="resources"
+              :default-expand-all="true"
+              :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+              row-key="id"
+              highlight-current-row
+              @select-all="selectAll"
+              @select="select"
+            >
+              <el-table-column type="selection" align="center" width="50" />
+              <el-table-column prop="title" label="菜单资源" width="180">
+                <template slot-scope="scope">
+                  <i :class="scope.row.icon" />
+                  {{ scope.row.title }}
+                </template>
+              </el-table-column>
+              <el-table-column label="功能资源" width>
+                <template slot-scope="{ $index, row }">
+                  <el-checkbox-group
+                    v-if="row.funcs && row.funcs.length > 0"
+                    v-model="chekedFuncs"
+                  >
+                    <el-checkbox
+                      v-for="api in row.funcs"
+                      :key="api.id"
+                      :label="api.id"
+                    >
+                      {{ api.title }}
+                    </el-checkbox>
+                  </el-checkbox-group>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+        </scroll-bar>
+        <div class="toolbar bottom">
+          <el-button-group>
+            <el-button
+              type="primary"
+              icon="el-icon-check"
+              :validate="saveValidate"
+              :loading="saveLoading"
+              :disabled="saveDisabled"
+              @click="save"
+            >
+              提交
+            </el-button>
+
+            <el-button
+              type="success"
+              icon="el-icon-refresh"
+              :disabled="saveDisabled"
+              @click="getResourceIdsByRoleId"
+            >
+              重置
+            </el-button>
+          </el-button-group>
+        </div>
+        <div
+          class="info"
+          v-if="currentRoleId === ''"
+          @click="validateRole"
+        ></div>
       </div>
     </multipane>
-  </section>
+  </main>
 </template>
 
 <script>
-import { Multipane, MultipaneResizer } from "vue-multipane";
-// 混合
-//import mixinApp from "@/mixins/app";
+import {
+  Multipane
+  // MultipaneResizer
+} from "vue-multipane";
+import ScrollBar from "@/components/scroll-bar";
+import { listToTree, treeToList } from "@/libs/util";
+
+import { getAll as getRoles, roleAssignResources } from "@/api/admin/role";
+import { getResources, getResourceIdsByRoleId } from "@/api/admin/resource";
+
 export default {
   name: "admin--role-power--index",
-  //mixins: [mixinApp],
   components: {
     Multipane,
-    MultipaneResizer
+    // MultipaneResizer,
+    ScrollBar
+  },
+  computed: {
+    saveDisabled() {
+      return this.currentRoleId === "";
+    }
   },
   mounted() {
-    this.resize();
-    this.FillPageInit();
+    this.getRoles();
+    this.getResources();
   },
   data() {
     return {
-      tableData: [
-        {
-          date: "2016-05-02",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1518 弄"
-        },
-        {
-          date: "2016-05-04",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1517 弄"
-        },
-        {
-          date: "2016-05-01",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1519 弄"
-        },
-        {
-          date: "2016-05-03",
-          name: "王小虎",
-          address: "上海市普陀区金沙江路 1516 弄"
-        }
-      ]
+      filter: {
+        key: "" // 查询关键字
+      },
+
+      currentRoleId: "",
+      currentItemTitle: "",
+
+      roles: [],
+      rolesLoading: false,
+
+      resources: [],
+      ResourcesLoading: false,
+
+      checkedResources: [],
+      chekedFuncs: [],
+
+      saveLoading: false
     };
   },
   methods: {
-    // 加载浏览器窗口变化自适应
-    resize() {
-      window.onresize = () => {
-        this.FillPageInit();
+    // 获取列表
+    async getRoles() {
+      const para = {
+        ...this.filter
       };
+      this.rolesLoading = true;
+      const res = await getRoles(para);
+      this.rolesLoading = false;
+      if (!res.success) {
+        if (res.message) {
+          this.$message({ message: res.message, type: "error" });
+        }
+        return;
+      }
+
+      this.roles = res.data;
     },
-    FillPageInit() {
-      const refDom = this.$refs.refPane;
-      const clientHeight = document.documentElement.clientHeight - 110;
-      refDom.style.height = `${clientHeight}px`;
+
+    async getResources() {
+      this.ResourcesLoading = true;
+      const res = await getResources();
+      this.ResourcesLoading = false;
+      if (!res.success) {
+        if (res.message) {
+          this.$message({ message: res.message, type: "error" });
+        }
+        return;
+      }
+      let treeData = listToTree(res.data);
+      // 去除父级被禁用，导致找不到父级的子集数据 (找不到父级的 经过listToTree后将自动提到顶级)，过滤掉这部分数据
+      this.resources = treeData.filter(
+        x => x.parentId === null || x.parentId === ""
+      );
+    },
+
+    async getResourceIdsByRoleId() {
+      const para = {
+        roleId: this.currentRoleId
+      };
+      this.ResourcesLoading = true;
+      const res = await getResourceIdsByRoleId(para);
+      this.ResourcesLoading = false;
+      if (!res.success) {
+        if (res.message) {
+          this.$message({ message: res.message, type: "error" });
+        }
+        return;
+      }
+
+      const resourceIds = res.data;
+      const rows = treeToList(this.resources);
+
+      rows.forEach(row => {
+        const checked = resourceIds.includes(row.id);
+        this.$refs.multipleTable.toggleRowSelection(row, checked);
+      });
+      this.checkedResources = this.$refs.multipleTable.selection;
+
+      const menuIds = this.checkedResources.map(s => {
+        return s.id;
+      });
+      const funcIds = [];
+      resourceIds.forEach(id => {
+        if (!menuIds.includes(id)) {
+          funcIds.push(id);
+        }
+      });
+      this.chekedFuncs = funcIds;
+    },
+
+    onRowClick(row) {
+      if (this.currentRoleId === row.id) {
+        return;
+      }
+      this.currentItemTitle = row.title;
+      this.currentRoleId = row.id;
+      this.getResourceIdsByRoleId();
+    },
+    validateRole() {
+      if (this.currentRoleId === "") {
+        this.$message({ message: "请先选择需要赋权的角色", type: "warning" });
+        return false;
+      }
+      return true;
+    },
+    selectFuncs(checked, row) {
+      if (row.funcs) {
+        row.funcs.forEach(a => {
+          const index = this.chekedFuncs.indexOf(a.id);
+          if (checked) {
+            if (index === -1) {
+              this.chekedFuncs.push(a.id);
+            }
+          } else {
+            if (index > -1) {
+              this.chekedFuncs.splice(index, 1);
+            }
+          }
+        });
+      }
+    },
+
+    selectAll: function(selection) {
+      const selections = treeToList(selection);
+      const rows = treeToList(this.resources);
+      const checked = selections.length === rows.length;
+      rows.forEach(row => {
+        this.$refs.multipleTable.toggleRowSelection(row, checked);
+        this.selectFuncs(checked, row);
+      });
+
+      this.checkedResources = this.$refs.multipleTable.selection;
+    },
+
+    select: function(selection, row) {
+      const checked = selection.some(s => s.id === row.id);
+      if (row.children && row.children.length > 0) {
+        const rows = treeToList(row.children);
+        rows.forEach(r => {
+          this.$refs.multipleTable.toggleRowSelection(r, checked);
+          this.selectFuncs(checked, r);
+        });
+      } else {
+        this.selectFuncs(checked, row);
+      }
+
+      this.checkedResources = this.$refs.multipleTable.selection;
+    },
+    // 验证保存
+    saveValidate() {
+      let isValid = true;
+      if (this.currentRoleId === "") {
+        this.$message({ message: "请选择角色！", type: "warning" });
+        isValid = false;
+        return isValid;
+      }
+      if (!(this.checkedResources.length > 0 || this.chekedFuncs.length > 0)) {
+        this.$message({ message: "请选择权限！", type: "warning" });
+        isValid = false;
+        return isValid;
+      }
+      return isValid;
+    },
+    // 保存权限
+    async save() {
+      const resourceIds = this.checkedResources.map(s => {
+        return s.id;
+      });
+      if (this.chekedFuncs.length > 0) {
+        resourceIds.push(...this.chekedFuncs);
+      }
+      const para = { resourceIds, roleId: this.currentRoleId };
+
+      this.saveLoading = true;
+      const res = await roleAssignResources(para);
+      this.saveLoading = false;
+      if (res.success) {
+        this.$message({ message: this.$t("common.addOk"), type: "success" });
+      } else {
+        this.$message({ message: res.message, type: "error" });
+      }
     }
   }
 };
 </script>
 <style lang="scss" scoped>
-.multiPaneRoot {
-  .multiPane {
+main.flexMain {
+  display: flex;
+  flex-flow: column;
+  height: calc(100vh - 110px);
+
+  > .splitPane {
+    flex: 1;
+    display: flex;
     height: 100%;
-    .pane {
-      text-align: left;
-      padding: 0px;
-      overflow: hidden;
-      background: #fff;
-      border: 1px solid rgb(230, 230, 230);
-    }
     .multipane-resizer {
       margin: 0;
       left: 0;
@@ -125,6 +380,46 @@ export default {
         }
       }
     }
+    .pane {
+      background: #fff;
+      border: solid 1px #e6e6e6;
+      display: flex;
+      flex-flow: column;
+      height: 100%;
+      .toolbar {
+        padding: 10px;
+      }
+      .toolbar.top {
+        border-bottom: solid 1px #eee;
+      }
+      .toolbar.bottom {
+        border-top: solid 1px #eee;
+      }
+    }
+    .pane.leftPane {
+      // width: "400px";
+      margin-right: 10px;
+    }
+    .pane.rightPane {
+      flex: 1;
+    }
   }
+}
+
+.info {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 2000;
+  text-align: center;
+  background: #eee;
+  opacity: 0.5;
+}
+
+.detail {
+  padding: 0px;
+  margin: -10px;
 }
 </style>

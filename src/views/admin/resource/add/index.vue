@@ -66,7 +66,7 @@
           </el-form-item>
 
           <el-form-item
-            label="URL"
+            label="Path"
             prop="path"
             v-if="
               data.resourceType === 2 &&
@@ -77,9 +77,9 @@
             <el-input v-model="data.path" />
           </el-form-item>
           <el-form-item
-            label="视图路径"
+            :label="data.linkType === 2 ? '外链URL' : '视图路径'"
             prop="viewPath"
-            v-if="data.resourceType === 2 && data.linkType === 1"
+            v-if="data.resourceType === 2"
           >
             <el-input v-model="data.viewPath" />
           </el-form-item>
@@ -128,8 +128,8 @@
               clearable
             ></el-cascader>
           </el-form-item>
-          <el-form-item label="隐藏" prop="hidden">
-            <el-switch v-model="data.hidden" />
+          <el-form-item label="隐藏" prop="isHidden">
+            <el-switch v-model="data.isHidden" />
           </el-form-item>
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />
@@ -193,8 +193,21 @@ export default {
       type: Boolean,
       default: false
     },
+
     parentOptions: {
       type: Array
+    },
+    data: {
+      type: Object,
+      default: () => {
+        return {
+          resourceType: 2,
+          linkType: 1,
+          viewPath: "",
+          viewName: "",
+          viewCache: false
+        };
+      }
     }
   },
   computed: {
@@ -210,17 +223,17 @@ export default {
   data() {
     return {
       loading: false,
-      data: {
-        resourceType: 2,
-        linkType: 1,
-        viewPath: "",
-        viewName: ""
-      },
+      //data: {},
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }]
       }
     };
   },
+  // watch: {
+  //   parentId: value => {
+  //     this.data.parentId = value;
+  //   }
+  // },
 
   async mounted() {},
 
@@ -263,6 +276,7 @@ export default {
         });
         return;
       }
+
       let str = this.data.viewPath;
       str = str.startsWith("/") ? str.replace(/\//, "") : str;
       str = str.replace(/\//g, "--");

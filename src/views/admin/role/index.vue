@@ -104,7 +104,8 @@ export default {
   data() {
     return {
       filter: {
-        key: ""
+        key: "",
+        withDisable: true
       },
       data: [],
       expandRowKeys: [],
@@ -128,7 +129,7 @@ export default {
       return formatTime(time);
     },
 
-    // 获取用户列表
+    // 获取列表
     async getList() {
       const para = {
         ...this.filter
