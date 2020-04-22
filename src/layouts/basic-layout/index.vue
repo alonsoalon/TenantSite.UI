@@ -49,9 +49,10 @@
               separator-class="el-icon-arrow-right"
               class="breadcrumb-inner breadcrumb-container"
             >
-              <template v-for="(title, index) in menueTitles">
-                <el-breadcrumb-item v-if="title" :key="index">
-                  {{ title }}
+              <template v-for="(item, index) in menueTitles">
+                <el-breadcrumb-item v-if="item.title" :key="index">
+                  <i :class="item.icon" v-if="showBreadcrumbIcon" />
+                  {{ item.title }}
                 </el-breadcrumb-item>
               </template>
             </el-breadcrumb>
@@ -106,7 +107,7 @@
               :closable="tab.meta.closable || true"
             >
               <span slot="label">
-                <i :class="tab.meta.icon" />
+                <i :class="tab.meta.icon" v-if="showTabIcon" />
                 {{ tab.meta.title }}
               </span>
             </el-tab-pane>
@@ -142,7 +143,7 @@
             :closable="tab.meta.closable || true"
           >
             <span slot="label">
-              <i :class="tab.meta.icon" />
+              <i :class="tab.meta.icon" v-if="showTabIcon" />
               {{ tab.meta.title }}
             </span>
           </el-tab-pane>
@@ -250,6 +251,8 @@ export default {
       "isDesktop",
       "tabPosition",
       "tabType",
+      "showBreadcrumbIcon",
+      "showTabIcon",
       "showI18n",
       "showNotice",
       "showFullscreen",
@@ -261,9 +264,12 @@ export default {
       const menu = this.info.menus?.find(m => m.path === fullPath);
       if (menu && menu.id !== "") {
         const parents = getTreeParents(this.menuTree, menu.id);
-        parentTitles = parents.map(p => p.title);
-        parentTitles.push(menu.title);
+        parentTitles = parents.map(p => {
+          return { title: p.title, icon: p.icon };
+        });
+        parentTitles.push({ title: menu.title, icon: menu.icon });
       }
+      console.log(parentTitles);
       return parentTitles;
     },
 

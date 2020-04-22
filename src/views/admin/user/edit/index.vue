@@ -12,6 +12,8 @@
     >
       <section class="drawer-body">
         <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
+
+        <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
         <el-form
           ref="refForm"
           :model="data"
@@ -26,9 +28,7 @@
           <el-form-item label="显示名" prop="displayName">
             <el-input v-model="data.displayName" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="密码" prop="password">
-            <el-input v-model="data.password" autocomplete="off" />
-          </el-form-item>
+
           <el-form-item label="描述" prop="description">
             <el-input v-model="data.description" type="textarea" rows="2" />
           </el-form-item>
@@ -46,11 +46,25 @@
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />
           </el-form-item>
+
           <el-divider content-position="left">
             <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
           </el-divider>
           <el-form-item label="归属组" prop="groupId">
             <group-select v-model="data.groupId"></group-select>
+          </el-form-item>
+          <el-divider content-position="left"></el-divider>
+          <el-form-item label="创建人" prop="createdByName">
+            <el-input v-model="data.createdByName" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="创建时间" prop="createdTime">
+            <el-input v-model="data.createdTime" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="更新人" prop="updatedByName">
+            <el-input v-model="data.createdByName" :disabled="true" />
+          </el-form-item>
+          <el-form-item label="更新时间" prop="updatedTime">
+            <el-input v-model="data.createdTime" :disabled="true" />
           </el-form-item>
         </el-form>
       </section>
@@ -74,12 +88,11 @@ import ConfirmButton from "@/components/confirm-button";
 import GroupSelect from "@/components/group-select";
 // 工具
 import { cloneDeep } from "lodash";
-// import { listToTree } from "@/libs/util";
 // apis
-import { execCreate } from "@/api/admin/user";
+import { execUpdate } from "@/api/admin/user";
 
 export default {
-  name: "admin-user-add",
+  name: "admin-user-edit",
   components: {
     ConfirmButton,
     GroupSelect
@@ -104,6 +117,10 @@ export default {
     wrapperClosable: {
       type: Boolean,
       default: false
+    },
+    data: {
+      type: Object,
+      default: () => {}
     }
   },
   computed: {
@@ -119,13 +136,11 @@ export default {
   data() {
     return {
       loading: false,
-      data: {},
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }]
       }
     };
   },
-
   async mounted() {},
 
   methods: {
@@ -144,11 +159,11 @@ export default {
     async onSubmit() {
       this.loading = true;
       const para = cloneDeep(this.data);
-      const res = await execCreate(para);
+      const res = await execUpdate(para);
       this.loading = false;
 
       if (res.success) {
-        this.$message({ message: this.$t("common.addOk"), type: "success" });
+        this.$message({ message: this.$t("common.updateOk"), type: "success" });
         this.$refs.refForm.resetFields();
         this.drawerVisible = false;
         // 成功后钩子，共父级调用

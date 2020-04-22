@@ -41,7 +41,11 @@ const Setting = {
     // 是否显示多语言
     showI18n: true,
     // 退出登录时，是否二次确认
-    logoutConfirm: true
+    logoutConfirm: true,
+    // 面包屑是否显示图标
+    showBreadcrumbIcon: false,
+    // 标签是否显示图标
+    showTabIcon: true
   },
   // 相同路由，不同参数间进行切换，是否强力更新
   sameRouteForceUpdate: false

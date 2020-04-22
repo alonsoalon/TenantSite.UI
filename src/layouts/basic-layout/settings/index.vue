@@ -22,6 +22,28 @@
         </div>
 
         <div class="layout-header-setting-item">
+          <span class="layout-header-setting-item-desc">面包屑显示图标</span>
+          <span class="layout-header-setting-item-action">
+            <el-switch
+              :value="showBreadcrumbIcon"
+              @input="val => handleChangeSetting('showBreadcrumbIcon', val)"
+            >
+            </el-switch>
+          </span>
+        </div>
+
+        <div class="layout-header-setting-item">
+          <span class="layout-header-setting-item-desc">标签页显示图标</span>
+          <span class="layout-header-setting-item-action">
+            <el-switch
+              :value="showTabIcon"
+              @input="val => handleChangeSetting('showTabIcon', val)"
+            >
+            </el-switch>
+          </span>
+        </div>
+
+        <div class="layout-header-setting-item">
           <span class="layout-header-setting-item-desc">标签页显示位置</span>
           <span class="layout-header-setting-item-action">
             <el-radio-group
@@ -62,7 +84,13 @@ export default {
     };
   },
   computed: {
-    ...mapState("admin/layout", ["showFullscreen", "tabPosition", "tabType"])
+    ...mapState("admin/layout", [
+      "showFullscreen",
+      "tabPosition",
+      "tabType",
+      "showBreadcrumbIcon",
+      "showTabIcon"
+    ])
   },
   methods: {
     ...mapActions("admin/layout", ["updateLayoutSetting"]),

@@ -1,7 +1,6 @@
 <template>
   <section>
     <!--工具条-->
-    <!--工具条-->
     <el-row>
       <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
         <el-form
@@ -12,58 +11,62 @@
         >
           <el-form-item>
             <el-input
-              v-model="filter.name"
-              placeholder="用户名/昵称"
+              v-model="filter.key"
+              placeholder="用户名/显示名"
               clearable
-              @keyup.enter.native="getUsers"
+              @keyup.enter.native="getList"
             >
               <i slot="prefix" class="el-input__icon el-icon-search" />
             </el-input>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="getUsers">查询</el-button>
+            <el-button type="primary" @click="getList">查询</el-button>
             <el-button type="primary" @click="onAdd">新增</el-button>
           </el-form-item>
         </el-form>
       </el-col>
     </el-row>
 
-    <add-panl
-      title="添加用户"
-      :data="addForm"
-      :visible="addVisible"
-      @changeDrawer="changeDrawerAdd"
-    ></add-panl>
     <!--列表-->
     <el-table
       v-loading="listLoading"
-      :data="users"
       highlight-current-row
+      :data="data"
+      row-key="id"
       style="width: 100%;"
     >
       <el-table-column type="selection" align="center" width="50" />
-      <el-table-column type="index" width="80" label="#" />
+      <el-table-column type="index" width="40" label="#" />
       <el-table-column prop="userName" label="用户名" width />
-      <el-table-column prop="displayName" label="姓名" width />
-      <el-table-column prop="userType" label="用户类型" width>
-        <template v-slot="{ row }">
-          {{ row.userType == 1 ? "超管" : "普通用户" }}
-        </template>
-      </el-table-column>
+      <el-table-column prop="displayName" label="显示名" width />
       <el-table-column
         prop="createdTime"
         label="创建时间"
         :formatter="formatDt"
         width
       />
-      <el-table-column prop="isDisabled" label="状态" width>
+
+      <el-table-column prop="isDisabled" label="启用状态" width="80">
         <template slot-scope="scope">
           <el-tag
             :type="scope.row.isDisabled ? 'danger' : 'success'"
             disable-transitions
           >
-            {{ scope.row.isDisabled ? "禁用" : "正常" }}
+            {{ scope.row.isDisabled ? "禁用" : "启用" }}
           </el-tag>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="操作" width="170">
+        <template v-slot="{ $index, row }">
+          <el-button size="small" @click="onEdit($index, row)">编辑</el-button>
+          <confirm-button
+            type="delete"
+            :loading="row._loading"
+            :validate="deleteValidate"
+            :validate-data="row"
+            @click="onDelete($index, row)"
+          />
         </template>
       </el-table-column>
     </el-table>
@@ -84,71 +87,56 @@
         </el-pagination>
       </el-col>
     </el-row>
+
+    <add-panl
+      title="新增"
+      :visible="addVisible"
+      @onChangeDrawer="onAddChangeDrawer"
+      @onSuccess="onAddSuccess"
+      @onError="onAddError"
+    ></add-panl>
+
+    <edit-panl
+      title="编辑"
+      :visible="editVisible"
+      :data="editItem"
+      @onChangeDrawer="onEditChangeDrawer"
+      @onSuccess="onEditSuccess"
+      @onError="onEditError"
+    ></edit-panl>
   </section>
 </template>
 
 <script>
+import { cloneDeep } from "lodash";
 import { formatTime } from "@/libs/util";
-import { getPageList } from "@/api/admin/user";
-// import ConfirmButton from "@/components/confirm-button";
+import { getList, execSoftDelete } from "@/api/admin/user";
+import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
+import EditPanl from "./edit/index";
 export default {
   name: "admin--user--index",
-  components: { AddPanl },
-
+  components: { ConfirmButton, AddPanl, EditPanl },
   data() {
     return {
-      filter: {
-        name: ""
-      },
-      users: [],
-      roles: [],
       total: 0,
       pageSize: 10,
       currentPage: 1,
+
+      filter: {
+        key: "",
+        withDisable: true
+      },
+      data: [],
+      expandRowKeys: [],
       listLoading: false,
-      sels: [], // 列表选中列,
 
+      // 新增面板显示属性
       addVisible: false,
+
       editVisible: false,
-
-      addDialogFormVisible: false,
-      editFormVisible: false, // 编辑界面是否显示
-      editLoading: false,
-      editFormRules: {
-        userName: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
-        ],
-        name: [{ required: true, message: "请输入姓名", trigger: "blur" }]
-      },
-      userNameReadonly: true,
-      // 编辑界面数据
-      editForm: {
-        id: 0,
-        name: "",
-        userName: "",
-        nickName: "",
-        roleIds: []
-      },
-
-      addFormVisible: false, // 新增界面是否显示
-      addLoading: false,
-      addFormRules: {
-        userName: [
-          { required: true, message: "请输入用户名", trigger: "blur" }
-        ],
-        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
-        name: [{ required: true, message: "请输入姓名", trigger: "blur" }]
-      },
-      // 新增界面数据
-      addForm: {
-        name: "",
-        userName: "",
-        nickName: "",
-        password: "",
-        roleIds: []
-      },
-      deleteLoading: false
+      editItem: {},
+      editTreeData: []
     };
   },
   computed: {
@@ -160,55 +148,88 @@ export default {
   },
   watch: {
     currentPage() {
-      this.getUsers();
+      this.getList();
     },
     pageSize() {
-      this.getUsers();
+      this.getList();
     }
   },
   async mounted() {
-    this.getUsers();
+    this.getList();
   },
   methods: {
     formatDt: function(row, column, time) {
       return formatTime(time);
     },
-    // 获取用户列表
-    async getUsers() {
+
+    // 获取列表
+    async getList() {
       const para = {
-        currentPage: this.currentPage,
-        pageSize: this.pageSize,
-        filter: this.filter
+        ...this.filter
       };
       this.listLoading = true;
-      const res = await getPageList(para);
-      console.log(res);
+      const res = await getList(para);
       this.listLoading = false;
-
       if (!res.success) {
         if (res.message) {
-          this.$message({
-            message: res.message,
-            type: "error"
-          });
+          this.$message({ message: res.message, type: "error" });
         }
         return;
       }
-
       this.total = res.data.total;
       const data = res.data.list;
       data.forEach(d => {
         d._loading = false;
       });
-      this.users = data;
+      this.data = data;
     },
-
-    async onAdd() {
-      console.log(1213);
+    // -- add 事件 start --
+    onAdd() {
       this.addVisible = true;
     },
-    changeDrawerAdd(v) {
+    onAddSuccess() {
+      this.getList();
+    },
+    onAddError() {},
+    onAddChangeDrawer(v) {
       this.addVisible = v;
+    },
+    // -- add 事件 end --
+    // -- edit 事件 start --
+    onEdit(index, row) {
+      this.editVisible = true;
+      this.editItem = cloneDeep(row);
+    },
+    onEditSuccess() {
+      this.getList();
+    },
+    onEditError() {},
+    onEditChangeDrawer(v) {
+      this.editVisible = v;
+    },
+    // -- edit 事件 end --
+    // 删除验证
+    deleteValidate(row) {
+      let isValid = true;
+      if (row && row.code === "SYSTEM") {
+        this.$message({ message: row.title + " 禁止删除！", type: "warning" });
+        isValid = false;
+      }
+
+      return isValid;
+    },
+
+    async onDelete(index, row) {
+      row._loading = true;
+      const para = { id: row.id };
+      const res = await execSoftDelete(para);
+      row._loading = false;
+      if (res.success) {
+        this.$message({ message: this.$t("common.deleteOk"), type: "success" });
+        this.getList();
+      } else {
+        this.$message({ message: res.message, type: "error" });
+      }
     }
   }
 };
