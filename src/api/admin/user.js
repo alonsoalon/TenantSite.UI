@@ -82,3 +82,19 @@ export const getAll = params => {
 //---------------------- 上面为通用方法 和后台规约好了------------------------------
 //---------------------- 巨完美的分割线 -------------------------------------------
 //---------------------- 下面为特殊方法 如有需求请写在以下区域-----------------------
+
+/**
+ * 修改指定用户密码
+ * @param {Object} params 修改内容
+ */
+export const userChangePassword = params => {
+  return request.post(`api/v1/${path}/UserChangePassword`, params);
+};
+
+/**
+ * 修改当前用户密码
+ * @param {*} params 修改内容
+ */
+export const changePassword = params => {
+  return request.post(`api/v1/${path}/ChangePassword`, params);
+};

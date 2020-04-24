@@ -35,10 +35,21 @@
       row-key="id"
       style="width: 100%;"
     >
-      <el-table-column type="selection" align="center" width="50" />
+      <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="40" label="#" />
+      <el-table-column prop="avatar" label="" width="50">
+        <template slot-scope="scope">
+          <div class="img">
+            <el-avatar shape="square" size="small" :src="scope.row.avatar">
+              <img :src="avatarDefault" />
+            </el-avatar>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column prop="userName" label="用户名" width />
+
       <el-table-column prop="displayName" label="显示名" width />
+      <el-table-column prop="permissionName" label="权限岗" width />
       <el-table-column
         prop="createdTime"
         label="创建时间"
@@ -57,8 +68,11 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="170">
+      <el-table-column label="操作" width="250">
         <template v-slot="{ $index, row }">
+          <el-button size="small" @click="onChangePassword($index, row)">
+            改密
+          </el-button>
           <el-button size="small" @click="onEdit($index, row)">编辑</el-button>
           <confirm-button
             type="delete"
@@ -104,6 +118,13 @@
       @onSuccess="onEditSuccess"
       @onError="onEditError"
     ></edit-panl>
+    <ChangePassword
+      :data="changePasswordItem"
+      :visible="changePasswordVisible"
+      @onChangeDrawer="onChangePasswordChangeDrawer"
+      @onSuccess="onChangePasswordSuccess"
+    >
+    </ChangePassword>
   </section>
 </template>
 
@@ -114,11 +135,13 @@ import { getList, execSoftDelete } from "@/api/admin/user";
 import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
+import ChangePassword from "./change-password/index";
 export default {
   name: "admin--user--index",
-  components: { ConfirmButton, AddPanl, EditPanl },
+  components: { ConfirmButton, AddPanl, EditPanl, ChangePassword },
   data() {
     return {
+      avatarDefault: require("@/assets/avatar.png"),
       total: 0,
       pageSize: 10,
       currentPage: 1,
@@ -136,7 +159,9 @@ export default {
 
       editVisible: false,
       editItem: {},
-      editTreeData: []
+
+      changePasswordVisible: false,
+      changePasswordItem: {}
     };
   },
   computed: {
@@ -165,7 +190,9 @@ export default {
     // 获取列表
     async getList() {
       const para = {
-        ...this.filter
+        currentPage: this.currentPage,
+        pageSize: this.pageSize,
+        filter: this.filter
       };
       this.listLoading = true;
       const res = await getList(para);
@@ -181,6 +208,7 @@ export default {
       data.forEach(d => {
         d._loading = false;
       });
+      console.log(data);
       this.data = data;
     },
     // -- add 事件 start --
@@ -208,6 +236,27 @@ export default {
       this.editVisible = v;
     },
     // -- edit 事件 end --
+
+    // -- 改密 事件 start --
+    onChangePassword(index, row) {
+      this.changePasswordItem = {
+        id: row.id,
+        userName: row.userName,
+        revision: row.revision,
+        password: "",
+        confirmPassword: ""
+      };
+      this.changePasswordVisible = true;
+    },
+    onChangePasswordChangeDrawer(v) {
+      this.changePasswordVisible = v;
+    },
+    onChangePasswordSuccess() {
+      this.getList();
+    },
+    onChangePasswordError() {},
+    // -- 改密 事件 end --
+
     // 删除验证
     deleteValidate(row) {
       let isValid = true;
@@ -235,4 +284,9 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.cell .img {
+  padding-top: 2px;
+  height: 30px;
+}
+</style>

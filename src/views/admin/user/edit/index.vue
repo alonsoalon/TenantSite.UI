@@ -25,24 +25,19 @@
           <el-form-item label="用户名" prop="userName">
             <el-input v-model="data.userName" />
           </el-form-item>
+          <el-divider content-position="left"> </el-divider>
           <el-form-item label="显示名" prop="displayName">
             <el-input v-model="data.displayName" autocomplete="off" />
           </el-form-item>
-
-          <el-form-item label="描述" prop="description">
-            <el-input v-model="data.description" type="textarea" rows="2" />
+          <el-form-item label="手机" prop="mobile">
+            <el-input v-model="data.mobile" autocomplete="off" />
           </el-form-item>
           <el-form-item label="Email" prop="mail">
             <el-input v-model="data.mail" autocomplete="off" />
           </el-form-item>
-          <el-form-item label="权限岗" prop="permissionId">
-            <el-input v-model="data.permissionId" autocomplete="off" />
+          <el-form-item label="备注" prop="description">
+            <el-input v-model="data.description" type="textarea" rows="2" />
           </el-form-item>
-          <el-form-item label="头像" prop="avatar">
-            <el-input v-model="data.avatar" autocomplete="off" />
-          </el-form-item>
-          <el-divider content-position="left"></el-divider>
-
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />
           </el-form-item>
@@ -50,6 +45,10 @@
           <el-divider content-position="left">
             <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
           </el-divider>
+          <el-form-item label="权限岗" prop="permissionId">
+            <permission-select v-model="data.permissionId"></permission-select>
+          </el-form-item>
+
           <el-form-item label="归属组" prop="groupId">
             <group-select v-model="data.groupId"></group-select>
           </el-form-item>
@@ -86,6 +85,7 @@
 // 组件
 import ConfirmButton from "@/components/confirm-button";
 import GroupSelect from "@/components/group-select";
+import PermissionSelect from "../permission/index";
 // 工具
 import { cloneDeep } from "lodash";
 // apis
@@ -95,7 +95,8 @@ export default {
   name: "admin-user-edit",
   components: {
     ConfirmButton,
-    GroupSelect
+    GroupSelect,
+    PermissionSelect
   },
   props: {
     title: {
@@ -159,6 +160,7 @@ export default {
     async onSubmit() {
       this.loading = true;
       const para = cloneDeep(this.data);
+      console.log(12121212, para);
       const res = await execUpdate(para);
       this.loading = false;
 

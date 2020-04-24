@@ -21,35 +21,21 @@
           :rules="formRules"
         >
           <el-form-item label="用户名" prop="userName">
-            <el-input v-model="data.userName" />
+            <span>{{ data.userName }}</span>
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="data.password" autocomplete="off" />
+            <el-input
+              v-model="data.password"
+              show-password
+              autocomplete="off"
+            />
           </el-form-item>
-          <el-divider content-position="left"> </el-divider>
-          <el-form-item label="显示名" prop="displayName">
-            <el-input v-model="data.displayName" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="手机" prop="mobile">
-            <el-input v-model="data.mobile" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="Email" prop="mail">
-            <el-input v-model="data.mail" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="备注" prop="description">
-            <el-input v-model="data.description" type="textarea" rows="2" />
-          </el-form-item>
-          <el-form-item label="禁用" prop="isDisabled">
-            <el-switch v-model="data.isDisabled" />
-          </el-form-item>
-          <el-divider content-position="left">
-            <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
-          </el-divider>
-          <el-form-item label="权限岗" prop="permissionId">
-            <permission-select v-model="data.permissionId"></permission-select>
-          </el-form-item>
-          <el-form-item label="归属组" prop="groupId">
-            <group-select v-model="data.groupId"></group-select>
+          <el-form-item label="确认密码" prop="confirmPassword">
+            <el-input
+              v-model="data.confirmPassword"
+              show-password
+              autocomplete="off"
+            />
           </el-form-item>
         </el-form>
       </section>
@@ -70,25 +56,20 @@
 <script>
 // 组件
 import ConfirmButton from "@/components/confirm-button";
-import GroupSelect from "@/components/group-select";
-import PermissionSelect from "../permission/index";
 // 工具
 import { cloneDeep } from "lodash";
-// import { listToTree } from "@/libs/util";
 // apis
-import { execCreate } from "@/api/admin/user";
+import { userChangePassword as execUpdate } from "@/api/admin/user";
 
 export default {
-  name: "admin-user-add",
+  name: "admin-user-edit",
   components: {
-    ConfirmButton,
-    GroupSelect,
-    PermissionSelect
+    ConfirmButton
   },
   props: {
     title: {
       type: String,
-      default: "新增"
+      default: "改密"
     },
     visible: {
       type: Boolean,
@@ -105,6 +86,18 @@ export default {
     wrapperClosable: {
       type: Boolean,
       default: false
+    },
+    data: {
+      type: Object,
+      default: () => {
+        return {
+          id: "",
+          revision: "",
+          userName: "",
+          password: "",
+          confirmPassword: ""
+        };
+      }
     }
   },
   computed: {
@@ -120,13 +113,18 @@ export default {
   data() {
     return {
       loading: false,
-      data: {},
       formRules: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }]
+        password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+        confirmPassword: [
+          {
+            required: true,
+            message: "请输入确认密码，与密码一致",
+            trigger: "blur"
+          }
+        ]
       }
     };
   },
-
   async mounted() {},
 
   methods: {
@@ -145,11 +143,12 @@ export default {
     async onSubmit() {
       this.loading = true;
       const para = cloneDeep(this.data);
-      const res = await execCreate(para);
+      console.log(555, para);
+      const res = await execUpdate(para);
       this.loading = false;
 
       if (res.success) {
-        this.$message({ message: this.$t("common.addOk"), type: "success" });
+        this.$message({ message: this.$t("common.updateOk"), type: "success" });
         this.$refs.refForm.resetFields();
         this.drawerVisible = false;
         // 成功后钩子，共父级调用
