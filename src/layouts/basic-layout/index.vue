@@ -104,25 +104,20 @@
               :key="tab.path"
               :name="tab.path"
               :label="tab.meta.title"
-              :closable="tab.meta.closable || true"
+              :closable="tab.meta.closable"
             >
-              <span slot="label">
+              <template #label>
                 <i :class="tab.meta.icon" v-if="showTabIcon" />
                 {{ tab.meta.title }}
-              </span>
+              </template>
             </el-tab-pane>
           </el-tabs>
         </div>
       </el-header>
-      <el-main class="main">
-        <el-scrollbar class="page-component__scroll" style="height:100%">
-          <section style="padding:10px;overflow:hidden;">
-            <keep-alive :include="keepAlive">
-              <!-- <router-view :key="key" /> -->
-              <router-view v-if="loadRouter" />
-            </keep-alive>
-          </section>
-        </el-scrollbar>
+      <el-main class="main" style="height:100%">
+        <keep-alive :include="keepAlive">
+          <router-view v-if="loadRouter" />
+        </keep-alive>
       </el-main>
       <el-footer v-if="tabPosition === 'bottom'" class="footer" height>
         <el-tabs
@@ -142,10 +137,10 @@
             :label="tab.meta.title"
             :closable="tab.meta.closable || true"
           >
-            <span slot="label">
+            <template #label>
               <i :class="tab.meta.icon" v-if="showTabIcon" />
               {{ tab.meta.title }}
-            </span>
+            </template>
           </el-tab-pane>
         </el-tabs>
       </el-footer>
@@ -269,7 +264,6 @@ export default {
         });
         parentTitles.push({ title: menu.title, icon: menu.icon });
       }
-      console.log(parentTitles);
       return parentTitles;
     },
 
@@ -342,8 +336,6 @@ export default {
       this.menuTree = listToTree(cloneMenus).filter(
         x => x.parentId === null || x.parentId === ""
       );
-      console.log("menu", cloneMenus);
-      console.log("menu1", this.menuTree);
 
       this.openeds = this.info.menus.filter(l => l.opened).map(l => l.id + "");
     }
@@ -599,35 +591,84 @@ export default {
 };
 </script>
 
-<style lang="css">
-.container .el-tabs__item:focus.is-active.is-focus:not(:active) {
+<style lang="scss" scoped>
+.container ::v-deep .el-tabs__item:focus.is-active.is-focus:not(:active) {
   -webkit-box-shadow: none;
   box-shadow: none;
   border-radius: unset;
+}
+
+.header {
+  z-index: 1;
+}
+
+.footer {
+  padding: 0px;
+  overflow: hidden;
 }
 
 .el-breadcrumb {
   line-height: 50px !important;
 }
 
-/* .el-breadcrumb__inner,.el-breadcrumb__inner:hover{
-        color:#fff!important;
-    } */
-.header {
-  z-index: 1;
+.navbar ::v-deep {
+  .el-breadcrumb__inner,
+  .el-breadcrumb__separator {
+    color: #f4f4f5;
+  }
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner,
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner a,
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover,
+  .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
+    color: #fff;
+  }
+  .el-dropdown {
+    color: #fff;
+  }
 }
+</style>
 
-.el-tabs__nav {
-  padding-left: 15px;
+<style lang="scss" scoped>
+.contextmenu {
+  margin: 0;
+  background: #fff;
+  z-index: 3000;
+  position: absolute;
+  list-style-type: none;
+  padding: 5px 0;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  border: 1px solid #ebeef5;
+  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
+  min-width: 130px;
+
+  li {
+    margin: 0;
+    padding: 7px 16px;
+    cursor: pointer;
+
+    &:hover {
+      background: #eee;
+    }
+    i {
+      margin-right: 8px;
+      font-size: 14px;
+      vertical-align: -1px;
+    }
+    span {
+      margin-left: 22px;
+    }
+  }
+  .el-divider--horizontal {
+    margin: 5px 0px;
+  }
 }
-.el-tabs--border-card .el-tabs__nav {
-  padding-left: 0px;
-}
-.el-tabs__active-bar {
-  margin-left: 15px;
-}
-.header .el-tabs__header {
-  margin-bottom: 0px;
+.user-avatar {
+  margin: 7px 8px 7px 0;
+  vertical-align: top;
+  background-color: transparent;
 }
 </style>
 
@@ -659,119 +700,5 @@ export default {
   .el-message-box {
     width: 80%;
   }
-}
-</style>
-
-<style>
-.navbar .el-breadcrumb__inner,
-.navbar .el-breadcrumb__separator {
-  /* color:#ffffffb3; */
-  color: #f4f4f5;
-}
-.navbar .el-breadcrumb__item:last-child .el-breadcrumb__inner,
-.navbar .el-breadcrumb__item:last-child .el-breadcrumb__inner a,
-.navbar .el-breadcrumb__item:last-child .el-breadcrumb__inner a:hover,
-.navbar .el-breadcrumb__item:last-child .el-breadcrumb__inner:hover {
-  color: #fff;
-}
-.navbar .el-dropdown {
-  color: #fff;
-}
-.header .el-tabs__nav-next,
-.header .el-tabs__nav-prev,
-.footer .el-tabs__nav-next,
-.footer .el-tabs__nav-prev {
-  font-size: 16px;
-  line-height: 40px;
-}
-.header .el-tabs__nav-next:hover,
-.header .el-tabs__nav-prev:hover,
-.footer .el-tabs__nav-next:hover,
-.footer .el-tabs__nav-prev:hover {
-  color: #409eff;
-}
-.aside .el-menu-item,
-.aside .el-submenu__title {
-  height: 46px;
-  line-height: 46px;
-}
-.aside .el-submenu .el-menu-item {
-  height: 40px;
-  line-height: 40px;
-}
-
-.el-tabs--bottom .el-tabs__active-bar.is-bottom,
-.el-tabs--bottom .el-tabs__nav-wrap.is-bottom:after {
-  top: 0;
-}
-.container .footer .el-tabs--bottom .el-tabs__header.is-bottom {
-  margin-top: 0px;
-}
-.container .footer {
-  padding: 0px;
-  overflow: hidden;
-}
-
-.container .header .el-tabs--border-card {
-  /* border-width: 1px 0px 0px 0px; */
-  border-width: 0px 0px 0px 0px;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-.container .footer .el-tabs--border-card {
-  border-width: 0px;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-}
-.container .header .el-tabs--border-card > .el-tabs__content,
-.container .footer .el-tabs--border-card > .el-tabs__content {
-  padding: 0px;
-}
-</style>
-
-<style lang="scss" scoped>
-.contextmenu {
-  margin: 0;
-  background: #fff;
-  z-index: 3000;
-  position: absolute;
-  list-style-type: none;
-  padding: 5px 0;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 400;
-  color: #333;
-  border: 1px solid #ebeef5;
-  box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
-  min-width: 130px;
-
-  li {
-    margin: 0;
-    padding: 7px 16px;
-    cursor: pointer;
-
-    &:hover {
-      background: #eee;
-    }
-
-    i {
-      margin-right: 8px;
-      font-size: 14px;
-      vertical-align: -1px;
-    }
-
-    span {
-      margin-left: 22px;
-    }
-  }
-
-  .el-divider--horizontal {
-    margin: 5px 0px;
-  }
-}
-.user-avatar {
-  margin: 7px 8px 7px 0;
-  vertical-align: top;
-  background-color: transparent;
 }
 </style>

@@ -49,41 +49,6 @@ export function resetRouter() {
   router.matcher = newRouter.matcher; // reset router
 }
 
-function forMenus(menus = []) {
-  for (let m of menus) {
-    // 资源不是菜单的，path为空的 进入下次循环
-    if (m.resourceType !== 2 || !m.path || m.path === "") {
-      continue;
-    }
-    if (!m.viewPath || m.viewPath === "") {
-      continue;
-    }
-
-    let name = !m.viewName || m.viewName === "" ? m.path : m.viewName;
-    let route = {
-      name: name,
-      path: m.path,
-      meta: {
-        auth: true,
-        cache: m.viewCache,
-        title: m.title,
-        icon: m.icon,
-        closable: m.closable
-      }
-    };
-
-    if (m.linkType === 1) {
-      route.component = _import(m.viewPath);
-    } else if (m.linkType === 2) {
-      if (m.openMode === 1) {
-        route.component = _import("/iframe/index");
-        route.meta.src = m.viewPath;
-      } else {
-        continue;
-      }
-    }
-  }
-}
 // 生成路由
 function generateRoutes(menus = []) {
   const routes = {
@@ -115,6 +80,10 @@ function generateRoutes(menus = []) {
         closable: m.closable
       }
     };
+
+    if (m.title === "欢迎页") {
+      console.log(m);
+    }
 
     if (m.linkType === 1) {
       route.component = _import(m.viewPath);

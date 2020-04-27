@@ -118,6 +118,7 @@ a, a:focus, a:hover {
 
 .container .el-header .fold-btn {
     padding: 0px 15px;
+    width: 14px;
     height: 50px;
     line-height: 50px;
     cursor: pointer;
@@ -159,20 +160,29 @@ input:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 1000px #fff inset;
 }
 
-.pagination{
-    margin-top: 15px;
-    margin-bottom: 5px;
+.drawer-footer{
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    border-top: 1px solid rgb(233, 233, 233);
+    padding: 16px;
+    background: rgb(255, 255, 255);
+    text-align: right;
+    z-index: 1;
 }
 
 
+.main-layout-form-query{
+    & .el-form-item--mini, & .el-form-item--small{
+        &.el-form-item{
+            margin-bottom: 0px;
+        }
+    }
+}
 
 
-
-//抽屉//去掉element-ui的drawer标题选中状态
-:focus{
-     outline:0;
-}  
-
+//-------
 
 .drawer .el-drawer__body {    
     overflow-y: auto;
@@ -193,3 +203,5 @@ input:-webkit-autofill {
     text-align: right;
     background-color: white;
 }
+
+

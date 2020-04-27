@@ -20,7 +20,6 @@ export const execCreate = params => {
  * @param {Object} params 参数
  */
 export const execUpdate = params => {
-  console.log(params);
   return request.put(`/api/v1/${path}/update`, params);
 };
 

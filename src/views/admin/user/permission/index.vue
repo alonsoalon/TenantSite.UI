@@ -48,7 +48,6 @@ export default {
         }
         return;
       }
-      console.log(2222, res.data);
       this.options = res.data;
     }
   }

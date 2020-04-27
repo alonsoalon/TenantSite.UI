@@ -1,33 +1,32 @@
 <template>
-  <section>
-    <!--工具条-->
-    <el-row>
-      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-        <el-form
-          size="small"
-          :inline="true"
-          :model="filter"
-          @submit.native.prevent
-        >
-          <el-form-item>
-            <el-input
-              v-model="filter.key"
-              placeholder="名称/编号/描述"
-              clearable
-              @keyup.enter.native="getList"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search" />
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="getList">查询</el-button>
-            <el-button type="primary" @click="onAdd">新增</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
-
-    <!--列表-->
+  <main-layout-vertical :showFooter="false">
+    <template #header>
+      <el-form
+        class="main-layout-form-query"
+        :inline="true"
+        :model="filter"
+        @submit.native.prevent
+      >
+        <el-form-item>
+          <el-input
+            v-model="filter.key"
+            placeholder="名称/编号/描述"
+            clearable
+            @keyup.enter.native="getList"
+          >
+            <template #prefix>
+              <i class="el-input__icon el-icon-search" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="getList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onAdd">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
     <el-table
       v-loading="listLoading"
       highlight-current-row
@@ -82,12 +81,12 @@
       @onSuccess="onEditSuccess"
       @onError="onEditError"
     ></edit-panl>
-  </section>
+  </main-layout-vertical>
 </template>
 
 <script>
 import { cloneDeep } from "lodash";
-import { formatTime, listToTree } from "@/libs/util";
+import { formatTime } from "@/libs/util";
 import { getAll, execSoftDelete } from "@/api/admin/permission";
 import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";

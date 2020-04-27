@@ -1,31 +1,44 @@
 <template>
-  <section>
-    <!--工具条-->
-    <el-row>
-      <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
-        <el-form
-          size="small"
-          :inline="true"
-          :model="filter"
-          @submit.native.prevent
-        >
-          <el-form-item>
-            <el-input
-              v-model="filter.key"
-              placeholder="用户名/显示名"
-              clearable
-              @keyup.enter.native="getList"
-            >
-              <i slot="prefix" class="el-input__icon el-icon-search" />
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="getList">查询</el-button>
-            <el-button type="primary" @click="onAdd">新增</el-button>
-          </el-form-item>
-        </el-form>
-      </el-col>
-    </el-row>
+  <main-layout-vertical>
+    <template #header>
+      <el-form
+        class="main-layout-form-query"
+        :inline="true"
+        :model="filter"
+        @submit.native.prevent
+      >
+        <el-form-item>
+          <el-input
+            v-model="filter.key"
+            placeholder="用户名/显示名"
+            clearable
+            @keyup.enter.native="getList"
+          >
+            <template #prefix>
+              <i class="el-input__icon el-icon-search" />
+            </template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="getList">查询</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="onAdd">新增</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
+    <template #footer>
+      <el-pagination
+        layout="total, sizes, prev, pager, next, jumper"
+        :current-page.sync="currentPage"
+        :page-size.sync="pageSize"
+        :total="total"
+        :page-count="pageCount"
+        background
+        style="text-align:right;"
+      >
+      </el-pagination>
+    </template>
 
     <!--列表-->
     <el-table
@@ -85,23 +98,6 @@
       </el-table-column>
     </el-table>
 
-    <!--工具条-->
-    <el-row>
-      <el-col :span="24" class="pagination">
-        <el-pagination
-          layout="total, slot, sizes, prev, jumper, next"
-          :current-page.sync="currentPage"
-          :page-size.sync="pageSize"
-          :total="total"
-          :page-count="pageCount"
-          background
-          style="text-align:right;"
-        >
-          <span class="el-pagination__count">，{{ pageCount }} 页</span>
-        </el-pagination>
-      </el-col>
-    </el-row>
-
     <add-panl
       title="新增"
       :visible="addVisible"
@@ -125,7 +121,7 @@
       @onSuccess="onChangePasswordSuccess"
     >
     </ChangePassword>
-  </section>
+  </main-layout-vertical>
 </template>
 
 <script>
@@ -208,7 +204,6 @@ export default {
       data.forEach(d => {
         d._loading = false;
       });
-      console.log(data);
       this.data = data;
     },
     // -- add 事件 start --

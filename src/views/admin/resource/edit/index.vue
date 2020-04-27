@@ -108,7 +108,11 @@
           <el-form-item
             label="可否关闭"
             prop="closable"
-            v-if="data.openMode === 1"
+            v-if="
+              data.resourceType === 2 &&
+                (data.linkType === 1 ||
+                  (data.linkType === 2 && data.openMode === 1))
+            "
           >
             <el-switch v-model="data.closable" />
           </el-form-item>
@@ -173,6 +177,7 @@
         <confirm-button
           :validate="formValidate"
           :loading="loading"
+          type="submit"
           @click="onSubmit"
         />
       </div>

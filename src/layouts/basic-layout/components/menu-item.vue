@@ -2,11 +2,11 @@
   <div v-if="!item.isHidden">
     <el-submenu
       v-if="item.children && item.children.length > 0"
-      :index="item.id + ''"
+      :index="item.id"
     >
-      <template slot="title">
-        <i :class="item.icon" />
-        <span slot="title">{{ item.title }}</span>
+      <template #title>
+        <i v-if="item.icon" :class="item.icon" />
+        <span>{{ item.title }}</span>
       </template>
       <menu-item v-for="child in item.children" :key="child.id" :item="child" />
     </el-submenu>
@@ -18,14 +18,14 @@
         rel="noopener"
       >
         <el-menu-item :index="item.path">
-          <i :class="item.icon" />
-          <span slot="title">{{ item.title }}</span>
+          <i v-if="item.icon" :class="item.icon" />
+          <span>{{ item.title }}</span>
         </el-menu-item>
       </a>
-      <router-link v-else :to="item.path">
+      <router-link v-else :to="item.path" tag="div">
         <el-menu-item :index="item.path">
-          <i :class="item.icon" />
-          <span slot="title">{{ item.title }}</span>
+          <i v-if="item.icon" :class="item.icon" />
+          <span>{{ item.title }}</span>
         </el-menu-item>
       </router-link>
     </template>

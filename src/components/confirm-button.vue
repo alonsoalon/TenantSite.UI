@@ -1,6 +1,7 @@
 <template>
   <span style="margin-left:10px;line-height: 1;display: inline-block;">
     <el-popover
+      ref="popover"
       v-model="visible"
       :placement="placement"
       width="160"
@@ -21,33 +22,26 @@
       </slot>
       <slot name="footer">
         <div style="text-align: right; margin: 0">
-          <el-button size="mini" type="text" @click="visible = false">
+          <el-button type="text" @click="visible = false">
             {{ this.$t("common.cancel") }}
           </el-button>
-          <el-button type="primary" size="mini" @click="sure">
+          <el-button type="primary" @click="sure">
             {{ this.$t("common.ok") }}
           </el-button>
         </div>
       </slot>
-      <el-button
-        slot="reference"
-        :icon="icon"
-        :type="buttonType"
-        :size="size"
-        :loading="loading"
-        :disabled="disabled"
-        _button
-        @click="valid"
-      >
-        <slot>
-          {{
-            type === "delete"
-              ? this.$t("common.delete")
-              : this.$t("common.submit")
-          }}
-        </slot>
-      </el-button>
     </el-popover>
+    <el-button
+      v-popover:popover
+      :icon="icon"
+      :type="buttonType"
+      :loading="loading"
+      :disabled="disabled"
+      _button
+      @click="valid"
+    >
+      <slot>{{ buttonText }}</slot>
+    </el-button>
   </span>
 </template>
 
@@ -75,9 +69,10 @@ export default {
       type: String,
       default: "top-end"
     },
+    //  primary|danger
     type: {
       type: String,
-      default: "primary" // 提交 primary 删除 delete danger
+      default: "primary"
     },
     icon: {
       type: String,
@@ -98,8 +93,14 @@ export default {
     return {
       visible: false,
       disabledPopover: this.validate !== null,
-      size: this.type === "delete" ? "small" : "",
-      buttonType: this.type === "delete" ? "danger" : this.type,
+      buttonType:
+        this.type === "delete"
+          ? "danger"
+          : this.type === "submit"
+          ? "primary"
+          : this.type,
+      buttonText:
+        this.type === "delete" ? "删除" : this.type === "submit" ? "提交" : "",
       style: ""
     };
   },

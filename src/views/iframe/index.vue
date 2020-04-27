@@ -91,7 +91,7 @@ export default {
         return this.$route.meta.src;
       } else {
         const url = window.location.href;
-        console.log(window.location.href);
+        // console.log(window.location.href);
         const obj = param2Obj(url);
         return obj.src ? obj.src : "";
       }

@@ -63,6 +63,7 @@
         <confirm-button
           :validate="formValidate"
           :loading="loading"
+          type="submit"
           @click="onSubmit"
         />
       </div>
@@ -155,7 +156,6 @@ export default {
       this.loading = true;
       const para = cloneDeep(this.data);
 
-      console.log(para);
       const res = await execCreate(para);
       this.loading = false;
 

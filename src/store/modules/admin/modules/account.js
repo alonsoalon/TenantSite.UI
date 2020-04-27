@@ -228,7 +228,6 @@ export default {
       if (res && res.success) {
         util.cookies.set("uuid", res.data.uuid);
         util.cookies.set("token", res.data.token);
-        console.log(12122, res.data.info.menus);
         if (!res.data.info?.menus?.length > 0) {
           res.data.info.menus = menus;
         }

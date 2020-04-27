@@ -82,3 +82,27 @@ export const getAll = params => {
 //---------------------- 上面为通用方法 和后台规约好了------------------------------
 //---------------------- 巨完美的分割线 -------------------------------------------
 //---------------------- 下面为特殊方法 如有需求请写在以下区域-----------------------
+
+/**
+ * 为岗位赋权(保存指定岗位的角色、数据组关系)
+ * @param {Object} params 参数
+ */
+export const permissionAssignPower = params => {
+  return request.post(`api/v1/${path}/PermissionAssignPower`, params);
+};
+
+/**
+ * 取回指定岗位已分配的角色
+ * @param {*} params 权限岗ID PermissionId
+ */
+export const getRoleIdsByPermissionId = params => {
+  return request.get(`api/v1/${path}/GetRoleIdsByPermissionId`, { params });
+};
+
+/**
+ * 取回指定岗位已分配的数据组
+ * @param {*} params 权限岗ID PermissionId
+ */
+export const getGroupIdsByPermissionId = params => {
+  return request.get(`api/v1/${path}/GetGroupIdsByPermissionId`, { params });
+};

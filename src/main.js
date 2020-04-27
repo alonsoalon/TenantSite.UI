@@ -21,8 +21,12 @@ import router from "./router";
 // import Setting from "@/settings";
 // import util from "@/libs/util.js";
 
+import MainLayout from "@/components/main-layout";
+Vue.use(MainLayout);
+
 Vue.use(ElementUI, {
-  size: Cookies.get("size") || "medium", // medium / small / mini
+  //size: Cookies.get("size") || "medium", // medium / small / mini
+  size: Cookies.get("size") || "small",
   i18n: (key, value) => i18n.t(key, value)
 });
 

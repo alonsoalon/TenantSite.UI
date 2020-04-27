@@ -1,13 +1,10 @@
 <template>
-  <main class="flexMain">
-    <multipane class="splitPane">
-      <div
-        class="pane leftPane"
-        :style="{ width: '300px', minWidth: '200px', maxWidth: '600px' }"
-      >
-        <div class="toolbar top">
+  <main-layout-horizontal>
+    <template #aside>
+      <main-layout-vertical :showFooter="false">
+        <template #header>
           <el-form
-            size="small"
+            class="main-layout-form-query"
             :inline="true"
             :model="filter"
             @submit.native.prevent
@@ -25,14 +22,13 @@
               ></el-button>
             </el-input>
           </el-form>
-        </div>
-
-        <scroll-bar>
+        </template>
+        <div style="margin:0 -10px 0 -10px;">
           <el-table
             v-loading="rolesLoading"
             :data="roles"
             highlight-current-row
-            :stripe="true"
+            :stripe="false"
             :show-header="false"
             @row-click="onRowClick"
           >
@@ -48,59 +44,26 @@
             </el-table-column>
             <el-table-column prop="title" label="角色名称"> </el-table-column>
           </el-table>
-        </scroll-bar>
-      </div>
-      <!-- <multipane-resizer></multipane-resizer> -->
-      <div class="pane rightPane" :style="{ flexGrow: 1 }">
-        <div class="toolbar top">
-          <div style="line-height:35px">
+        </div>
+      </main-layout-vertical>
+    </template>
+    {{ this.currentItemTitle }}
+    <template #main>
+      <main-layout-vertical
+        v-loading="currentRoleId === ''"
+        element-loading-text="请选择需要赋权的角色"
+        element-loading-spinner="none"
+      >
+        <template #header>
+          <div style="line-height:32px;font-size:14px;">
             {{
-              this.currentItemTitle === ""
+              currentItemTitle === ""
                 ? "请选择需要赋权的角色"
-                : "[" + this.currentItemTitle + "] 资源分配"
+                : "[" + currentItemTitle + "] 资源分配"
             }}
           </div>
-        </div>
-        <scroll-bar>
-          <div>
-            <el-table
-              ref="multipleTable"
-              v-loading="ResourcesLoading"
-              :data="resources"
-              :default-expand-all="true"
-              :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
-              row-key="id"
-              highlight-current-row
-              @select-all="selectAll"
-              @select="select"
-            >
-              <el-table-column type="selection" align="center" width="50" />
-              <el-table-column prop="title" label="菜单资源" width="180">
-                <template slot-scope="scope">
-                  <i :class="scope.row.icon" />
-                  {{ scope.row.title }}
-                </template>
-              </el-table-column>
-              <el-table-column label="功能资源" width>
-                <template slot-scope="{ $index, row }">
-                  <el-checkbox-group
-                    v-if="row.funcs && row.funcs.length > 0"
-                    v-model="chekedFuncs"
-                  >
-                    <el-checkbox
-                      v-for="api in row.funcs"
-                      :key="api.id"
-                      :label="api.id"
-                    >
-                      {{ api.title }}
-                    </el-checkbox>
-                  </el-checkbox-group>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </scroll-bar>
-        <div class="toolbar bottom">
+        </template>
+        <template #footer>
           <el-button-group>
             <el-button
               type="primary"
@@ -122,35 +85,61 @@
               重置
             </el-button>
           </el-button-group>
+        </template>
+
+        <div>
+          <el-table
+            class="setting-table"
+            ref="multipleTable"
+            v-loading="ResourcesLoading"
+            :data="resources"
+            :default-expand-all="true"
+            :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+            row-key="id"
+            highlight-current-row
+            @select-all="selectAll"
+            @select="select"
+          >
+            <el-table-column type="selection" align="center" width="50" />
+            <el-table-column prop="title" label="菜单资源" width="180">
+              <template slot-scope="scope">
+                <i :class="scope.row.icon" />
+                {{ scope.row.title }}
+              </template>
+            </el-table-column>
+            <el-table-column label="功能资源" width>
+              <template slot-scope="{ $index, row }">
+                <div class="ckb">
+                  <el-checkbox-group
+                    v-if="row.funcs && row.funcs.length > 0"
+                    v-model="chekedFuncs"
+                  >
+                    <el-checkbox
+                      v-for="api in row.funcs"
+                      :key="api.id"
+                      :label="api.id"
+                    >
+                      {{ api.title }}
+                    </el-checkbox>
+                  </el-checkbox-group>
+                </div>
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
-        <div
-          class="info"
-          v-if="currentRoleId === ''"
-          @click="validateRole"
-        ></div>
-      </div>
-    </multipane>
-  </main>
+      </main-layout-vertical>
+    </template>
+  </main-layout-horizontal>
 </template>
 
 <script>
-import {
-  Multipane
-  // MultipaneResizer
-} from "vue-multipane";
-import ScrollBar from "@/components/scroll-bar";
 import { listToTree, treeToList } from "@/libs/util";
-
 import { getAll as getRoles, roleAssignResources } from "@/api/admin/role";
 import { getResources, getResourceIdsByRoleId } from "@/api/admin/resource";
 
 export default {
   name: "admin--role-power--index",
-  components: {
-    Multipane,
-    // MultipaneResizer,
-    ScrollBar
-  },
+  components: {},
   computed: {
     saveDisabled() {
       return this.currentRoleId === "";
@@ -260,13 +249,7 @@ export default {
       this.currentRoleId = row.id;
       this.getResourceIdsByRoleId();
     },
-    validateRole() {
-      if (this.currentRoleId === "") {
-        this.$message({ message: "请先选择需要赋权的角色", type: "warning" });
-        return false;
-      }
-      return true;
-    },
+
     selectFuncs(checked, row) {
       if (row.funcs) {
         row.funcs.forEach(a => {
@@ -348,78 +331,11 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-main.flexMain {
-  display: flex;
-  flex-flow: column;
-  height: calc(100vh - 110px);
-
-  > .splitPane {
-    flex: 1;
-    display: flex;
-    height: 100%;
-    .multipane-resizer {
-      margin: 0;
-      left: 0;
-      position: relative;
-      &:before {
-        display: block;
-        content: "";
-        width: 2px;
-        height: 40px;
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        margin-top: -20px;
-        margin-left: -2px;
-        border-left: 1px solid #ccc;
-        border-right: 1px solid #ccc;
-      }
-      &:hover {
-        &:before {
-          border-color: #999;
-        }
-      }
-    }
-    .pane {
-      background: #fff;
-      border: solid 1px #e6e6e6;
-      display: flex;
-      flex-flow: column;
-      height: 100%;
-      .toolbar {
-        padding: 10px;
-      }
-      .toolbar.top {
-        border-bottom: solid 1px #eee;
-      }
-      .toolbar.bottom {
-        border-top: solid 1px #eee;
-      }
-    }
-    .pane.leftPane {
-      // width: "400px";
-      margin-right: 10px;
-    }
-    .pane.rightPane {
-      flex: 1;
-    }
-  }
+.ckb {
+  padding-top: 0px;
+  height: 23px;
 }
-
-.info {
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 100%;
-  z-index: 2000;
-  text-align: center;
-  background: #eee;
-  opacity: 0.5;
-}
-
-.detail {
-  padding: 0px;
-  margin: -10px;
+.ckb /deep/ .el-checkbox-group .el-checkbox .el-checkbox__label {
+  font-size: 13px;
 }
 </style>

@@ -60,6 +60,7 @@
         <confirm-button
           :validate="formValidate"
           :loading="loading"
+          type="submit"
           @click="onSubmit"
         />
       </div>
