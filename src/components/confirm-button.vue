@@ -1,5 +1,5 @@
 <template>
-  <span style="margin-left:10px;line-height: 1;display: inline-block;">
+  <span class="confirm-button">
     <el-popover
       ref="popover"
       v-model="visible"
@@ -128,3 +128,10 @@ export default {
   }
 };
 </script>
+<style lang="scss" scoped>
+.confirm-button {
+  margin-left: 10px;
+  line-height: 1;
+  display: inline-block;
+}
+</style>

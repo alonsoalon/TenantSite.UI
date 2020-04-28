@@ -66,15 +66,15 @@
           </el-form-item>
 
           <el-form-item
-            label="可否关闭"
-            prop="closable"
+            label="Path"
+            prop="path"
             v-if="
               data.resourceType === 2 &&
-                (data.linkType === 1 ||
-                  (data.linkType === 2 && data.openMode === 1))
+                data.linkType &&
+                data.resourceType === 2
             "
           >
-            <el-switch v-model="data.closable" />
+            <el-input v-model="data.path" />
           </el-form-item>
           <el-form-item
             :label="data.linkType === 2 ? '外链URL' : '视图路径'"
@@ -107,13 +107,13 @@
             label="可否关闭"
             prop="closable"
             v-if="
-              data.linkType === 1 ||
-                (data.linkType === 2 && data.openMode === 1)
+              data.resourceType === 2 &&
+                (data.linkType === 1 ||
+                  (data.linkType === 2 && data.openMode === 1))
             "
           >
             <el-switch v-model="data.closable" />
           </el-form-item>
-
           <el-divider content-position="left"></el-divider>
 
           <el-form-item label="父级" prop="parentId">

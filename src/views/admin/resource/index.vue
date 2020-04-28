@@ -122,6 +122,12 @@
           <el-button @click="onAddSub($index, row)">
             添加
           </el-button>
+          <el-button
+            style="margin-left:10px;"
+            @click="onApiAssgin($index, row)"
+          >
+            API
+          </el-button>
           <el-button @click="onEdit($index, row)">编辑</el-button>
           <confirm-button
             type="delete"
@@ -153,6 +159,15 @@
       @onSuccess="onEditSuccess"
       @onError="onEditError"
     ></edit-panl>
+    <api-assgin
+      :title="apiAssginTitle"
+      size="800px"
+      :visible="apiAssginVisible"
+      @onChangeDrawer="onApiAssginChangeDrawer"
+      @onSuccess="onApiAssginSuccess"
+      @onError="onApiAssginError"
+    >
+    </api-assgin>
   </main-layout-vertical>
 </template>
 
@@ -163,9 +178,10 @@ import { getAll, execSoftDelete } from "@/api/admin/resource";
 import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
+import ApiAssgin from "./api-assgin/index";
 export default {
   name: "admin--resource--index",
-  components: { ConfirmButton, AddPanl, EditPanl },
+  components: { ConfirmButton, AddPanl, EditPanl, ApiAssgin },
   data() {
     return {
       filter: {
@@ -175,8 +191,7 @@ export default {
       treeData: [],
       expandRowKeys: [],
       listLoading: false,
-
-      // 新增面板显示属性
+      // 新增面板相关属性
       addVisible: false,
       addDefaultItem: {
         resourceType: 2,
@@ -186,9 +201,15 @@ export default {
         viewName: "",
         viewCache: false
       },
+      // 编辑面板相关属性
       editVisible: false,
       editItem: {},
-      editTreeData: []
+      editTreeData: [],
+      // 分配API面板相关属性
+      apiAssginVisible: false,
+      apiAssginItem: {},
+      apiAssginTitle:
+        "API分配(在待选区双击行来完成API分配，在已选区双击行可取消)"
     };
   },
   computed: {},
@@ -281,6 +302,19 @@ export default {
       this.editVisible = v;
     },
     // -- edit 事件 end --
+    // -- api Assgin start --
+    onApiAssgin(index, row) {
+      this.apiAssginVisible = true;
+      this.apiAssginItem = cloneDeep(row);
+      this.apiAssginTitle = `${this.apiAssginItem.title}-Api分配(在待选区双击行来完成Api的选择，在已选区双击行可取消)`;
+    },
+    onApiAssginSuccess() {},
+    onApiAssginError() {},
+    onApiAssginChangeDrawer(v) {
+      this.apiAssginVisible = v;
+    },
+    // -- api Assgin end --
+
     // 删除验证
     deleteValidate(row) {
       let isValid = true;
@@ -294,7 +328,6 @@ export default {
 
       return isValid;
     },
-
     async onDelete(index, row) {
       row._loading = true;
       const para = { id: row.id };

@@ -10,7 +10,7 @@
         <el-form-item>
           <el-input
             v-model="filter.key"
-            placeholder="用户名/显示名"
+            placeholder="名称/分类/请求方法/接口地址"
             clearable
             @keyup.enter.native="getList"
           >
@@ -24,6 +24,22 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="onAdd">新增</el-button>
+        </el-form-item>
+        <el-form-item>
+          <confirm-button
+            icon="el-icon-circle-check"
+            :loading="generateApisLoading"
+            @click="onGenerate"
+            class="cb"
+          >
+            <template #content>
+              <p>
+                此操作将通过路由自动生成Api接口，
+                如存在相同Api将更新，不存在将自动新增Api，确定要执行此操作吗？
+              </p>
+            </template>
+            生成API
+          </confirm-button>
         </el-form-item>
       </el-form>
     </template>
@@ -40,7 +56,6 @@
       >
       </el-pagination>
     </template>
-
     <!--列表-->
     <el-table
       v-loading="listLoading"
@@ -51,26 +66,48 @@
     >
       <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="40" label="#" />
-      <el-table-column prop="avatar" label="" width="50">
+      <el-table-column prop="category" label="分类" width="150" />
+      <el-table-column prop="httpMethod" label="请求方法" width="80">
         <template slot-scope="scope">
-          <div class="img">
-            <el-avatar shape="square" size="small" :src="scope.row.avatar">
-              <img :src="avatarDefault" />
-            </el-avatar>
-          </div>
+          <el-tag
+            v-if="scope.row.httpMethod == 'Delete'"
+            type="danger"
+            disable-transitions
+          >
+            {{ scope.row.httpMethod }}
+          </el-tag>
+          <el-tag
+            v-else-if="scope.row.httpMethod == 'Put'"
+            type="warning"
+            disable-transitions
+          >
+            {{ scope.row.httpMethod }}
+          </el-tag>
+          <el-tag
+            v-else-if="scope.row.httpMethod == 'Post'"
+            type="success"
+            disable-transitions
+          >
+            {{ scope.row.httpMethod }}
+          </el-tag>
+          <el-tag v-else-if="scope.row.httpMethod == 'Get'" disable-transitions>
+            {{ scope.row.httpMethod }}
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="userName" label="用户名" width />
+      <el-table-column prop="title" label="名称" width />
+      <el-table-column prop="url" label="接口地址" width />
 
-      <el-table-column prop="displayName" label="显示名" width />
-      <el-table-column prop="permissionName" label="权限岗" width />
-      <el-table-column
-        prop="createdTime"
-        label="创建时间"
-        :formatter="formatDt"
-        width
-      />
-
+      <el-table-column prop="isValidation" label="权限验证" width="80">
+        <template slot-scope="scope">
+          <el-tag
+            :type="scope.row.isValidation ? 'success' : 'danger'"
+            disable-transitions
+          >
+            {{ scope.row.isValidation ? "启用" : "禁用" }}
+          </el-tag>
+        </template>
+      </el-table-column>
       <el-table-column prop="isDisabled" label="启用状态" width="80">
         <template slot-scope="scope">
           <el-tag
@@ -82,12 +119,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="操作" width="250">
+      <el-table-column label="操作" width="170">
         <template v-slot="{ $index, row }">
-          <el-button size="small" @click="onChangePassword($index, row)">
-            改密
-          </el-button>
-          <el-button size="small" @click="onEdit($index, row)">编辑</el-button>
+          <el-button @click="onEdit($index, row)">编辑</el-button>
           <confirm-button
             type="delete"
             :loading="row._loading"
@@ -115,30 +149,21 @@
       @onSuccess="onEditSuccess"
       @onError="onEditError"
     ></edit-panl>
-    <ChangePassword
-      :data="changePasswordItem"
-      :visible="changePasswordVisible"
-      @onChangeDrawer="onChangePasswordChangeDrawer"
-      @onSuccess="onChangePasswordSuccess"
-    >
-    </ChangePassword>
   </main-layout-vertical>
 </template>
 
 <script>
 import { cloneDeep } from "lodash";
 import { formatTime } from "@/libs/util";
-import { getList, execSoftDelete } from "@/api/admin/user";
+import { getList, execSoftDelete, generateApis } from "@/api/admin/api";
 import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
-import ChangePassword from "./change-password/index";
 export default {
-  name: "admin--user--index",
-  components: { ConfirmButton, AddPanl, EditPanl, ChangePassword },
+  name: "admin--api-manage--index",
+  components: { ConfirmButton, AddPanl, EditPanl },
   data() {
     return {
-      avatarDefault: require("@/assets/avatar.png"),
       total: 0,
       pageSize: 20,
       currentPage: 1,
@@ -148,7 +173,6 @@ export default {
         withDisable: true
       },
       data: [],
-      expandRowKeys: [],
       listLoading: false,
 
       // 新增面板显示属性
@@ -157,8 +181,7 @@ export default {
       editVisible: false,
       editItem: {},
 
-      changePasswordVisible: false,
-      changePasswordItem: {}
+      generateApisLoading: false
     };
   },
   computed: {
@@ -183,7 +206,6 @@ export default {
     formatDt: function(row, column, time) {
       return formatTime(time);
     },
-
     // 获取列表
     async getList() {
       const para = {
@@ -200,12 +222,14 @@ export default {
         }
         return;
       }
-      this.total = res.data.total;
       const data = res.data.list;
-      data.forEach(d => {
-        d._loading = false;
-      });
-      this.data = data;
+      if (data !== null && data.length > 0) {
+        data.forEach(d => {
+          d._loading = false;
+        });
+        this.data = data;
+        this.total = res.data.total;
+      }
     },
     // -- add 事件 start --
     onAdd() {
@@ -232,27 +256,6 @@ export default {
       this.editVisible = v;
     },
     // -- edit 事件 end --
-
-    // -- 改密 事件 start --
-    onChangePassword(index, row) {
-      this.changePasswordItem = {
-        id: row.id,
-        userName: row.userName,
-        revision: row.revision,
-        password: "",
-        confirmPassword: ""
-      };
-      this.changePasswordVisible = true;
-    },
-    onChangePasswordChangeDrawer(v) {
-      this.changePasswordVisible = v;
-    },
-    onChangePasswordSuccess() {
-      this.getList();
-    },
-    onChangePasswordError() {},
-    // -- 改密 事件 end --
-
     // 删除验证
     deleteValidate(row) {
       let isValid = true;
@@ -275,14 +278,26 @@ export default {
       } else {
         this.$message({ message: res.message, type: "error" });
       }
+    },
+    async onGenerate() {
+      this.generateApisLoading = true;
+      const res = await generateApis();
+      this.generateApisLoading = false;
+      if (!res.success) {
+        if (res.message) {
+          this.$message({ message: res.message, type: "error" });
+        }
+        return;
+      } else {
+        this.getList();
+      }
     }
   }
 };
 </script>
 
 <style lang="scss" scoped>
-.cell .img {
-  padding-top: 2px;
-  height: 30px;
+.cb {
+  margin-left: 0px;
 }
 </style>

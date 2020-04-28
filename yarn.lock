@@ -7650,6 +7650,11 @@ split-string@^3.0.1, split-string@^3.0.2:
   dependencies:
     extend-shallow "^3.0.0"
 
+splitpanes@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/splitpanes/-/splitpanes-2.2.1.tgz#95c5824eb4033cd109a1a5d1a498765e2bde8c92"
+  integrity sha512-r7ypbW7IkH6yKUWpCbBqHdZcxI1PwEAMC3Yfeds+lJ0MpBGOl1mbTazXUK7gchUyVGmtq7paLin1YslLY5UhAQ==
+
 sprintf-js@~1.0.2:
   version "1.0.3"
   resolved "https://registry.npm.taobao.org/sprintf-js/download/sprintf-js-1.0.3.tgz#04e6926f662895354f3dd015203633b857297e2c"
@@ -8494,11 +8499,6 @@ vue-loader@^15.9.1:
     loader-utils "^1.1.0"
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
-
-vue-multipane@^0.9.5:
-  version "0.9.5"
-  resolved "https://registry.yarnpkg.com/vue-multipane/-/vue-multipane-0.9.5.tgz#10ddaf9092e0a9e761edfd0d1f1db8bbb54b3e9c"
-  integrity sha512-4sr6POXY82VMzprQWGNMzTIBGGYEi7nG0uGQb6AYr8o0ngIsYCDPh/gmgms8NVsZzG28b7kn3tQhKP27cbbLdw==
 
 vue-router@^3.1.6:
   version "3.1.6"

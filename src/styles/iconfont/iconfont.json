@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "10390647",
+      "name": "more",
+      "font_class": "more",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "11897360",
+      "name": "api",
+      "font_class": "api",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "13609805",
+      "name": "More Button Grey",
+      "font_class": "MoreButtonGrey",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
       "icon_id": "12004552",
       "name": "Full Screen",
       "font_class": "FullScreen",

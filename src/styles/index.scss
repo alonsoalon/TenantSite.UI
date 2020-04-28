@@ -204,4 +204,14 @@ input:-webkit-autofill {
     background-color: white;
 }
 
-
+//.iconfont hack
+.aside-menu-vertical .iconfont,.el-menu--vertical .iconfont{
+    margin: 0px 6px 0 3px;
+    font-size: 14px;
+}
+.el-table__body .iconfont {
+    font-size: 14px;
+}
+.el-tabs__header .iconfont {
+    font-size: 14px;
+}
