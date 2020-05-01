@@ -34,6 +34,8 @@ const Setting = {
     tabType: "",
     // tab位置 top | bottom
     tabPosition: "top",
+    // 是否显示重载按钮
+    showReload: true,
     // 是否显示全屏按钮
     showFullscreen: true,
     // 是否显示通知

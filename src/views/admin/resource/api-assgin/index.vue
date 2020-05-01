@@ -8,6 +8,7 @@
       :direction="direction"
       :wrapperClosable="wrapperClosable"
       @close="onClosePanl"
+      @open="onOpenPanl"
     >
       <el-container class="drawer-container">
         <el-main>
@@ -164,7 +165,6 @@
             {{ this.$t("common.cancel") }}
           </el-button>
           <confirm-button
-            :validate="formValidate"
             :loading="submitLoading"
             type="submit"
             @click="onSubmit"
@@ -181,7 +181,10 @@ import ConfirmButton from "@/components/confirm-button";
 import { Splitpanes, Pane } from "splitpanes";
 import "splitpanes/dist/splitpanes.css";
 // apis
-import { execCreate } from "@/api/admin/resource";
+import {
+  getResourceApisById,
+  updateResourceApisById
+} from "@/api/admin/resource";
 
 import { getList as getApis } from "@/api/admin/api";
 
@@ -295,13 +298,29 @@ export default {
       this.total = res.data.total;
     },
 
-    // 验证表单
-    formValidate: function() {
-      let isValid = false;
-      this.$refs.refForm.validate(valid => {
-        isValid = valid;
-      });
-      return isValid;
+    async getResourceApisById() {
+      this.bottomLoading = true;
+      const para = { resourceId: this.data.id };
+      const res = await getResourceApisById(para);
+      this.bottomLoading = false;
+
+      if (res.success) {
+        this.bottomData = res.data.filter(x => x !== null); // 加上排除null,防止主表数据删除后，关系未删除，返回形如[null,null]导致渲染table出错的BUG
+      } else {
+        this.$message({ message: res.message, type: "error" });
+        this.drawerVisible = false;
+      }
+    },
+    onOpenPanl() {
+      if (!this.data.id && this.data.id === "") {
+        this.$message({
+          message: "没获取到当前资源，无法分配API。",
+          type: "error"
+        });
+        this.drawerVisible = false;
+        return;
+      }
+      this.getResourceApisById();
     },
     // 关闭表单面板重置表单控件
     onClosePanl() {
@@ -327,19 +346,26 @@ export default {
       );
     },
     async onSubmit() {
+      let ApiIds = [];
+
+      if (this.bottomData.length > 0) {
+        ApiIds = this.bottomData.map(s => {
+          return s.id;
+        });
+      }
+      const para = { resourceId: this.data.id, ApiIds: ApiIds };
       this.submitLoading = true;
-      const para = cloneDeep(this.data);
-      const res = await execCreate(para);
+      const res = await updateResourceApisById(para);
       this.submitLoading = false;
 
       if (res.success) {
-        this.$message({ message: this.$t("common.addOk"), type: "success" });
-        this.$refs.refForm.resetFields();
-        this.drawerVisible = false;
+        this.$message({ message: this.$t("common.updateOk"), type: "success" });
+        //this.drawerVisible = false;
         // 成功后钩子，共父级调用
         this.$emit("onSuccess", para, res);
       } else {
         this.$message({ message: res.message, type: "error" });
+        this.getResourceApisById();
         // 失败后钩子，共父级调用
         this.$emit("onError", para, res);
       }

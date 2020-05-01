@@ -66,7 +66,7 @@
     >
       <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="40" label="#" />
-      <el-table-column prop="category" label="分类" width="150" />
+      <el-table-column prop="category" label="分类" width="140" />
       <el-table-column prop="httpMethod" label="请求方法" width="80">
         <template slot-scope="scope">
           <el-tag
@@ -289,6 +289,7 @@ export default {
         }
         return;
       } else {
+        this.$message({ message: "成功生成API", type: "success" });
         this.getList();
       }
     }

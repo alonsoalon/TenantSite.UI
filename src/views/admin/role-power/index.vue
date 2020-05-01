@@ -134,8 +134,12 @@
 
 <script>
 import { listToTree, treeToList } from "@/libs/util";
-import { getAll as getRoles, roleAssignResources } from "@/api/admin/role";
-import { getResources, getResourceIdsByRoleId } from "@/api/admin/resource";
+import {
+  getAll as getRoles,
+  roleAssignResources,
+  getResourceIdsById as getResourceIdsByRoleId
+} from "@/api/admin/role";
+import { getResources } from "@/api/admin/resource";
 
 export default {
   name: "admin--role-power--index",

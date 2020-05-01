@@ -161,7 +161,8 @@
     ></edit-panl>
     <api-assgin
       :title="apiAssginTitle"
-      size="800px"
+      size="1000px"
+      :data="apiAssginItem"
       :visible="apiAssginVisible"
       @onChangeDrawer="onApiAssginChangeDrawer"
       @onSuccess="onApiAssginSuccess"
@@ -304,11 +305,13 @@ export default {
     // -- edit 事件 end --
     // -- api Assgin start --
     onApiAssgin(index, row) {
-      this.apiAssginVisible = true;
       this.apiAssginItem = cloneDeep(row);
+      this.apiAssginVisible = true;
       this.apiAssginTitle = `${this.apiAssginItem.title}-Api分配(在待选区双击行来完成Api的选择，在已选区双击行可取消)`;
     },
-    onApiAssginSuccess() {},
+    onApiAssginSuccess() {
+      this.apiAssginVisible = false;
+    },
     onApiAssginError() {},
     onApiAssginChangeDrawer(v) {
       this.apiAssginVisible = v;

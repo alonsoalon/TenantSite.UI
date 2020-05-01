@@ -11,6 +11,16 @@
       <div style="padding:0 15px;">
         <el-divider>页面布局</el-divider>
         <div class="layout-header-setting-item">
+          <span class="layout-header-setting-item-desc">显示重载按钮</span>
+          <span class="layout-header-setting-item-action">
+            <el-switch
+              :value="showReload"
+              @input="val => handleChangeSetting('showReload', val)"
+            >
+            </el-switch>
+          </span>
+        </div>
+        <div class="layout-header-setting-item">
           <span class="layout-header-setting-item-desc">显示全屏按钮</span>
           <span class="layout-header-setting-item-action">
             <el-switch
@@ -68,6 +78,8 @@
             </el-radio-group>
           </span>
         </div>
+
+        <el-divider>其他设置</el-divider>
       </div>
     </el-drawer>
   </span>
@@ -85,6 +97,7 @@ export default {
   },
   computed: {
     ...mapState("admin/layout", [
+      "showReload",
       "showFullscreen",
       "tabPosition",
       "tabType",

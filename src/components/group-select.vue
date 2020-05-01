@@ -31,6 +31,11 @@ export default {
       groupOptions: []
     };
   },
+  watch: {
+    value(val) {
+      this.currentValue = val;
+    }
+  },
   async mounted() {
     this.getGroupOptions();
   },

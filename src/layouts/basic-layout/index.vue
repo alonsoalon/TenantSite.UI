@@ -42,7 +42,11 @@
                 "
               />
             </div>
-            <div class="left-menu-item fold-btn" @click="handleReload">
+            <div
+              v-if="showReload"
+              class="left-menu-item fold-btn"
+              @click="handleReload"
+            >
               <i class="el-icon-refresh-right" />
             </div>
             <el-breadcrumb
@@ -246,6 +250,7 @@ export default {
       "isDesktop",
       "tabPosition",
       "tabType",
+      "showReload",
       "showBreadcrumbIcon",
       "showTabIcon",
       "showI18n",

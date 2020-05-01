@@ -83,10 +83,25 @@ export const getAll = params => {
 //---------------------- 巨完美的分割线 -------------------------------------------
 //---------------------- 下面为特殊方法 如有需求请写在以下区域-----------------------
 
-export const getResources = params => {
-  return request.get(`api/v1/${path}/GetResources`, { params });
+/**
+ * 根据指定资源ID获取该资源的API集合
+ * @param {Object} params 资源ID
+ */
+export const getResourceApisById = params => {
+  return request.get(`api/v1/${path}/GetResourceApisById`, { params });
+};
+/**
+ * 根据指定资源ID更新该资源下的API集合
+ * @param {Object} params resourceId,ApiIds
+ */
+export const updateResourceApisById = params => {
+  return request.put(`api/v1/${path}/UpdateResourceApisById`, params);
 };
 
-export const getResourceIdsByRoleId = params => {
-  return request.get(`api/v1/${path}/GetResourceIdsByRoleId`, { params });
+/**
+ * 得到资源列表（专供角色配置使用，合并了功能点资源）
+ * @param {*} params
+ */
+export const getResources = params => {
+  return request.get(`api/v1/${path}/GetResources`, { params });
 };

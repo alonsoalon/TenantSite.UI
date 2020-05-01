@@ -31,6 +31,11 @@ export default {
       options: []
     };
   },
+  watch: {
+    value(val) {
+      this.currentValue = val;
+    }
+  },
   async mounted() {
     this.getOptions();
   },

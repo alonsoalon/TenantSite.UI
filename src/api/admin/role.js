@@ -90,3 +90,11 @@ export const getAll = params => {
 export const roleAssignResources = params => {
   return request.post(`api/v1/${path}/RoleAssignResources`, params);
 };
+
+/**
+ * 根据指定角色ID取回该角色的资源ID集合
+ * @param {Object} params 角色ID
+ */
+export const getResourceIdsById = params => {
+  return request.get(`api/v1/${path}/GetResourceIdsById`, { params });
+};
