@@ -26,7 +26,7 @@ const Setting = {
   // route方式形如 http://localhost/{tenant}/
   apiBaseURL:
     env === "development"
-      ? "http://${tenant}.localhost:5188"
+      ? "http://localhost:5188/${tenant}/"
       : "http://${tenant}.localhost:5188",
 
   layout: {

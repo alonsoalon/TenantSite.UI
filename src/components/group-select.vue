@@ -20,7 +20,8 @@
 
 <script>
 import { listToTree } from "@/libs/util";
-import { getAll as getGroups } from "@/api/admin/group";
+import { getUserGroups as getGroups } from "@/api/account";
+
 export default {
   name: "GroupSelect",
   props: ["value"],

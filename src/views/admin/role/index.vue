@@ -41,12 +41,12 @@
       <el-table-column prop="title" label="名称" width />
       <el-table-column prop="code" label="编码" width />
       <el-table-column prop="description" label="描述" width />
-      <el-table-column
+      <!-- <el-table-column
         prop="createdTime"
         label="创建时间"
         :formatter="formatDt"
         width
-      />
+      /> -->
 
       <el-table-column prop="isDisabled" label="启用状态" width="80">
         <template slot-scope="scope">

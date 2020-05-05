@@ -191,7 +191,8 @@ export default {
             this.$router.replace({ path: redirect || "/" });
           }
         })
-        .catch(() => {
+        .catch(e => {
+          console.log(e);
           this.loginLoading = false;
           this.loginText = "出错了，重新登录";
         });

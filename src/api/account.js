@@ -33,7 +33,14 @@ export function login(data) {
 
 export function getLoginInfo() {
   return request({
-    url: "api/v1/system/auth/UserInfo",
+    url: "api/v1/system/auth/GetUserInfo",
+    method: "get"
+  });
+}
+
+export function getUserGroups() {
+  return request({
+    url: "api/v1/system/auth/GetUserGroups",
     method: "get"
   });
 }
