@@ -37,12 +37,14 @@ service.interceptors.request.use(
   config => {
     const token = util.cookies.get("token");
     config.headers["Authorization"] = "Bearer " + token;
-    let baseUrl = getBaseUrl();
-    baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
-    let apiUrl = config.url.startsWith("/")
-      ? config.url.substring(1, config.url.length)
-      : config.url;
-    config.url = baseUrl + apiUrl;
+    if (!config.url.startsWith("http")) {
+      let baseUrl = getBaseUrl();
+      baseUrl = baseUrl.endsWith("/") ? baseUrl : baseUrl + "/";
+      let apiUrl = config.url.startsWith("/")
+        ? config.url.substring(1, config.url.length)
+        : config.url;
+      config.url = baseUrl + apiUrl;
+    }
     console.log(config.url);
     return config;
   },

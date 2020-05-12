@@ -259,8 +259,11 @@ export default {
     // 删除验证
     deleteValidate(row) {
       let isValid = true;
-      if (row && row.code === "SYSTEM") {
-        this.$message({ message: row.title + " 禁止删除！", type: "warning" });
+      if (row && row.createdByName.toUpperCase() === "INSTALL") {
+        this.$message({
+          message: row.title + " 为种子数据,禁止删除！",
+          type: "warning"
+        });
         isValid = false;
       }
 

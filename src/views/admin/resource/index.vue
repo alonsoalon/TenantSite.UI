@@ -323,7 +323,7 @@ export default {
       let isValid = true;
       if (row && row.createdByName.toUpperCase() === "INSTALL") {
         this.$message({
-          message: row.title + " 为种子数据,禁止删除！如果不需要可禁用",
+          message: row.title + " 为种子数据,禁止删除！",
           type: "warning"
         });
         isValid = false;

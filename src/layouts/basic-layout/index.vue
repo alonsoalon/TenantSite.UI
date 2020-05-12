@@ -68,7 +68,7 @@
                 <el-avatar class="user-avatar" :size="36" :src="info.avatar">
                   <img :src="avatarDefault" />
                 </el-avatar>
-                <span>{{ info.name }}</span>
+                <span>{{ tenant }}.{{ info.name }}</span>
               </div>
               <el-dropdown-menu
                 slot="dropdown"
@@ -244,6 +244,7 @@ export default {
     };
   },
   computed: {
+    ...mapState("admin/account", ["tenant"]),
     ...mapState("admin/user", ["info"]),
     ...mapState("admin/page", ["keepAlive", "openedTabs"]),
     ...mapState("admin/layout", [
