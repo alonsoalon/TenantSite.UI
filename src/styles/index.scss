@@ -214,3 +214,20 @@ input:-webkit-autofill {
 .el-tabs__header .iconfont {
     font-size: 14px;
 }
+
+// ts css
+
+// ts auth start
+.ts-auth{
+    display: inline-block;
+}
+// .ivu-auth-permission{
+// }
+.ts-auth-prevent {
+    display: inline-block;
+    cursor: pointer;
+}
+.ts-auth-prevent-no-match {
+    pointer-events: none;
+}
+// ts auth end

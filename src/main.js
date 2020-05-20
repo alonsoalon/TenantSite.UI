@@ -24,6 +24,14 @@ import router from "./router";
 import MainLayout from "@/components/main-layout";
 Vue.use(MainLayout);
 
+// 权限验证组件
+import Auth from "@/components/auth";
+Vue.component("Auth", Auth);
+
+// 权限验证指令
+import VAuth from "@/directives/auth";
+Vue.use(VAuth);
+
 Vue.use(ElementUI, {
   //size: Cookies.get("size") || "medium", // medium / small / mini
   size: Cookies.get("size") || "small",

@@ -13,6 +13,7 @@
             placeholder="名称/分类/请求方法/接口地址"
             clearable
             @keyup.enter.native="getList"
+            style="width:300px"
           >
             <template #prefix>
               <i class="el-input__icon el-icon-search" />
@@ -22,25 +23,27 @@
         <el-form-item>
           <el-button type="primary" @click="getList">查询</el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-auth="menuCode + 'Add'">
           <el-button type="primary" @click="onAdd">新增</el-button>
         </el-form-item>
-        <el-form-item>
-          <confirm-button
-            icon="el-icon-circle-check"
-            :loading="generateApisLoading"
-            @click="onGenerate"
-            class="cb"
-          >
-            <template #content>
-              <p>
-                此操作将通过路由自动生成Api接口，
-                如存在相同Api将更新，不存在将自动新增Api，确定要执行此操作吗？
-              </p>
-            </template>
-            生成API
-          </confirm-button>
-        </el-form-item>
+        <Auth :authority="menuCode + 'GenerateApi'" prevent>
+          <el-form-item>
+            <confirm-button
+              icon="el-icon-circle-check"
+              :loading="generateApisLoading"
+              @click="onGenerate"
+              style="margin-left: 0px;"
+            >
+              <template #content>
+                <p>
+                  此操作将通过路由自动生成Api接口，
+                  如果存在相同Api将更新，不存在将自动新增Api，确定要执行此操作吗？
+                </p>
+              </template>
+              生成API
+            </confirm-button>
+          </el-form-item>
+        </Auth>
       </el-form>
     </template>
     <template #footer>
@@ -56,6 +59,7 @@
       >
       </el-pagination>
     </template>
+
     <!--列表-->
     <el-table
       v-loading="listLoading"
@@ -118,19 +122,27 @@
           </el-tag>
         </template>
       </el-table-column>
+      <Auth
+        :authority="[menuCode + 'Delete', menuCode + 'Edit']"
+        :withContainer="false"
+      >
+        <el-table-column label="操作" width="170">
+          <template v-auth="menuCode + 'Edit'" v-slot="{ $index, row }">
+            <el-button @click="onEdit($index, row)">
+              编辑
+            </el-button>
 
-      <el-table-column label="操作" width="170">
-        <template v-slot="{ $index, row }">
-          <el-button @click="onEdit($index, row)">编辑</el-button>
-          <confirm-button
-            type="delete"
-            :loading="row._loading"
-            :validate="deleteValidate"
-            :validate-data="row"
-            @click="onDelete($index, row)"
-          />
-        </template>
-      </el-table-column>
+            <confirm-button
+              v-auth="menuCode + 'Delete'"
+              type="delete"
+              :loading="row._loading"
+              :validate="deleteValidate"
+              :validate-data="row"
+              @click="onDelete($index, row)"
+            />
+          </template>
+        </el-table-column>
+      </Auth>
     </el-table>
 
     <add-panl
@@ -164,6 +176,7 @@ export default {
   components: { ConfirmButton, AddPanl, EditPanl },
   data() {
     return {
+      menuCode: "Api" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
       total: 0,
       pageSize: 20,
       currentPage: 1,
@@ -300,8 +313,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-.cb {
-  margin-left: 0px;
-}
-</style>
+<style lang="scss" scoped></style>

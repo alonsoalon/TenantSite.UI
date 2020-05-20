@@ -81,10 +81,6 @@ function generateRoutes(menus = []) {
       }
     };
 
-    if (m.title === "欢迎页") {
-      console.log(m);
-    }
-
     if (m.linkType === 1) {
       route.component = _import(m.viewPath);
     } else if (m.linkType === 2) {

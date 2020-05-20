@@ -18,27 +18,29 @@
       <group ref="refGroup" @onChange="getCheckedGroups"></group>
     </div>
     <template #footer>
-      <el-button-group>
-        <el-button
+      <Auth :authority="menuCode + 'Save'" prevent>
+        <confirm-button
           type="primary"
           icon="el-icon-check"
           :validate="saveValidate"
+          :validate-data="permissionItem"
           :loading="saveLoading"
           :disabled="unavailable"
           @click="save"
         >
           提交
-        </el-button>
+        </confirm-button>
+      </Auth>
 
-        <el-button
-          type="success"
-          icon="el-icon-refresh"
-          :disabled="unavailable"
-          @click="reset"
-        >
-          重置
-        </el-button>
-      </el-button-group>
+      <el-button
+        type="success"
+        icon="el-icon-refresh"
+        :disabled="unavailable"
+        @click="reset"
+        style="margin-left:10px"
+      >
+        重置
+      </el-button>
     </template>
   </main-layout-vertical>
 </template>
@@ -47,12 +49,13 @@
 import Role from "./role/index";
 import Group from "./group/index";
 import { permissionAssignPower } from "@/api/admin/permission";
-
+import ConfirmButton from "@/components/confirm-button";
 export default {
   name: "admin--permission-power--permission",
   components: {
     Role,
-    Group
+    Group,
+    ConfirmButton
   },
   props: {},
   computed: {
@@ -65,6 +68,7 @@ export default {
   },
   data() {
     return {
+      menuCode: "PermissionAuth" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
       activeName: "first",
       saveLoading: false,
       checkedGroups: [],
@@ -75,8 +79,16 @@ export default {
   mounted() {},
 
   methods: {
-    saveValidate() {
-      return true;
+    saveValidate(item) {
+      if (item.id == "6661232285310468096" || item.code == "SuperAdmin") {
+        this.$message({
+          message: "演示环境，系统管理员禁止变动角色",
+          type: "warning"
+        });
+        return false;
+      } else {
+        return true;
+      }
     },
     RoleSetChecked(permissionItem) {
       this.$refs.refRole.setChecked(permissionItem);
@@ -93,7 +105,6 @@ export default {
       this.init(this.permissionItem);
     },
     getCheckedRoles(items) {
-      console.log(items);
       this.checkedRoles = items;
     },
     getCheckedGroups(items) {

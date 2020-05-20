@@ -38,6 +38,7 @@
                   <span v-if="props.row.code && props.row.code !== ''">
                     [{{ props.row.code }}]
                   </span>
+                  <br />
                   {{ props.row.description }}
                 </div>
               </template>
@@ -64,8 +65,8 @@
           </div>
         </template>
         <template #footer>
-          <el-button-group>
-            <el-button
+          <Auth :authority="menuCode + 'Save'" prevent>
+            <confirm-button
               type="primary"
               icon="el-icon-check"
               :validate="saveValidate"
@@ -74,17 +75,18 @@
               @click="save"
             >
               提交
-            </el-button>
+            </confirm-button>
+          </Auth>
 
-            <el-button
-              type="success"
-              icon="el-icon-refresh"
-              :disabled="saveDisabled"
-              @click="getResourceIdsByRoleId"
-            >
-              重置
-            </el-button>
-          </el-button-group>
+          <el-button
+            type="success"
+            icon="el-icon-refresh"
+            :disabled="saveDisabled"
+            @click="getResourceIdsByRoleId"
+            style="margin-left:10px"
+          >
+            重置
+          </el-button>
         </template>
 
         <div>
@@ -133,6 +135,7 @@
 </template>
 
 <script>
+import ConfirmButton from "@/components/confirm-button";
 import { listToTree, treeToList } from "@/libs/util";
 import {
   getAll as getRoles,
@@ -143,7 +146,7 @@ import { getResources } from "@/api/admin/resource";
 
 export default {
   name: "admin--role-power--index",
-  components: {},
+  components: { ConfirmButton },
   computed: {
     saveDisabled() {
       return this.currentRoleId === "";
@@ -155,6 +158,7 @@ export default {
   },
   data() {
     return {
+      menuCode: "RoleAuth" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
       filter: {
         key: "" // 查询关键字
       },
@@ -299,6 +303,19 @@ export default {
     },
     // 验证保存
     saveValidate() {
+      //6657691850302504960 系统管理-管理
+      //6661267477010006016 授权管理-管理
+      if (
+        this.currentRoleId == "6657691850302504960" ||
+        this.currentRoleId == "6661267477010006016"
+      ) {
+        this.$message({
+          message: "演示环境，系统管理、授权管理两个角色禁止变动其资源",
+          type: "warning"
+        });
+        return false;
+      }
+
       let isValid = true;
       if (this.currentRoleId === "") {
         this.$message({ message: "请选择角色！", type: "warning" });

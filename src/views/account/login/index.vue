@@ -61,6 +61,28 @@
             >
           </el-form-item>
         </el-form>
+        <div>
+          <el-table
+            :data="users"
+            border
+            style="width: 100% ; margin-bottom:20px"
+          >
+            <el-table-column prop="userName" label="演示用户">
+            </el-table-column>
+            <el-table-column prop="description" label="权限岗">
+            </el-table-column>
+            <el-table-column fixed="right" label="操作" width="70">
+              <template slot-scope="scope">
+                <el-button
+                  @click="handleClick(scope.row)"
+                  type="text"
+                  size="small"
+                  >登录</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
       </el-card>
       <div style="height:5%;" />
     </el-scrollbar>
@@ -76,6 +98,13 @@ import util from "@/libs/util.js";
 export default {
   data() {
     return {
+      users: [
+        { userName: "admin", password: "111111", description: "观众" },
+        { userName: "alonso", password: "111111", description: "系统管理员" },
+        { userName: "power", password: "111111", description: "授权管理人员" },
+        { userName: "demo", password: "111111", description: "示例模块人员" }
+      ],
+
       form: {
         userName: "admin",
         password: "111111",
@@ -196,6 +225,12 @@ export default {
           this.loginLoading = false;
           this.loginText = "出错了，重新登录";
         });
+    },
+    handleClick(row) {
+      //alert(row.userName);
+      this.form.userName = row.userName;
+      this.form.password = row.password;
+      this.onLogin();
     }
   }
 };

@@ -22,7 +22,7 @@
         <el-form-item>
           <el-button type="primary" @click="getList">查询</el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-auth="menuCode + 'Add'">
           <el-button type="primary" @click="onAdd">新增</el-button>
         </el-form-item>
       </el-form>
@@ -81,22 +81,36 @@
           </el-tag>
         </template>
       </el-table-column>
-
-      <el-table-column label="操作" width="250">
-        <template v-slot="{ $index, row }">
-          <el-button size="small" @click="onChangePassword($index, row)">
-            改密
-          </el-button>
-          <el-button size="small" @click="onEdit($index, row)">编辑</el-button>
-          <confirm-button
-            type="delete"
-            :loading="row._loading"
-            :validate="deleteValidate"
-            :validate-data="row"
-            @click="onDelete($index, row)"
-          />
-        </template>
-      </el-table-column>
+      <Auth
+        :authority="[
+          menuCode + 'ChangePassword',
+          menuCode + 'Delete',
+          menuCode + 'Edit'
+        ]"
+        :withContainer="false"
+      >
+        <el-table-column label="操作" width="250">
+          <template v-slot="{ $index, row }">
+            <el-button
+              v-auth="menuCode + 'ChangePassword'"
+              @click="onChangePassword($index, row)"
+            >
+              改密
+            </el-button>
+            <el-button v-auth="menuCode + 'Edit'" @click="onEdit($index, row)">
+              编辑
+            </el-button>
+            <confirm-button
+              v-auth="menuCode + 'Delete'"
+              type="delete"
+              :loading="row._loading"
+              :validate="deleteValidate"
+              :validate-data="row"
+              @click="onDelete($index, row)"
+            />
+          </template>
+        </el-table-column>
+      </Auth>
     </el-table>
 
     <add-panl
@@ -138,6 +152,7 @@ export default {
   components: { ConfirmButton, AddPanl, EditPanl, ChangePassword },
   data() {
     return {
+      menuCode: "User" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
       avatarDefault: require("@/assets/avatar.png"),
       total: 0,
       pageSize: 20,
@@ -221,8 +236,15 @@ export default {
     // -- add 事件 end --
     // -- edit 事件 start --
     onEdit(index, row) {
-      this.editVisible = true;
-      this.editItem = cloneDeep(row);
+      if (row.userName == "alonso") {
+        this.$message({
+          message: "演示环境，系统管理员alonso禁止编辑",
+          type: "warning"
+        });
+      } else {
+        this.editVisible = true;
+        this.editItem = cloneDeep(row);
+      }
     },
     onEditSuccess() {
       this.getList();
@@ -258,7 +280,7 @@ export default {
       let isValid = true;
       if (row && row.createdByName.toUpperCase() === "INSTALL") {
         this.$message({
-          message: row.title + " 为种子数据,禁止删除！",
+          message: row.userName + " 为种子数据,禁止删除！",
           type: "warning"
         });
         isValid = false;

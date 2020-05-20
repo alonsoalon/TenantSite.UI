@@ -22,7 +22,7 @@
         <el-form-item>
           <el-button type="primary" @click="getList">查询</el-button>
         </el-form-item>
-        <el-form-item>
+        <el-form-item v-auth="menuCode + 'Add'">
           <el-button type="primary" @click="onAdd">新增</el-button>
         </el-form-item>
       </el-form>
@@ -34,7 +34,7 @@
       row-key="id"
       style="width: 100%;"
     >
-      <el-table-column type="selection" align="center" width="50" />
+      <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="40" label="#" />
       <el-table-column prop="title" label="名称" width />
       <el-table-column prop="code" label="编码" width />
@@ -50,19 +50,26 @@
           </el-tag>
         </template>
       </el-table-column>
-
-      <el-table-column label="操作" width="170">
-        <template v-slot="{ $index, row }">
-          <el-button size="small" @click="onEdit($index, row)">编辑</el-button>
-          <confirm-button
-            type="delete"
-            :loading="row._loading"
-            :validate="deleteValidate"
-            :validate-data="row"
-            @click="onDelete($index, row)"
-          />
-        </template>
-      </el-table-column>
+      <Auth
+        :authority="[menuCode + 'Delete', menuCode + 'Edit']"
+        :withContainer="false"
+      >
+        <el-table-column label="操作" width="170">
+          <template v-slot="{ $index, row }">
+            <el-button v-auth="menuCode + 'Edit'" @click="onEdit($index, row)">
+              编辑
+            </el-button>
+            <confirm-button
+              v-auth="menuCode + 'Delete'"
+              type="delete"
+              :loading="row._loading"
+              :validate="deleteValidate"
+              :validate-data="row"
+              @click="onDelete($index, row)"
+            />
+          </template>
+        </el-table-column>
+      </Auth>
     </el-table>
 
     <add-panl
@@ -96,6 +103,7 @@ export default {
   components: { ConfirmButton, AddPanl, EditPanl },
   data() {
     return {
+      menuCode: "Permission" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
       filter: {
         key: ""
       },

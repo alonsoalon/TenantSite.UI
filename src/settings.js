@@ -19,15 +19,15 @@ const Setting = {
   // 租户策略
   // 0:login 登录时指定
   // 1:Host 通过Host获取
-  tenantMode: 0,
+  tenantMode: 1,
 
   // 接口请求地址
   // host 方式形如 http://{tenant}.localhost/
   // route方式形如 http://localhost/{tenant}/
   apiBaseURL:
     env === "development"
-      ? "http://localhost:5188/${tenant}/"
-      : "http://${tenant}.localhost:5188",
+      ? "http://${tenant}.localhost:5188/"
+      : "http://${tenant}.iusaas.com:5188/",
 
   layout: {
     // tab 类型 "" | border-card

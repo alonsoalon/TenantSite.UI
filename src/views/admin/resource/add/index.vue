@@ -229,7 +229,8 @@ export default {
       loading: false,
       //data: {},
       formRules: {
-        title: [{ required: true, message: "请输入标题", trigger: "blur" }]
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
+        code: [{ required: true, message: "请输入Code", trigger: "blur" }]
       }
     };
   },
