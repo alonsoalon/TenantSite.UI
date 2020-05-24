@@ -65,6 +65,8 @@ export default {
           access = this.$store.state.admin.user.info.functionPoints;
         }
 
+        if (access == null) return false;
+
         state = authority.some(v => access.includes(v));
       }
       return state;

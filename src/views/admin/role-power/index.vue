@@ -343,7 +343,7 @@ export default {
       const res = await roleAssignResources(para);
       this.saveLoading = false;
       if (res.success) {
-        this.$message({ message: this.$t("common.addOk"), type: "success" });
+        this.$message({ message: this.$t("common.updateOk"), type: "success" });
       } else {
         this.$message({ message: res.message, type: "error" });
       }

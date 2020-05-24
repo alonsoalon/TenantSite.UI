@@ -587,6 +587,7 @@ export default {
       }
       this.loadRouter = false;
       this.$nextTick(() => {
+        //console.log(this.$route.name, isCurrentPageCache);
         this.loadRouter = true;
         if (isCurrentPageCache) {
           this.keepAlivePush(pageName);

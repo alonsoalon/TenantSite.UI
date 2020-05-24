@@ -11,22 +11,24 @@
       <el-table-column prop="name" label="键名" width />
       <el-table-column prop="value" label="Key模板" width />
       <el-table-column prop="description" label="描述" width />
-      <el-table-column label="操作" width="180">
-        <template v-slot="{ $index, row }">
-          <confirm-button
-            type="delete"
-            :loading="row._loading"
-            :icon="'el-icon-delete'"
-            style="margin-left:0px;"
-            @click="onClearCache($index, row)"
-          >
-            <template #content>
-              <p>确定要清除使用该key模板的所有缓存吗？</p>
-            </template>
-            清除
-          </confirm-button>
-        </template>
-      </el-table-column>
+      <Auth :authority="[menuCode + 'Delete']" :withContainer="false">
+        <el-table-column label="操作" width="180">
+          <template v-slot="{ $index, row }">
+            <confirm-button
+              type="delete"
+              :loading="row._loading"
+              :icon="'el-icon-delete'"
+              style="margin-left:0px;"
+              @click="onClearCache($index, row)"
+            >
+              <template #content>
+                <p>确定要清除使用该key模板的所有缓存吗？</p>
+              </template>
+              清除
+            </confirm-button>
+          </template>
+        </el-table-column>
+      </Auth>
     </el-table>
   </section>
 </template>
@@ -41,6 +43,7 @@ export default {
   },
   data() {
     return {
+      menuCode: "Cache" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
       filter: {
         name: ""
       },
@@ -57,6 +60,8 @@ export default {
       this.listLoading = true;
       const res = await getCacheKeyTemplates();
       this.listLoading = false;
+
+      //console.log(res);
 
       if (!res.success) {
         if (res.msg) {
