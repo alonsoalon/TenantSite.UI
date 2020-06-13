@@ -60,7 +60,7 @@ export const execSoftDeleteBatch = params => {
  * @param {Object} params 参数
  */
 export const getItem = params => {
-  return request.get(`api/v1/${path}/get`, { params });
+  return request.get(`api/v1/${path}/getitem`, { params });
 };
 
 /**
@@ -88,7 +88,7 @@ export const getAll = params => {
  * @param {Object} params 资源ID
  */
 export const getResourceApisById = params => {
-  return request.get(`api/v1/${path}/GetResourceApisById`, { params });
+  return request.get(`api/v1/${path}/getResourceApisById`, { params });
 };
 /**
  * 根据指定资源ID更新该资源下的API集合
@@ -103,5 +103,5 @@ export const updateResourceApisById = params => {
  * @param {*} params
  */
 export const getResources = params => {
-  return request.get(`api/v1/${path}/GetResources`, { params });
+  return request.get(`api/v1/${path}/getResources`, { params });
 };

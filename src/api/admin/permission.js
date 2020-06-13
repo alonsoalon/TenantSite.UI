@@ -60,7 +60,7 @@ export const execSoftDeleteBatch = params => {
  * @param {Object} params 参数
  */
 export const getItem = params => {
-  return request.get(`api/v1/${path}/get`, { params });
+  return request.get(`api/v1/${path}/getitem`, { params });
 };
 
 /**
@@ -96,7 +96,7 @@ export const permissionAssignPower = params => {
  * @param {*} params 权限岗ID PermissionId
  */
 export const getRoleIdsByPermissionId = params => {
-  return request.get(`api/v1/${path}/GetRoleIdsByPermissionId`, { params });
+  return request.get(`api/v1/${path}/getRoleIdsByPermissionId`, { params });
 };
 
 /**
@@ -104,5 +104,7 @@ export const getRoleIdsByPermissionId = params => {
  * @param {*} params 权限岗ID PermissionId
  */
 export const getGroupIdsByPermissionId = params => {
-  return request.get(`api/v1/${path}/GetGroupIdsByPermissionId`, { params });
+  return request.get(`api/v1/${path}/getGroupIdsByPermissionId`, {
+    params
+  });
 };

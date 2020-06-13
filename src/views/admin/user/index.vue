@@ -50,13 +50,23 @@
       style="width: 100%;"
     >
       <!-- <el-table-column type="selection" align="center" width="50" /> -->
-      <el-table-column type="index" width="40" label="#" />
+      <el-table-column type="index" width="30" label="#" />
       <el-table-column prop="avatar" label="" width="50">
         <template slot-scope="scope">
           <div class="img">
-            <el-avatar shape="square" size="small" :src="scope.row.avatar">
+            <!-- <el-avatar shape="square" size="small" :src="scope.row.avatar">
               <img :src="avatarDefault" />
-            </el-avatar>
+            </el-avatar> -->
+
+            <avatar
+              :username="
+                scope.row.displayName == ''
+                  ? scope.row.userName
+                  : scope.row.displayName
+              "
+              :size="33"
+              :src="getAvatar(scope.row.avatar)"
+            ></avatar>
           </div>
         </template>
       </el-table-column>
@@ -147,9 +157,11 @@ import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
 import ChangePassword from "./change-password/index";
+import Avatar from "vue-avatar";
+import Setting from "@/settings";
 export default {
   name: "admin--user--index",
-  components: { ConfirmButton, AddPanl, EditPanl, ChangePassword },
+  components: { ConfirmButton, AddPanl, EditPanl, ChangePassword, Avatar },
   data() {
     return {
       menuCode: "User" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
@@ -195,6 +207,10 @@ export default {
     this.getList();
   },
   methods: {
+    getAvatar(path) {
+      var url = path === "" || path === null ? "" : Setting.avatarURL + path;
+      return url;
+    },
     formatDt: function(row, column, time) {
       return formatTime(time);
     },

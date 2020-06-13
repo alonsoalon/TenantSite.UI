@@ -11,7 +11,7 @@ const path = `${module}/${controller}`;
  * 得到缓存KEY模板列表
  */
 export const getCacheKeyTemplates = () => {
-  return request.get(`api/v1/${path}/GetCacheKeyTemplates`);
+  return request.get(`api/v1/${path}/getCacheKeyTemplates`);
 };
 
 /**

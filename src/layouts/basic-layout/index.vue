@@ -63,12 +63,24 @@
           </el-col>
           <el-col :span="4" class="right-menu">
             <fullscreen v-if="isDesktop && showFullscreen" />
+
             <el-dropdown trigger="click">
               <div class="right-menu-item">
-                <el-avatar class="user-avatar" :size="36" :src="info.avatar">
+                <!-- <el-avatar class="user-avatar" :size="36" :src="info.avatar">
                   <img :src="avatarDefault" />
-                </el-avatar>
-                <span>{{ tenant }}.{{ info.name }}</span>
+                </el-avatar> -->
+                <avatar
+                  :username="
+                    info.displayName == '' ? info.name : info.displayName
+                  "
+                  :size="35"
+                  :src="avatar"
+                  class="user-avatar"
+                  style="display:inline-block;border:solid 0px #fff"
+                ></avatar>
+                <span :title="tenant + '.' + info.name">
+                  {{ info.displayName }}
+                </span>
               </div>
               <el-dropdown-menu
                 slot="dropdown"
@@ -214,12 +226,15 @@ import { listToTree, getTreeParents } from "@/libs/util";
 
 import Setting from "@/settings";
 
+import Avatar from "vue-avatar";
+
 export default {
   name: "AppMain",
   components: {
     MenuItem,
     Fullscreen,
-    Settings
+    Settings,
+    Avatar
   },
   data() {
     return {
@@ -259,6 +274,10 @@ export default {
       "showFullscreen",
       "logoutConfirm"
     ]),
+    avatar() {
+      if (this.info.avatar == "") return "";
+      return Setting.avatarURL + this.info.avatar;
+    },
     menueTitles() {
       let parentTitles = [];
       const fullPath = this.$route.fullPath;

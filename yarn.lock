@@ -8467,6 +8467,16 @@ vm-browserify@^1.0.1:
   resolved "https://registry.npm.taobao.org/vm-browserify/download/vm-browserify-1.1.2.tgz?cache=0&sync_timestamp=1572870717730&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvm-browserify%2Fdownload%2Fvm-browserify-1.1.2.tgz#78641c488b8e6ca91a75f511e7a3b32a86e5dda0"
   integrity sha1-eGQcSIuObKkadfUR56OzKobl3aA=
 
+vue-avatar@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/vue-avatar/-/vue-avatar-2.3.0.tgz#6cd434575a803e5c4c52ef24b1382b14a24c6336"
+  integrity sha512-/zeMhHV0OWp4ESvcX3OIVXUCT1IwCS/18StQh6Q2hqUJwhN3knWG8ktKzJt45rVp9whMXDGg8qDNZKzz3LfRmw==
+
+vue-cropper@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/vue-cropper/-/vue-cropper-0.5.2.tgz#069b2ffe5336b3f800d3049df2b0746263bd8642"
+  integrity sha512-51lj/7s3ok6pVvceibc/dM4zFccrx3020CX7i/k6Kl9K3M9ot8NXRvXf813ME2Dwwa3Eb/TeSM87+zu5ZcXAZA==
+
 vue-eslint-parser@^7.0.0:
   version "7.0.0"
   resolved "https://registry.npm.taobao.org/vue-eslint-parser/download/vue-eslint-parser-7.0.0.tgz?cache=0&sync_timestamp=1573306368916&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fvue-eslint-parser%2Fdownload%2Fvue-eslint-parser-7.0.0.tgz#a4ed2669f87179dedd06afdd8736acbb3a3864d6"

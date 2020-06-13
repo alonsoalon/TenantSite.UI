@@ -60,7 +60,7 @@ export const execSoftDeleteBatch = params => {
  * @param {Object} params 参数
  */
 export const getItem = params => {
-  return request.get(`api/v1/${path}/get`, { params });
+  return request.get(`api/v1/${path}/getitem`, { params });
 };
 
 /**
@@ -97,4 +97,20 @@ export const userChangePassword = params => {
  */
 export const changePassword = params => {
   return request.post(`api/v1/${path}/ChangePassword`, params);
+};
+
+/**
+ * 更新头像
+ * @param {*} params
+ */
+export const uploadAvatar = params => {
+  return request.post(`api/v1/${path}/UploadAvatar`, params);
+};
+
+/**
+ * 更新用户基本信息
+ * @param {*} params
+ */
+export const updateUserInfo = params => {
+  return request.post(`api/v1/${path}/UpdateUserInfo`, params);
 };

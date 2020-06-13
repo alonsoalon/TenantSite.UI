@@ -60,7 +60,7 @@ export const execSoftDeleteBatch = params => {
  * @param {Object} params 参数
  */
 export const getItem = params => {
-  return request.get(`api/v1/${path}/get`, { params });
+  return request.get(`api/v1/${path}/getitem`, { params });
 };
 
 /**

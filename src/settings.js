@@ -29,6 +29,11 @@ const Setting = {
       ? "http://localhost:5188/${tenant}"
       : "http://${tenant}.iusaas.com:5188/",
 
+  avatarURL:
+    env === "development"
+      ? "http://localhost:5188/upload/avatar/"
+      : "http://www.iusaas.com:5188/upload/avatar/",
+
   layout: {
     // tab 类型 "" | border-card
     tabType: "",

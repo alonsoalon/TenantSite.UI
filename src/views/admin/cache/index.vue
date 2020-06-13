@@ -64,9 +64,9 @@ export default {
       //console.log(res);
 
       if (!res.success) {
-        if (res.msg) {
+        if (res.message) {
           this.$message({
-            message: res.msg,
+            message: res.message,
             type: "error"
           });
         }
