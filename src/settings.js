@@ -6,6 +6,8 @@
 const env = process.env.NODE_ENV;
 
 const Setting = {
+  //是否演示环境
+  isDemo: env === "development" ? false : true,
   // 网页标题的后缀
   titleSuffix: "Tenant Site",
   // 路由模式，可选值为 history 或 hash

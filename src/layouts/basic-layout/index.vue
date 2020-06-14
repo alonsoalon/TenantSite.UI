@@ -465,7 +465,7 @@ export default {
     },
     // 设置
     Setting: function() {
-      this.$router.push("/account/settings");
+      this.$router.push("/admin/user-setting/index");
     },
     // 移动端选择菜单
     onSelectMenu: function() {

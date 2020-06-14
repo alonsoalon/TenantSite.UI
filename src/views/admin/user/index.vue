@@ -252,15 +252,15 @@ export default {
     // -- add 事件 end --
     // -- edit 事件 start --
     onEdit(index, row) {
-      if (row.userName == "alonso") {
-        this.$message({
-          message: "演示环境，系统管理员alonso禁止编辑",
-          type: "warning"
-        });
-      } else {
-        this.editVisible = true;
-        this.editItem = cloneDeep(row);
-      }
+      // if (row.userName == "alonso") {
+      //   this.$message({
+      //     message: "演示环境，系统管理员alonso禁止编辑",
+      //     type: "warning"
+      //   });
+      //   return;
+      // }
+      this.editVisible = true;
+      this.editItem = cloneDeep(row);
     },
     onEditSuccess() {
       this.getList();

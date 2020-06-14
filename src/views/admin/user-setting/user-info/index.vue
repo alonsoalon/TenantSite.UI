@@ -55,6 +55,7 @@
 import { mapState, mapActions } from "vuex";
 import ConfirmButton from "@/components/confirm-button";
 import { updateUserInfo, getItem } from "@/api/admin/user";
+import Setting from "@/settings";
 export default {
   name: "admin--user-setting--user-info--index",
   components: {
@@ -82,16 +83,6 @@ export default {
     disabled() {
       return !(this.editForm.id > 0);
     }
-    // editForm() {
-
-    //   return {
-    //     id: 0,
-    //     displayName: this.info.displayName,
-    //     mobile: this.info.mobile,
-    //     mail: this.info.mail,
-    //     description: this.info.description
-    //   };
-    // }
   },
 
   async mounted() {
@@ -116,6 +107,14 @@ export default {
       this.editForm = res.data;
     },
     editFormvalidate() {
+      if (Setting.isDemo) {
+        this.$message({
+          message: "演示环境，禁止变动权限",
+          type: "warning"
+        });
+        return false;
+      }
+
       let isValid = false;
       this.$refs.editForm.validate(valid => {
         isValid = valid;

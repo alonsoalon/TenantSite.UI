@@ -50,6 +50,7 @@ import Role from "./role/index";
 import Group from "./group/index";
 import { permissionAssignPower } from "@/api/admin/permission";
 import ConfirmButton from "@/components/confirm-button";
+import Setting from "@/settings";
 export default {
   name: "admin--permission-power--permission",
   components: {
@@ -79,18 +80,17 @@ export default {
   mounted() {},
 
   methods: {
+    // eslint-disable-next-line no-unused-vars
     saveValidate(item) {
-      if (item.id == "6661232285310468096" || item.code == "SuperAdmin") {
+      if (Setting.isDemo) {
         this.$message({
-          message: "演示环境，系统管理员禁止变动角色",
+          message: "演示环境，禁止变动权限",
           type: "warning"
         });
         return false;
-      } else {
-        return true;
       }
 
-      // return true;
+      return true;
     },
     RoleSetChecked(permissionItem) {
       this.$refs.refRole.setChecked(permissionItem);

@@ -71,7 +71,7 @@
 <script>
 import ConfirmButton from "@/components/confirm-button";
 import { changePassword } from "@/api/admin/user";
-
+import Setting from "@/settings";
 export default {
   name: "admin--user-setting--change-password--index",
   components: {
@@ -128,6 +128,14 @@ export default {
   },
   methods: {
     editPwdFormvalidate() {
+      if (Setting.isDemo) {
+        this.$message({
+          message: "演示环境，禁止变动权限",
+          type: "warning"
+        });
+        return false;
+      }
+
       let isValid = false;
       this.$refs.editPwdForm.validate(valid => {
         isValid = valid;

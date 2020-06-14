@@ -30,6 +30,7 @@
           <el-form-item>
             <confirm-button
               icon="el-icon-circle-check"
+              :validate="submitValidate"
               :loading="generateApisLoading"
               @click="onGenerate"
               style="margin-left: 0px;"
@@ -171,6 +172,7 @@ import { getList, execSoftDelete, generateApis } from "@/api/admin/api";
 import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
+import Setting from "@/settings";
 export default {
   name: "admin--api-manage--index",
   components: { ConfirmButton, AddPanl, EditPanl },
@@ -216,6 +218,17 @@ export default {
     this.getList();
   },
   methods: {
+    submitValidate() {
+      if (Setting.isDemo) {
+        this.$message({
+          message: "演示环境，禁止变动权限",
+          type: "warning"
+        });
+        return false;
+      }
+
+      return true;
+    },
     formatDt: function(row, column, time) {
       return formatTime(time);
     },

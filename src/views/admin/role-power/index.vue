@@ -143,7 +143,7 @@ import {
   getResourceIdsById as getResourceIdsByRoleId
 } from "@/api/admin/role";
 import { getResources } from "@/api/admin/resource";
-
+import Setting from "@/settings";
 export default {
   name: "admin--role-power--index",
   components: { ConfirmButton },
@@ -303,14 +303,9 @@ export default {
     },
     // 验证保存
     saveValidate() {
-      //6657691850302504960 系统管理-管理
-      //6661267477010006016 授权管理-管理
-      if (
-        this.currentRoleId == "6657691850302504960" ||
-        this.currentRoleId == "6661267477010006016"
-      ) {
+      if (Setting.isDemo) {
         this.$message({
-          message: "演示环境，系统管理、授权管理两个角色禁止变动其资源",
+          message: "演示环境，禁止变动角色资源",
           type: "warning"
         });
         return false;
