@@ -71,7 +71,11 @@
                 </el-avatar> -->
                 <avatar
                   :username="
-                    info.displayName == '' ? info.name : info.displayName
+                    info.displayName == null || info.displayName == ''
+                      ? info.name == null
+                        ? ''
+                        : info.name
+                      : info.displayName
                   "
                   :size="35"
                   :src="avatar"
@@ -275,9 +279,16 @@ export default {
       "logoutConfirm"
     ]),
     avatar() {
-      if (this.info.avatar == "") return "";
+      if (
+        !this.info.avatar ||
+        this.info.avatar == null ||
+        this.info.avatar == ""
+      )
+        return "";
+
       return Setting.avatarURL + this.info.avatar;
     },
+
     menueTitles() {
       let parentTitles = [];
       const fullPath = this.$route.fullPath;

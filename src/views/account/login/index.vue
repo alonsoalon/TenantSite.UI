@@ -108,7 +108,7 @@ export default {
       form: {
         userName: "admin",
         password: "111111",
-        tenant: "tenant1"
+        tenant: "Tenant1"
       },
       formRules: {
         userName: [{ required: true, message: "请输入账号", trigger: "blur" }],
@@ -153,10 +153,10 @@ export default {
     /**
      * 设置租户选择框数据
      */
-    setTenantsByApi() {
+    async setTenantsByApi() {
       this.loginDisabled = true;
       this.loginText = "加载租户信息中...";
-      const res = getTenants();
+      const res = await getTenants();
       if (!res) {
         this.loginLoading = false;
         this.loginText = "租户信息获取失败，刷新重试";

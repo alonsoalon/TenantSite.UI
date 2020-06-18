@@ -1,26 +1,12 @@
 import request from "@/request";
+import Setting from "@/settings";
 
 export function getTenants() {
-  // todo:将来需改成后端请求
-  const tenants = [
-    {
-      id: "1",
-      code: "tenant1",
-      name: "租户1"
-    },
-    {
-      id: "2",
-      code: "tenant2",
-      name: "租户2"
-    }
-  ];
-
-  return {
-    code: 1,
-    success: true,
-    data: tenants,
-    message: ""
-  };
+  // todo:从租户中心获取租户信息 目前是从租户站点服务端获取的
+  var tenantCenterBaseURL = Setting.tenantCenterBaseURL.endsWith("/")
+    ? Setting.tenantCenterBaseURL
+    : Setting.tenantCenterBaseURL + "/";
+  return request.get(`${tenantCenterBaseURL}api/tenant/GetList`);
 }
 
 export function login(data) {

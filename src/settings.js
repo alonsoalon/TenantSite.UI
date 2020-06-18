@@ -18,12 +18,18 @@ const Setting = {
   // Cookies 默认保存时间，单位：天
   cookiesExpires: 1,
 
+  //租户中心URL
+  tenantCenterBaseURL:
+    env === "development"
+      ? "http://localhost:5188/"
+      : "http://www.iusaas.com:5188/",
+
   // 租户策略
   // 0:login 登录时指定
   // 1:Host 通过Host获取
   tenantMode: env === "development" ? 0 : 1,
 
-  // 接口请求地址
+  // Tenant site server 接口请求地址
   // host 方式形如 http://{tenant}.localhost/
   // route方式形如 http://localhost/{tenant}/
   apiBaseURL:
@@ -31,6 +37,7 @@ const Setting = {
       ? "http://localhost:5188/${tenant}"
       : "http://${tenant}.iusaas.com:5188/",
 
+  // 头像地址
   avatarURL:
     env === "development"
       ? "http://localhost:5188/upload/avatar/"
