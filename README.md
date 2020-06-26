@@ -9,14 +9,16 @@
 企业应用管理系统，定位于企业应用的SaaS服务框架，企业云端应用的基础开发框架（当然也可以部署于本地），系统被设计用于多租户，采用前端后端完全分离技术方案。
 抽离企业应用软件研发公共部分，让研发人员有条件聚焦在业务研发，实现了用于权限管理的基础数据维护，权限赋权，缓存，上传等常规功能。 <br />
 
-依赖TenantSite.Server，租户的业务管理平台和租户下的用户权限体系管理平台（见租户示例）。
-![image](http://www.iusaas.com/intro1.jpg)
+依赖后端项目：TenantSite.Server。<br />
+* github:[https://github.com/alonsoalon/TenantSite.Server](https://github.com/alonsoalon/TenantSite.Server?_blank)
+* gitee:[https://gitee.com/alonsoalon/TenantSite.Server](https://gitee.com/alonsoalon/TenantSite.Server?_blank)
 
 ## DEMO
 
 [租户1示例](http://tenant1.iusaas.com/login?_blank) <br />
 [租户2示例](http://tenant2.iusaas.com/login?_blank) <br />
 
+![image](http://www.iusaas.com/intro1.jpg)
 
 ## 目录结构
 ```
@@ -147,6 +149,4 @@ const Setting = {
 
 ```
 
-## 新增应用
 
-待续...
