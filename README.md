@@ -14,7 +14,7 @@
 * gitee:[https://gitee.com/alonsoalon/TenantSite.Server](https://gitee.com/alonsoalon/TenantSite.Server?_blank)
 
 ## Docs
-* Docs:[www.iusaas.com](http://www.iusaas.com?_blank)
+* 更多文档见：[www.iusaas.com](http://www.iusaas.com?_blank)
 
 ## DEMO
 
