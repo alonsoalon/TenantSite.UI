@@ -12,7 +12,7 @@
             v-model="filter.key"
             placeholder="名称/分类/请求方法/接口地址"
             clearable
-            @keyup.enter.native="getList"
+            @keyup.enter.native="onSearch"
             style="width:300px"
           >
             <template #prefix>
@@ -21,7 +21,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getList">查询</el-button>
+          <el-button type="primary" @click="onSearch">查询</el-button>
         </el-form-item>
         <el-form-item v-auth="menuCode + 'Add'">
           <el-button type="primary" @click="onAdd">新增</el-button>
@@ -55,6 +55,8 @@
         :total="total"
         :page-count="pageCount"
         :pager-count="5"
+        @size-change="getList"
+        @current-change="getList"
         background
         style="text-align:right;"
       >
@@ -207,12 +209,12 @@ export default {
     }
   },
   watch: {
-    currentPage() {
-      this.getList();
-    },
-    pageSize() {
-      this.getList();
-    }
+    // currentPage() {
+    //   this.getList();
+    // },
+    // pageSize() {
+    //   this.getList();
+    // }
   },
   async mounted() {
     this.getList();
@@ -231,6 +233,10 @@ export default {
     },
     formatDt: function(row, column, time) {
       return formatTime(time);
+    },
+    onSearch() {
+      this.currentPage = 1;
+      this.getList();
     },
     // 获取列表
     async getList() {

@@ -12,7 +12,7 @@
             v-model="filter.key"
             placeholder="用户名/显示名"
             clearable
-            @keyup.enter.native="getList"
+            @keyup.enter.native="onSearch"
           >
             <template #prefix>
               <i class="el-input__icon el-icon-search" />
@@ -20,7 +20,7 @@
           </el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="getList">查询</el-button>
+          <el-button type="primary" @click="onSearch">查询</el-button>
         </el-form-item>
         <el-form-item v-auth="menuCode + 'Add'">
           <el-button type="primary" @click="onAdd">新增</el-button>
@@ -35,6 +35,8 @@
         :total="total"
         :page-count="pageCount"
         :pager-count="5"
+        @size-change="getList"
+        @current-change="getList"
         background
         style="text-align:right;"
       >
@@ -196,12 +198,12 @@ export default {
     }
   },
   watch: {
-    currentPage() {
-      this.getList();
-    },
-    pageSize() {
-      this.getList();
-    }
+    // currentPage() {
+    //   this.getList();
+    // },
+    // pageSize() {
+    //   this.getList();
+    // }
   },
   async mounted() {
     this.getList();
@@ -214,7 +216,10 @@ export default {
     formatDt: function(row, column, time) {
       return formatTime(time);
     },
-
+    onSearch() {
+      this.currentPage = 1;
+      this.getList();
+    },
     // 获取列表
     async getList() {
       const para = {
