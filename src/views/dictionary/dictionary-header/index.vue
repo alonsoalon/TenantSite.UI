@@ -10,7 +10,7 @@
         <el-form-item>
           <el-input
             v-model="filter.key"
-            placeholder="名称/分类/请求方法/接口地址"
+            :placeholder="searchPlaceholder"
             clearable
             @keyup.enter.native="onSearch"
             style="width:300px"
@@ -26,27 +26,9 @@
         <el-form-item v-auth="menuCode + 'Add'">
           <el-button type="primary" @click="onAdd">新增</el-button>
         </el-form-item>
-        <Auth :authority="menuCode + 'GenerateApi'" prevent>
-          <el-form-item>
-            <confirm-button
-              icon="el-icon-circle-check"
-              :validate="submitValidate"
-              :loading="generateApisLoading"
-              @click="onGenerate"
-              style="margin-left: 0px;"
-            >
-              <template #content>
-                <p>
-                  此操作将通过路由自动生成Api接口，
-                  如果存在相同Api将更新，不存在将自动新增Api，确定要执行此操作吗？
-                </p>
-              </template>
-              生成API
-            </confirm-button>
-          </el-form-item>
-        </Auth>
       </el-form>
     </template>
+
     <template #footer>
       <el-pagination
         layout="total, sizes, prev, pager, next, jumper"
@@ -59,8 +41,7 @@
         @current-change="getList"
         background
         style="text-align:right;"
-      >
-      </el-pagination>
+      ></el-pagination>
     </template>
 
     <!--列表-->
@@ -73,55 +54,33 @@
     >
       <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="40" label="#" />
-      <el-table-column prop="category" label="分类" width="200" />
+      <el-table-column prop="code" label="编码" :show-overflow-tooltip="true" />
       <el-table-column
-        prop="httpMethod"
-        label="接口 Method + Path"
+        prop="title"
+        label="标题"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="description"
+        label="描述"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="ex1"
+        label="扩展属性"
         :show-overflow-tooltip="true"
       >
         <template slot-scope="scope">
-          <el-tag
-            v-if="scope.row.httpMethod == 'Delete'"
-            type="danger"
-            disable-transitions
-          >
-            {{ scope.row.httpMethod }}
-          </el-tag>
-          <el-tag
-            v-else-if="scope.row.httpMethod == 'Put'"
-            type="warning"
-            disable-transitions
-          >
-            {{ scope.row.httpMethod }}
-          </el-tag>
-          <el-tag
-            v-else-if="scope.row.httpMethod == 'Post'"
-            type="success"
-            disable-transitions
-          >
-            {{ scope.row.httpMethod }}
-          </el-tag>
-          <el-tag v-else-if="scope.row.httpMethod == 'Get'" disable-transitions>
-            {{ scope.row.httpMethod }}
-          </el-tag>
-          {{ scope.row.url }}
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="title"
-        label="名称"
-        :show-overflow-tooltip="true"
-      />
-      <!-- <el-table-column prop="url" label="接口地址" width /> -->
-
-      <el-table-column prop="isValidation" label="权限验证" width="80">
-        <template slot-scope="scope">
-          <el-tag
-            :type="scope.row.isValidation ? 'success' : 'danger'"
-            disable-transitions
-          >
-            {{ scope.row.isValidation ? "启用" : "禁用" }}
-          </el-tag>
+          <template v-for="i in [1, 2, 3, 4, 5]">
+            <el-tag
+              v-if="isEmpty(i, scope.row)"
+              :key="i"
+              effect="plain"
+              style="margin-right:2px"
+            >
+              {{ scope.row["ex" + i] }}
+            </el-tag>
+          </template>
         </template>
       </el-table-column>
       <el-table-column prop="isDisabled" label="启用状态" width="80">
@@ -156,7 +115,6 @@
         </el-table-column>
       </Auth>
     </el-table>
-
     <add-panl
       title="新增"
       :visible="addVisible"
@@ -177,23 +135,34 @@
 </template>
 
 <script>
+// 工具 + 组件 + 全局配置
 import { cloneDeep } from "lodash";
-import { formatTime } from "@/libs/util";
-import { getList, execSoftDelete, generateApis } from "@/api/admin/api";
 import ConfirmButton from "@/components/confirm-button";
+import Setting from "@/settings";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
-import Setting from "@/settings";
+// 接口
+import { getList, execSoftDelete } from "@/api/dictionary/dictionary-header";
+
+// 页面配置
+let pageConfig = {
+  //菜单Code,需与后台资源'资源编码'保持一致，用于按钮级权限控制
+  menuCode: "DictionaryHeader",
+  //页面名称，需与后台资源中'视图名称'保持一致，不然视图缓存将不能生效
+  pageName: "dictionary--dictionary-header--index"
+};
+
 export default {
-  name: "admin--api-manage--index",
+  // 名称必须与后台资源中'视图名称'保持一致，不然视图缓存将不能生效
+  name: pageConfig.pageName,
   components: { ConfirmButton, AddPanl, EditPanl },
   data() {
     return {
-      menuCode: "Api" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
+      menuCode: pageConfig.menuCode + ".",
+      searchPlaceholder: "编码/标题/描述",
       total: 0,
       pageSize: 20,
       currentPage: 1,
-
       filter: {
         key: "",
         withDisable: true
@@ -201,13 +170,13 @@ export default {
       data: [],
       listLoading: false,
 
-      // 新增面板显示属性
+      // 新增面板属性
       addVisible: false,
+      addItem: {},
 
+      // 编辑面板属性
       editVisible: false,
-      editItem: {},
-
-      generateApisLoading: false
+      editItem: {}
     };
   },
   computed: {
@@ -217,32 +186,10 @@ export default {
         : 1;
     }
   },
-  watch: {
-    // currentPage() {
-    //   this.getList();
-    // },
-    // pageSize() {
-    //   this.getList();
-    // }
-  },
-  async mounted() {
+  mounted() {
     this.getList();
   },
   methods: {
-    submitValidate() {
-      if (Setting.isDemo) {
-        this.$message({
-          message: this.$t("common.demoTips"),
-          type: "warning"
-        });
-        return false;
-      }
-
-      return true;
-    },
-    formatDt: function(row, column, time) {
-      return formatTime(time);
-    },
     onSearch() {
       this.currentPage = 1;
       this.getList();
@@ -268,10 +215,11 @@ export default {
         data.forEach(d => {
           d._loading = false;
         });
-        this.data = data;
-        this.total = res.data.total;
       }
+      this.total = res.data.total;
+      this.data = data;
     },
+
     // -- add 事件 start --
     onAdd() {
       this.addVisible = true;
@@ -308,7 +256,7 @@ export default {
       }
       return true;
     },
-
+    // 删除事件
     async onDelete(index, row) {
       row._loading = true;
       const para = { id: row.id };
@@ -321,22 +269,14 @@ export default {
         this.$message({ message: res.message, type: "error" });
       }
     },
-    async onGenerate() {
-      this.generateApisLoading = true;
-      const res = await generateApis();
-      this.generateApisLoading = false;
-      if (!res.success) {
-        if (res.message) {
-          this.$message({ message: res.message, type: "error" });
-        }
-        return;
-      } else {
-        this.$message({ message: "成功生成API", type: "success" });
-        this.getList();
-      }
+    isEmpty(i, row) {
+      let str = row["ex" + i];
+      let res = str == null || str == "" ? false : true;
+      // console.log(res, str);
+      return res;
     }
   }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style></style>

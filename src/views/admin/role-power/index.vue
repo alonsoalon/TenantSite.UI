@@ -305,7 +305,7 @@ export default {
     saveValidate() {
       if (Setting.isDemo) {
         this.$message({
-          message: "演示环境，禁止变动角色资源",
+          message: this.$t("common.demoTips"),
           type: "warning"
         });
         return false;

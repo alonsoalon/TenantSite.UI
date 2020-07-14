@@ -64,12 +64,8 @@
                 >
                   <!-- <el-table-column type="selection" align="center" width="50" /> -->
                   <el-table-column type="index" width="40" label="#" />
-                  <el-table-column prop="category" label="分类" width="150" />
-                  <el-table-column
-                    prop="httpMethod"
-                    label="请求方法"
-                    width="80"
-                  >
+                  <el-table-column prop="category" label="分类" width="200" />
+                  <el-table-column prop="httpMethod" label="接口" width="500">
                     <template slot-scope="scope">
                       <el-tag
                         v-if="scope.row.httpMethod == 'Delete'"
@@ -98,10 +94,11 @@
                       >
                         {{ scope.row.httpMethod }}
                       </el-tag>
+                      {{ scope.row.url }}
                     </template>
                   </el-table-column>
-                  <el-table-column prop="title" label="名称" width />
-                  <el-table-column prop="url" label="接口地址" width />
+                  <el-table-column prop="title" label="名称" />
+                  <!-- <el-table-column prop="url" label="接口地址" width /> -->
                 </el-table>
               </main-layout-vertical>
             </pane>
@@ -117,12 +114,8 @@
                   style="width: 100%;"
                 >
                   <el-table-column type="index" width="40" label="#" />
-                  <el-table-column prop="category" label="分类" width="150" />
-                  <el-table-column
-                    prop="httpMethod"
-                    label="请求方法"
-                    width="80"
-                  >
+                  <el-table-column prop="category" label="分类" width="200" />
+                  <el-table-column prop="httpMethod" label="接口" width="500">
                     <template slot-scope="scope">
                       <el-tag
                         v-if="scope.row.httpMethod == 'Delete'"
@@ -151,10 +144,11 @@
                       >
                         {{ scope.row.httpMethod }}
                       </el-tag>
+                      {{ scope.row.url }}
                     </template>
                   </el-table-column>
-                  <el-table-column prop="title" label="名称" width />
-                  <el-table-column prop="url" label="接口地址" width />
+                  <el-table-column prop="title" label="名称" />
+                  <!-- <el-table-column prop="url" label="接口地址" width /> -->
                 </el-table>
               </main-layout-vertical>
             </pane>

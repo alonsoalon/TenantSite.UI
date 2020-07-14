@@ -231,3 +231,14 @@ input:-webkit-autofill {
     pointer-events: none;
 }
 // ts auth end
+
+
+//@extend
+.singleCell{
+    
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+}

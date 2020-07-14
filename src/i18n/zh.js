@@ -11,7 +11,8 @@ export default {
     cancel: "取消",
     submit: "提交",
     delete: "删除",
-    ok: "确定"
+    ok: "确定",
+    demoTips: "演示环境，禁止操作"
   },
   exception: {
     e403: "抱歉，你无权访问该页面",

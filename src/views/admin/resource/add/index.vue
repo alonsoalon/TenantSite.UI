@@ -57,7 +57,7 @@
           <el-form-item
             label="打开模式"
             prop="openMode"
-            v-if="data.resourceType === 2 && data.linkType === 2"
+            v-if="data.resourceType === 2"
           >
             <el-radio-group v-model="data.openMode">
               <el-radio :label="1">内部窗口</el-radio>
@@ -75,6 +75,7 @@
             "
           >
             <el-input v-model="data.path" />
+            如果以/blank开头命名路径，系统将以新窗口打开，并不带菜单导航和顶栏页面
           </el-form-item>
           <el-form-item
             :label="data.linkType === 2 ? '外链URL' : '视图路径'"

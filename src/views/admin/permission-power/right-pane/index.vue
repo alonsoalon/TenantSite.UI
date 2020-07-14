@@ -8,7 +8,8 @@
     <template #header>
       <el-tabs v-model="activeName">
         <el-tab-pane label="角色" name="first"></el-tab-pane>
-        <el-tab-pane label="数据组" name="second"></el-tab-pane>
+        <el-tab-pane label="组织机构" name="second"></el-tab-pane>
+        <el-tab-pane label="数据条件" name="third"></el-tab-pane>
       </el-tabs>
     </template>
     <div v-show="activeName === 'first'">
@@ -16,6 +17,10 @@
     </div>
     <div v-show="activeName === 'second'">
       <group ref="refGroup" @onChange="getCheckedGroups"></group>
+    </div>
+    <div v-show="activeName === 'third'">
+      <el-alert title="功能研发中..." type="info" show-icon :closable="false">
+      </el-alert>
     </div>
     <template #footer>
       <Auth :authority="menuCode + 'Save'" prevent>
@@ -84,7 +89,7 @@ export default {
     saveValidate(item) {
       if (Setting.isDemo) {
         this.$message({
-          message: "演示环境，禁止变动权限",
+          message: this.$t("common.demoTips"),
           type: "warning"
         });
         return false;

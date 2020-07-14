@@ -22,6 +22,17 @@
           <span>{{ item.title }}</span>
         </el-menu-item>
       </a>
+      <router-link
+        v-else-if="item.openMode === 2"
+        target="_blank"
+        :to="item.path"
+        tag="a"
+      >
+        <el-menu-item :index="item.path">
+          <i v-if="item.icon" :class="item.icon" />
+          <span>{{ item.title }}</span>
+        </el-menu-item>
+      </router-link>
       <router-link v-else :to="item.path" tag="div">
         <el-menu-item :index="item.path">
           <i v-if="item.icon" :class="item.icon" />

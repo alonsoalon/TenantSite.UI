@@ -12,8 +12,6 @@
     >
       <section class="drawer-body">
         <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
-
-        <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
         <el-form
           ref="refForm"
           :model="data"
@@ -25,97 +23,12 @@
           <el-form-item label="标题" prop="title">
             <el-input v-model="data.title" />
           </el-form-item>
+          <el-form-item label="值" prop="code">
+            <el-input v-model="data.code" />
+          </el-form-item>
 
           <el-form-item label="描述" prop="description">
             <el-input v-model="data.description" type="textarea" rows="2" />
-          </el-form-item>
-          <el-form-item label="编码" prop="code">
-            <el-input v-model="data.code" autocomplete="off" />
-          </el-form-item>
-          <el-form-item label="ICON" prop="icon">
-            <el-input v-model="data.icon" />
-          </el-form-item>
-          <el-divider content-position="left"></el-divider>
-          <el-form-item label="资源类型" prop="resourceType">
-            <el-radio-group v-model="data.resourceType">
-              <el-radio :label="1">资源分组</el-radio>
-              <el-radio :label="2">资源菜单</el-radio>
-              <el-radio :label="3">功能点</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item
-            label="菜单类型"
-            prop="linkType"
-            v-if="data.resourceType === 2"
-          >
-            <el-radio-group
-              v-model="data.linkType"
-              v-if="data.resourceType === 2"
-            >
-              <el-radio :label="1">视图组件</el-radio>
-              <el-radio :label="2">外部链接</el-radio>
-            </el-radio-group>
-          </el-form-item>
-          <el-form-item
-            label="打开模式"
-            prop="openMode"
-            v-if="data.resourceType === 2"
-          >
-            <el-radio-group v-model="data.openMode">
-              <el-radio :label="1">内部窗口</el-radio>
-              <el-radio :label="2">外部窗口</el-radio>
-            </el-radio-group>
-          </el-form-item>
-
-          <el-form-item
-            label="Path"
-            prop="path"
-            v-if="
-              data.resourceType === 2 &&
-                data.linkType &&
-                data.resourceType === 2
-            "
-          >
-            <el-input v-model="data.path" />
-            如果以/blank开头命名路径，系统将以新窗口打开，并不带菜单导航和顶栏页面
-          </el-form-item>
-          <el-form-item
-            :label="data.linkType === 2 ? '外链URL' : '视图路径'"
-            prop="viewPath"
-            v-if="data.resourceType === 2"
-          >
-            <el-input v-model="data.viewPath" />
-          </el-form-item>
-          <el-form-item
-            label="视图名称"
-            prop="viewName"
-            v-if="data.resourceType === 2 && data.linkType === 1"
-          >
-            <el-input v-model="data.viewName">
-              <el-button
-                slot="append"
-                icon="el-icon-bottom"
-                @click="generateViewName"
-              ></el-button>
-            </el-input>
-          </el-form-item>
-          <el-form-item
-            label="是否缓存"
-            prop="viewCache"
-            v-if="data.resourceType === 2 && data.linkType === 1"
-          >
-            <el-switch v-model="data.viewCache" />
-          </el-form-item>
-          <el-form-item
-            label="可否关闭"
-            prop="closable"
-            v-if="
-              data.resourceType === 2 &&
-                (data.linkType === 1 ||
-                  (data.linkType === 2 && data.openMode === 1))
-            "
-          >
-            <el-switch v-model="data.closable" />
           </el-form-item>
 
           <el-divider content-position="left"></el-divider>
@@ -135,27 +48,34 @@
               clearable
             ></el-cascader>
           </el-form-item>
-          <el-form-item label="隐藏" prop="isHidden">
-            <el-switch v-model="data.isHidden" />
+          <el-divider v-if="hasExs()" content-position="left"></el-divider>
+
+          <el-form-item v-if="hasEx(1)" :label="headerItem.ex1" prop="ex1">
+            <el-input v-model="data.ex1" />
           </el-form-item>
+          <el-form-item v-if="hasEx(2)" :label="headerItem.ex2" prop="ex2">
+            <el-input v-model="data.ex2" />
+          </el-form-item>
+          <el-form-item v-if="hasEx(3)" :label="headerItem.ex2" prop="ex3">
+            <el-input v-model="data.ex3" />
+          </el-form-item>
+          <el-form-item v-if="hasEx(4)" :label="headerItem.ex2" prop="ex4">
+            <el-input v-model="data.ex4" />
+          </el-form-item>
+          <el-form-item v-if="hasEx(5)" :label="headerItem.ex2" prop="ex5">
+            <el-input v-model="data.ex5" />
+          </el-form-item>
+
+          <el-divider content-position="left"></el-divider>
+
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="data.isDisabled" />
           </el-form-item>
-          <el-form-item v-if="data.children" label="展开" prop="opened">
-            <el-switch v-model="data.opened" />
-          </el-form-item>
-          <el-form-item label="排序" prop="orderIndex">
-            <el-input-number
-              v-model="data.orderIndex"
-              :min="0"
-            ></el-input-number>
-          </el-form-item>
-          <el-divider content-position="left">
-            <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
-          </el-divider>
-          <el-form-item label="归属组" prop="groupId">
+          <el-divider content-position="left"></el-divider>
+          <el-form-item label="归属组织" prop="groupId">
             <group-select v-model="data.groupId"></group-select>
           </el-form-item>
+
           <el-divider content-position="left"></el-divider>
           <el-form-item label="创建人" prop="createdByName">
             <el-input v-model="data.createdByName" :disabled="true" />
@@ -192,11 +112,12 @@ import ConfirmButton from "@/components/confirm-button";
 import GroupSelect from "@/components/group-select";
 // 工具
 import { cloneDeep } from "lodash";
+// import { listToTree } from "@/libs/util";
 // apis
-import { execUpdate } from "@/api/admin/resource";
+import { execUpdate } from "@/api/dictionary/dictionary-entry";
 
 export default {
-  name: "admin-resource-edit",
+  name: "dictionary-entry--add",
   components: {
     ConfirmButton,
     GroupSelect
@@ -222,12 +143,21 @@ export default {
       type: Boolean,
       default: false
     },
+
     parentOptions: {
       type: Array
     },
+    headerItem: {
+      type: Object,
+      default: () => {
+        return {};
+      }
+    },
     data: {
       type: Object,
-      default: () => {}
+      default: () => {
+        return {};
+      }
     }
   },
   computed: {
@@ -243,12 +173,14 @@ export default {
   data() {
     return {
       loading: false,
+      //data: {},
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
-        code: [{ required: true, message: "请输入Code", trigger: "blur" }]
+        code: [{ required: true, message: "请输入值", trigger: "blur" }]
       }
     };
   },
+
   async mounted() {},
 
   methods: {
@@ -282,18 +214,20 @@ export default {
         this.$emit("onError", para, res);
       }
     },
-    generateViewName() {
-      if (!this.data.viewPath || this.data.viewPath === "") {
-        this.$message({
-          message: "视图路径为空，不能生成视图名称",
-          type: "warning"
-        });
-        return;
-      }
-      let str = this.data.viewPath;
-      str = str.startsWith("/") ? str.replace(/\//, "") : str;
-      str = str.replace(/\//g, "--");
-      this.data.viewName = str;
+    hasExs() {
+      var res =
+        (this.headerItem.ex1 == null || this.headerItem.ex1 == "") &&
+        (this.headerItem.ex2 == null || this.headerItem.ex2 == "") &&
+        (this.headerItem.ex3 == null || this.headerItem.ex3 == "") &&
+        (this.headerItem.ex4 == null || this.headerItem.ex4 == "") &&
+        (this.headerItem.ex5 == null || this.headerItem.ex6 == "");
+      return !res;
+    },
+    hasEx(index) {
+      var res =
+        this.headerItem["ex" + index] == null ||
+        this.headerItem["ex" + index] == "";
+      return !res;
     }
   }
 };

@@ -59,6 +59,7 @@ function generateRoutes(menus = []) {
     meta: {}
   };
 
+  var bankRoutes = [];
   for (let m of menus) {
     // 资源不是菜单的，path为空的 进入下次循环
     if (m.resourceType !== 2 || !m.path || m.path === "") {
@@ -69,6 +70,7 @@ function generateRoutes(menus = []) {
     }
 
     let name = !m.viewName || m.viewName === "" ? m.path : m.viewName;
+
     let route = {
       name: name,
       path: m.path,
@@ -93,7 +95,11 @@ function generateRoutes(menus = []) {
     }
 
     try {
-      routes.children.push(route);
+      if (m.path.startsWith("/bank/")) {
+        bankRoutes.push(route);
+      } else {
+        routes.children.push(route);
+      }
     } catch (error) {
       Message.error(`导入组件${m.viewPath}.vue失败`);
     }
@@ -126,7 +132,7 @@ function generateRoutes(menus = []) {
   routes.children.push(e403);
   routes.children.push(e500);
   routes.children.push(e404);
-  return [routes];
+  return [...bankRoutes, routes];
 }
 
 // 添加路由

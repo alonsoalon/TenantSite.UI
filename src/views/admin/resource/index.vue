@@ -237,7 +237,7 @@ export default {
       return formatTime(time);
     },
 
-    // 获取用户列表
+    // 获取列表
     async getTreeList() {
       const para = {
         ...this.filter
