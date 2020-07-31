@@ -50,14 +50,32 @@
       <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <!-- <el-table-column prop="id" label="编号" width="180" /> -->
       <el-table-column type="index" width="40" label="#" />
-      <el-table-column prop="createdByName" label="访问账号" width="160">
+      <el-table-column
+        prop="createdByName"
+        label="访问账号"
+        width="160"
+        :show-overflow-tooltip="true"
+      >
         <template v-slot="{ row }">
           {{ row.realName }}({{ row.createdByName }})
         </template>
       </el-table-column>
-      <el-table-column prop="ip" label="IP地址" width="130" />
-      <el-table-column prop="apiTitle" label="接口名称" />
-      <el-table-column prop="apiPath" label="接口地址" />
+      <el-table-column
+        prop="ip"
+        label="IP地址"
+        width="130"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="apiTitle"
+        label="接口名称"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="apiPath"
+        label="接口地址"
+        :show-overflow-tooltip="true"
+      />
       <!-- <el-table-column prop="browser" label="浏览器" width="100" />
       <el-table-column prop="os" label="操作系统" width="100" /> -->
       <el-table-column
@@ -78,7 +96,7 @@
       <!-- <el-table-column prop="message" label="操作消息" /> -->
       <el-table-column
         prop="createdTime"
-        label="操作时间"
+        label="访问时间"
         :formatter="formatDt"
         width
       />

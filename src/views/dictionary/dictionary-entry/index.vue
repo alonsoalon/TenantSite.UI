@@ -1,5 +1,5 @@
 <template>
-  <a-container class="a-container">
+  <a-auto-container class="a-container">
     <splitpanes
       class="default-theme"
       :horizontal="false"
@@ -17,18 +17,18 @@
         ></dic-entry>
       </pane>
     </splitpanes>
-  </a-container>
+  </a-auto-container>
 </template>
 
 <script>
-import AContainer from "@/components/a-container";
+import AAutoContainer from "@/components/a-auto-container";
 import { Splitpanes, Pane } from "splitpanes";
 import DicHeader from "./header";
 import DicEntry from "./entry";
 
 export default {
   name: "dictionary--dictionary-entry--index",
-  components: { AContainer, Splitpanes, Pane, DicHeader, DicEntry },
+  components: { AAutoContainer, Splitpanes, Pane, DicHeader, DicEntry },
   data() {
     return {
       unavailable: true

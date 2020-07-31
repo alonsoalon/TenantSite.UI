@@ -1,7 +1,7 @@
 //import request from "@/request";
 
 import api from "@/api/_base/api.js";
-let baseApi = api("/api/v1/Dictionary/DictionaryEntry");
+let baseApi = api("/api/v1/System/Condition");
 
 // 通用接口 开始
 export const execCreate = baseApi.execCreate;

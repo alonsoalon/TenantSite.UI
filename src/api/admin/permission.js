@@ -84,7 +84,7 @@ export const getAll = params => {
 //---------------------- 下面为特殊方法 如有需求请写在以下区域-----------------------
 
 /**
- * 为岗位赋权(保存指定岗位的角色、数据组关系)
+ * 为岗位赋权(保存指定权限模板的角色、数据组关系)
  * @param {Object} params 参数
  */
 export const permissionAssignPower = params => {
@@ -92,7 +92,7 @@ export const permissionAssignPower = params => {
 };
 
 /**
- * 取回指定岗位已分配的角色
+ * 取回指定权限模板已分配的角色
  * @param {*} params 权限岗ID PermissionId
  */
 export const getRoleIdsByPermissionId = params => {
@@ -100,11 +100,16 @@ export const getRoleIdsByPermissionId = params => {
 };
 
 /**
- * 取回指定岗位已分配的数据组
+ * 取回指定权限模板已分配的数据组
  * @param {*} params 权限岗ID PermissionId
  */
 export const getGroupIdsByPermissionId = params => {
   return request.get(`api/v1/${path}/getGroupIdsByPermissionId`, {
+    params
+  });
+};
+export const getConditionIdsByPermissionId = params => {
+  return request.get(`api/v1/${path}/getConditionIdsByPermissionId`, {
     params
   });
 };

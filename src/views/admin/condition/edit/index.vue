@@ -20,8 +20,18 @@
           size="small"
           :rules="formRules"
         >
+          <el-form-item label="资源标识" prop="code">
+            <dictionary-select
+              ref="refResource"
+              v-model="dataItem.code"
+              code="SYS_CONDITION"
+              @change="onChange"
+              @load="onLoad"
+              :disabled="true"
+            ></dictionary-select>
+          </el-form-item>
           <el-form-item label="编码" prop="code">
-            <el-input v-model="dataItem.code" autocomplete="off" />
+            <el-input v-model="dataItem.code" :disabled="true" />
           </el-form-item>
           <el-form-item label="标题" prop="title">
             <el-input v-model="dataItem.title" />
@@ -29,23 +39,24 @@
           <el-form-item label="描述" prop="description">
             <el-input v-model="dataItem.description" type="textarea" rows="2" />
           </el-form-item>
+          <el-divider content-position="left">
+            数据条件
+          </el-divider>
 
-          <el-divider content-position="left"></el-divider>
+          <el-form-item label="动态条件" prop="JsonWhere">
+            <a-condition
+              ref="refCondition"
+              v-model="dataItem.jsonWhere"
+              :fields="fields"
+            >
+            </a-condition>
+          </el-form-item>
 
-          <el-form-item label="扩展1" prop="ex1">
-            <el-input v-model="dataItem.ex1" />
-          </el-form-item>
-          <el-form-item label="扩展2" prop="ex2">
-            <el-input v-model="dataItem.ex2" />
-          </el-form-item>
-          <el-form-item label="扩展3" prop="ex3">
-            <el-input v-model="dataItem.ex3" />
-          </el-form-item>
-          <el-form-item label="扩展4" prop="ex4">
-            <el-input v-model="dataItem.ex4" />
-          </el-form-item>
-          <el-form-item label="扩展5" prop="ex5">
-            <el-input v-model="dataItem.ex5" />
+          <el-form-item label="SQL" prop="Expression">
+            <el-input v-model="dataItem.Expression" type="textarea" rows="4">
+            </el-input>
+
+            注：设置了SQL后，动态条件将失效。
           </el-form-item>
 
           <el-divider content-position="left"></el-divider>
@@ -57,6 +68,7 @@
           <el-form-item label="归属组织" prop="groupId">
             <group-select v-model="dataItem.groupId"></group-select>
           </el-form-item>
+
           <el-divider content-position="left"></el-divider>
           <el-form-item label="创建人" prop="createdByName">
             <el-input v-model="data.createdByName" :disabled="true" />
@@ -90,22 +102,25 @@
 <script>
 // 工具+组件
 import ConfirmButton from "@/components/confirm-button";
-import GroupSelect from "@/components/group-select";
-// import { cloneDeep } from "lodash";
+import GroupSelect from "@/components/a-group-select";
+import DictionarySelect from "@/components/a-dictionary";
+import ACondition from "@/components/a-condition";
 
 // apis
-import { execUpdate } from "@/api/dictionary/dictionary-header";
+import { execUpdate } from "@/api/admin/condition";
 
 export default {
-  name: "dictionary--dictionary-header--edit",
+  name: "admin--condition--add",
   components: {
     ConfirmButton,
-    GroupSelect
+    GroupSelect,
+    DictionarySelect,
+    ACondition
   },
   props: {
     title: {
       type: String,
-      default: "编辑"
+      default: "新增"
     },
     visible: {
       type: Boolean,
@@ -117,7 +132,7 @@ export default {
     },
     size: {
       type: String,
-      default: "700px"
+      default: "800px"
     },
     wrapperClosable: {
       type: Boolean,
@@ -128,7 +143,6 @@ export default {
       default: () => {}
     }
   },
-
   computed: {
     drawerVisible: {
       get() {
@@ -141,8 +155,18 @@ export default {
   },
   data() {
     return {
+      fields: [],
+      dataItem: {
+        code: "",
+        title: "",
+        condition: "",
+        jsonWhere: [{ root: true, logic: "And", filters: [] }],
+        description: "",
+        expression: "",
+        isDisabled: false,
+        groupId: ""
+      },
       loading: false,
-      dataItem: {},
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         code: [{ required: true, message: "请输入编码", trigger: "blur" }]
@@ -152,10 +176,26 @@ export default {
   watch: {
     data(val) {
       this.dataItem = val;
+    },
+    drawerVisible(val) {
+      if (val) {
+        let refResource = this.$refs.refResource;
+        if (refResource) {
+          let items = refResource.getCheckedNodes();
+          if (items && items.length > 0) {
+            this.onChange(items);
+          }
+        }
+      }
     }
   },
-  async mounted() {},
-
+  created() {},
+  mounted() {
+    // this.$nextTick(function() {
+    //   console.log(1);
+    //   this.setCondition();
+    // });
+  },
   methods: {
     // 验证表单
     formValidate: function() {
@@ -171,6 +211,7 @@ export default {
     },
     async onSubmit() {
       this.loading = true;
+      this.dataItem.condition = JSON.stringify(this.dataItem.jsonWhere);
       const para = this.dataItem;
       const res = await execUpdate(para);
       this.loading = false;
@@ -185,6 +226,33 @@ export default {
         this.$message({ message: res.message, type: "error" });
         // 失败后钩子，共父级调用
         this.$emit("onError", para, res);
+      }
+    },
+    onChange(item) {
+      if (item != null && item.length > 0 && item[0]?.data) {
+        let selectedNode = item[0].data;
+        this.dataItem.title = selectedNode.title;
+        if (selectedNode.ex1 == null || selectedNode.ex1 == "") {
+          this.fields = [];
+        } else {
+          let config = JSON.parse(selectedNode.ex1);
+          this.fields = config;
+        }
+      }
+    },
+    // 解决组件第一次载入无法更新动态条件DOMBUG
+    onLoad(items) {
+      if (items && items.length > 0) {
+        let selectedNodes = items.filter(x => x.code == this.dataItem.code);
+        if (selectedNodes.length > 0) {
+          let selectedNode = selectedNodes[0];
+          if (selectedNode.ex1 == null || selectedNode.ex1 == "") {
+            this.fields = [];
+          } else {
+            let config = JSON.parse(selectedNode.ex1);
+            this.fields = config;
+          }
+        }
       }
     }
   }

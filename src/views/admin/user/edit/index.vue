@@ -45,11 +45,11 @@
           <el-divider content-position="left">
             <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
           </el-divider>
-          <el-form-item label="权限岗" prop="permissionId">
+          <el-form-item label="权限模板" prop="permissionId">
             <permission-select v-model="data.permissionId"></permission-select>
           </el-form-item>
 
-          <el-form-item label="归属组" prop="groupId">
+          <el-form-item label="组织机构" prop="groupId">
             <group-select v-model="data.groupId"></group-select>
           </el-form-item>
           <el-divider content-position="left"></el-divider>

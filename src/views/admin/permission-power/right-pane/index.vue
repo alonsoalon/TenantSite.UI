@@ -8,19 +8,18 @@
     <template #header>
       <el-tabs v-model="activeName">
         <el-tab-pane label="角色" name="first"></el-tab-pane>
-        <el-tab-pane label="组织机构" name="second"></el-tab-pane>
-        <el-tab-pane label="数据条件" name="third"></el-tab-pane>
+        <el-tab-pane label="数据条件" name="second"></el-tab-pane>
       </el-tabs>
     </template>
     <div v-show="activeName === 'first'">
       <role ref="refRole" @onChange="getCheckedRoles"></role>
     </div>
+
     <div v-show="activeName === 'second'">
-      <group ref="refGroup" @onChange="getCheckedGroups"></group>
-    </div>
-    <div v-show="activeName === 'third'">
-      <el-alert title="功能研发中..." type="info" show-icon :closable="false">
-      </el-alert>
+      <condition
+        ref="refCondition"
+        @onChange="getCheckedConditions"
+      ></condition>
     </div>
     <template #footer>
       <Auth :authority="menuCode + 'Save'" prevent>
@@ -52,7 +51,7 @@
 
 <script>
 import Role from "./role/index";
-import Group from "./group/index";
+import Condition from "./condition/index";
 import { permissionAssignPower } from "@/api/admin/permission";
 import ConfirmButton from "@/components/confirm-button";
 import Setting from "@/settings";
@@ -60,7 +59,7 @@ export default {
   name: "admin--permission-power--permission",
   components: {
     Role,
-    Group,
+    Condition,
     ConfirmButton
   },
   props: {},
@@ -77,7 +76,7 @@ export default {
       menuCode: "PermissionAuth" + ".", // 配合局部Code 用于控制按钮或功能区的权限，需与后台资源管理菜单CODE保持一致。区分大小写
       activeName: "first",
       saveLoading: false,
-      checkedGroups: [],
+      checkedConditions: [],
       checkedRoles: [],
       permissionItem: {}
     };
@@ -100,13 +99,13 @@ export default {
     RoleSetChecked(permissionItem) {
       this.$refs.refRole.setChecked(permissionItem);
     },
-    GroupSetChecked(permissionItem) {
-      this.$refs.refGroup.setChecked(permissionItem);
+    ConditionSetChecked(permissionItem) {
+      this.$refs.refCondition.setChecked(permissionItem);
     },
     init(permissionItem) {
       this.permissionItem = permissionItem;
       this.RoleSetChecked(permissionItem);
-      this.GroupSetChecked(permissionItem);
+      this.ConditionSetChecked(permissionItem);
     },
     reset() {
       this.init(this.permissionItem);
@@ -114,19 +113,23 @@ export default {
     getCheckedRoles(items) {
       this.checkedRoles = items;
     },
-    getCheckedGroups(items) {
-      this.checkedGroups = items;
+    getCheckedConditions(items) {
+      this.checkedConditions = items;
     },
     // 保存权限
     async save() {
       const roleIds = this.checkedRoles.map(s => {
         return s.id;
       });
-      const groupIds = this.checkedGroups.map(s => {
+      const ConditionIds = this.checkedConditions.map(s => {
         return s.id;
       });
 
-      const para = { permissionId: this.permissionItem.id, roleIds, groupIds };
+      const para = {
+        permissionId: this.permissionItem.id,
+        roleIds,
+        ConditionIds
+      };
 
       this.saveLoading = true;
       const res = await permissionAssignPower(para);
