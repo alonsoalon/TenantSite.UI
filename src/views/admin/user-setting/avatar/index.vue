@@ -135,7 +135,7 @@ export default {
     ...mapState("admin/account", ["tenant"]),
     avatar() {
       if (this.info.avatar == "") return "";
-      return Setting.avatarURL + this.info.avatar;
+      return Setting.avatarURL + this.info.avatar + "?t=" + Math.random();
     }
   },
   methods: {
