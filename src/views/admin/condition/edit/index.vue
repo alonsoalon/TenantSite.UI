@@ -102,7 +102,7 @@
 <script>
 // 工具+组件
 import ConfirmButton from "@/components/confirm-button";
-import GroupSelect from "@/components/a-group-select";
+import GroupSelect from "@/components/a-group";
 import DictionarySelect from "@/components/a-dictionary";
 import ACondition from "@/components/a-condition";
 
@@ -110,7 +110,7 @@ import ACondition from "@/components/a-condition";
 import { execUpdate } from "@/api/admin/condition";
 
 export default {
-  name: "admin--condition--add",
+  name: "admin--condition--edit",
   components: {
     ConfirmButton,
     GroupSelect,

@@ -21,12 +21,12 @@
           :rules="formRules"
         >
           <el-form-item label="资源标识" prop="code">
-            <dictionary-select
+            <a-dictionary
               ref="refResourceCondition"
               v-model="dataItem.code"
               code="SYS_CONDITION"
               @change="onChange"
-            ></dictionary-select>
+            ></a-dictionary>
           </el-form-item>
           <el-form-item label="编码" prop="code">
             <el-input v-model="dataItem.code" :disabled="true" />
@@ -86,8 +86,8 @@
 <script>
 // 工具+组件
 import ConfirmButton from "@/components/confirm-button";
-import GroupSelect from "@/components/a-group-select";
-import DictionarySelect from "@/components/a-dictionary";
+import GroupSelect from "@/components/a-group";
+import ADictionary from "@/components/a-dictionary";
 import ACondition from "@/components/a-condition";
 
 // apis
@@ -98,7 +98,7 @@ export default {
   components: {
     ConfirmButton,
     GroupSelect,
-    DictionarySelect,
+    ADictionary,
     ACondition
   },
   props: {

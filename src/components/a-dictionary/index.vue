@@ -33,7 +33,7 @@ export default {
       type: String,
       default: ""
     },
-    filterkey: {
+    filterKey: {
       type: String,
       default: ""
     },
@@ -88,7 +88,7 @@ export default {
       this.loading = true;
       let params = {
         dictionaryHeaderCode: this.code,
-        key: this.filterkey,
+        key: this.filterKey,
         withDisable: this.withDisable
       };
       const res = await getAll(params);

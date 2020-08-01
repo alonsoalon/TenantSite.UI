@@ -12,8 +12,6 @@
     >
       <section class="drawer-body">
         <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
-
-        <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
         <el-form
           ref="refForm"
           :model="dataItem"

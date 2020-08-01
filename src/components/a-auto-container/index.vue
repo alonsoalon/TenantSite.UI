@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: "a-container"
+  name: "a-auto-container"
 };
 </script>
 
