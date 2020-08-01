@@ -16,28 +16,28 @@
         <!-- el-form 是修改的内容 其他复制到表单组件原则上不做修改 -->
         <el-form
           ref="refForm"
-          :model="data"
+          :model="dataItem"
           label-width="80px"
           :inline="false"
           size="small"
           :rules="formRules"
         >
           <el-form-item label="标题" prop="title">
-            <el-input v-model="data.title" />
+            <el-input v-model="dataItem.title" />
           </el-form-item>
 
           <el-form-item label="描述" prop="description">
-            <el-input v-model="data.description" type="textarea" rows="2" />
+            <el-input v-model="dataItem.description" type="textarea" rows="2" />
           </el-form-item>
           <el-form-item label="编码" prop="code">
-            <el-input v-model="data.code" autocomplete="off" />
+            <el-input v-model="dataItem.code" autocomplete="off" />
           </el-form-item>
           <el-form-item label="ICON" prop="icon">
-            <el-input v-model="data.icon" />
+            <el-input v-model="dataItem.icon" />
           </el-form-item>
           <el-divider content-position="left"></el-divider>
           <el-form-item label="资源类型" prop="resourceType">
-            <el-radio-group v-model="data.resourceType">
+            <el-radio-group v-model="dataItem.resourceType">
               <el-radio :label="1">资源分组</el-radio>
               <el-radio :label="2">资源菜单</el-radio>
               <el-radio :label="3">功能点</el-radio>
@@ -46,11 +46,11 @@
           <el-form-item
             label="菜单类型"
             prop="linkType"
-            v-if="data.resourceType === 2"
+            v-if="dataItem.resourceType === 2"
           >
             <el-radio-group
-              v-model="data.linkType"
-              v-if="data.resourceType === 2"
+              v-model="dataItem.linkType"
+              v-if="dataItem.resourceType === 2"
             >
               <el-radio :label="1">视图组件</el-radio>
               <el-radio :label="2">外部链接</el-radio>
@@ -59,9 +59,9 @@
           <el-form-item
             label="打开模式"
             prop="openMode"
-            v-if="data.resourceType === 2"
+            v-if="dataItem.resourceType === 2"
           >
-            <el-radio-group v-model="data.openMode">
+            <el-radio-group v-model="dataItem.openMode">
               <el-radio :label="1">内部窗口</el-radio>
               <el-radio :label="2">外部窗口</el-radio>
             </el-radio-group>
@@ -71,27 +71,27 @@
             label="Path"
             prop="path"
             v-if="
-              data.resourceType === 2 &&
-                data.linkType &&
-                data.resourceType === 2
+              dataItem.resourceType === 2 &&
+                dataItem.linkType &&
+                dataItem.resourceType === 2
             "
           >
-            <el-input v-model="data.path" />
+            <el-input v-model="dataItem.path" />
             如果以/blank开头命名路径，系统将以新窗口打开，并不带菜单导航和顶栏页面
           </el-form-item>
           <el-form-item
-            :label="data.linkType === 2 ? '外链URL' : '视图路径'"
+            :label="dataItem.linkType === 2 ? '外链URL' : '视图路径'"
             prop="viewPath"
-            v-if="data.resourceType === 2"
+            v-if="dataItem.resourceType === 2"
           >
-            <el-input v-model="data.viewPath" />
+            <el-input v-model="dataItem.viewPath" />
           </el-form-item>
           <el-form-item
             label="视图名称"
             prop="viewName"
-            v-if="data.resourceType === 2 && data.linkType === 1"
+            v-if="dataItem.resourceType === 2 && dataItem.linkType === 1"
           >
-            <el-input v-model="data.viewName">
+            <el-input v-model="dataItem.viewName">
               <el-button
                 slot="append"
                 icon="el-icon-bottom"
@@ -102,27 +102,27 @@
           <el-form-item
             label="是否缓存"
             prop="viewCache"
-            v-if="data.resourceType === 2 && data.linkType === 1"
+            v-if="dataItem.resourceType === 2 && dataItem.linkType === 1"
           >
-            <el-switch v-model="data.viewCache" />
+            <el-switch v-model="dataItem.viewCache" />
           </el-form-item>
           <el-form-item
             label="可否关闭"
             prop="closable"
             v-if="
-              data.resourceType === 2 &&
-                (data.linkType === 1 ||
-                  (data.linkType === 2 && data.openMode === 1))
+              dataItem.resourceType === 2 &&
+                (dataItem.linkType === 1 ||
+                  (dataItem.linkType === 2 && dataItem.openMode === 1))
             "
           >
-            <el-switch v-model="data.closable" />
+            <el-switch v-model="dataItem.closable" />
           </el-form-item>
 
           <el-divider content-position="left"></el-divider>
 
           <el-form-item label="父级" prop="parentId">
             <el-cascader
-              v-model="data.parentId"
+              v-model="dataItem.parentId"
               :options="parentOptions"
               :props="{
                 checkStrictly: true,
@@ -136,17 +136,17 @@
             ></el-cascader>
           </el-form-item>
           <el-form-item label="隐藏" prop="isHidden">
-            <el-switch v-model="data.isHidden" />
+            <el-switch v-model="dataItem.isHidden" />
           </el-form-item>
           <el-form-item label="禁用" prop="isDisabled">
-            <el-switch v-model="data.isDisabled" />
+            <el-switch v-model="dataItem.isDisabled" />
           </el-form-item>
-          <el-form-item v-if="data.children" label="展开" prop="opened">
-            <el-switch v-model="data.opened" />
+          <el-form-item v-if="dataItem.children" label="展开" prop="opened">
+            <el-switch v-model="dataItem.opened" />
           </el-form-item>
           <el-form-item label="排序" prop="orderIndex">
             <el-input-number
-              v-model="data.orderIndex"
+              v-model="dataItem.orderIndex"
               :min="0"
             ></el-input-number>
           </el-form-item>
@@ -154,20 +154,20 @@
             <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
           </el-divider>
           <el-form-item label="归属组" prop="groupId">
-            <group-select v-model="data.groupId"></group-select>
+            <group-select v-model="dataItem.groupId"></group-select>
           </el-form-item>
           <el-divider content-position="left"></el-divider>
           <el-form-item label="创建人" prop="createdByName">
-            <el-input v-model="data.createdByName" :disabled="true" />
+            <el-input v-model="dataItem.createdByName" :disabled="true" />
           </el-form-item>
           <el-form-item label="创建时间" prop="createdTime">
-            <el-input v-model="data.createdTime" :disabled="true" />
+            <el-input v-model="dataItem.createdTime" :disabled="true" />
           </el-form-item>
           <el-form-item label="更新人" prop="updatedByName">
-            <el-input v-model="data.createdByName" :disabled="true" />
+            <el-input v-model="dataItem.createdByName" :disabled="true" />
           </el-form-item>
           <el-form-item label="更新时间" prop="updatedTime">
-            <el-input v-model="data.createdTime" :disabled="true" />
+            <el-input v-model="dataItem.createdTime" :disabled="true" />
           </el-form-item>
         </el-form>
       </section>
@@ -243,11 +243,23 @@ export default {
   data() {
     return {
       loading: false,
+      dataItem: {
+        resourceType: 2,
+        linkType: 1,
+        viewPath: "",
+        viewName: "",
+        viewCache: false
+      },
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         code: [{ required: true, message: "请输入Code", trigger: "blur" }]
       }
     };
+  },
+  watch: {
+    data(val) {
+      this.dataItem = val;
+    }
   },
   async mounted() {},
 
@@ -283,17 +295,17 @@ export default {
       }
     },
     generateViewName() {
-      if (!this.data.viewPath || this.data.viewPath === "") {
+      if (!this.dataItem.viewPath || this.dataItem.viewPath === "") {
         this.$message({
           message: "视图路径为空，不能生成视图名称",
           type: "warning"
         });
         return;
       }
-      let str = this.data.viewPath;
+      let str = this.dataItem.viewPath;
       str = str.startsWith("/") ? str.replace(/\//, "") : str;
       str = str.replace(/\//g, "--");
-      this.data.viewName = str;
+      this.dataItem.viewName = str;
     }
   }
 };
