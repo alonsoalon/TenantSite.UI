@@ -286,7 +286,7 @@ export default {
       )
         return "";
 
-      return Setting.avatarURL + this.info.avatar;
+      return Setting.avatarURL + this.info.avatar + "?t=" + Math.random();
     },
 
     menueTitles() {

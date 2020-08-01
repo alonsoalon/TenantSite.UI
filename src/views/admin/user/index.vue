@@ -210,7 +210,10 @@ export default {
   },
   methods: {
     getAvatar(path) {
-      var url = path === "" || path === null ? "" : Setting.avatarURL + path;
+      var url =
+        path === "" || path === null
+          ? ""
+          : Setting.avatarURL + path + "?t=" + Math.random();
       return url;
     },
     formatDt: function(row, column, time) {
