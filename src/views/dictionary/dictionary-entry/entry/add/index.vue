@@ -56,13 +56,13 @@
           <el-form-item v-if="hasEx(2)" :label="headerItem.ex2" prop="ex2">
             <el-input v-model="data.ex2" />
           </el-form-item>
-          <el-form-item v-if="hasEx(3)" :label="headerItem.ex2" prop="ex3">
+          <el-form-item v-if="hasEx(3)" :label="headerItem.ex3" prop="ex3">
             <el-input v-model="data.ex3" />
           </el-form-item>
-          <el-form-item v-if="hasEx(4)" :label="headerItem.ex2" prop="ex4">
+          <el-form-item v-if="hasEx(4)" :label="headerItem.ex4" prop="ex4">
             <el-input v-model="data.ex4" />
           </el-form-item>
-          <el-form-item v-if="hasEx(5)" :label="headerItem.ex2" prop="ex5">
+          <el-form-item v-if="hasEx(5)" :label="headerItem.ex5" prop="ex5">
             <el-input v-model="data.ex5" />
           </el-form-item>
 
@@ -206,7 +206,7 @@ export default {
         (this.headerItem.ex2 == null || this.headerItem.ex2 == "") &&
         (this.headerItem.ex3 == null || this.headerItem.ex3 == "") &&
         (this.headerItem.ex4 == null || this.headerItem.ex4 == "") &&
-        (this.headerItem.ex5 == null || this.headerItem.ex6 == "");
+        (this.headerItem.ex5 == null || this.headerItem.ex5 == "");
       return !res;
     },
     hasEx(index) {
