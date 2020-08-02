@@ -27,8 +27,14 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="title" label="名称" width />
+
       <el-table-column prop="code" label="编码" width />
+      <el-table-column prop="title" label="名称" width />
+      <el-table-column
+        prop="description"
+        label="描述"
+        :show-overflow-tooltip="true"
+      />
     </el-table>
   </div>
 </template>

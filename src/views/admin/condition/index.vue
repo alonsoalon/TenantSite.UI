@@ -60,21 +60,21 @@
         label="标题"
         :show-overflow-tooltip="true"
       />
-      <!-- <el-table-column
+      <el-table-column
         prop="description"
         label="描述"
         :show-overflow-tooltip="true"
-      /> -->
-      <el-table-column
+      />
+      <!-- <el-table-column
         prop="expression"
         label="SQL"
         :show-overflow-tooltip="true"
-      />
-      <el-table-column
+      /> -->
+      <!-- <el-table-column
         prop="condition"
         label="动态条件"
         :show-overflow-tooltip="true"
-      />
+      /> -->
       <el-table-column prop="isDisabled" label="启用状态" width="80">
         <template slot-scope="scope">
           <el-tag
