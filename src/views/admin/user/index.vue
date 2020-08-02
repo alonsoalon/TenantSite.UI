@@ -54,34 +54,32 @@
       <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="30" label="#" />
       <el-table-column prop="avatar" label="" width="50">
-        <template slot-scope="scope">
+        <template slot-scope="{ $index, row }">
           <div class="img">
             <!-- <el-avatar shape="square" size="small" :src="scope.row.avatar">
               <img :src="avatarDefault" />
             </el-avatar> -->
 
             <avatar
-              :username="
-                scope.row.displayName == ''
-                  ? scope.row.userName
-                  : scope.row.displayName
-              "
+              :username="row.displayName == '' ? row.userName : row.displayName"
               :size="33"
-              :src="getAvatar(scope.row.avatar)"
+              :src="getAvatar(row)"
             ></avatar>
           </div>
         </template>
       </el-table-column>
       <el-table-column prop="userName" label="用户名" width />
 
-      <el-table-column prop="displayName" label="显示名" width />
-      <el-table-column prop="permissionName" label="权限岗" width />
-      <el-table-column
+      <el-table-column prop="displayName" label="显示名" />
+      <el-table-column prop="permissionName" label="权限模板" />
+      <el-table-column prop="groupName" label="所属组织" />
+
+      <!-- <el-table-column
         prop="createdTime"
         label="创建时间"
         :formatter="formatDt"
         width
-      />
+      /> -->
 
       <el-table-column prop="isDisabled" label="启用状态" width="80">
         <template slot-scope="scope">
@@ -161,6 +159,7 @@ import EditPanl from "./edit/index";
 import ChangePassword from "./change-password/index";
 import Avatar from "vue-avatar";
 import Setting from "@/settings";
+
 export default {
   name: "admin--user--index",
   components: { ConfirmButton, AddPanl, EditPanl, ChangePassword, Avatar },
@@ -197,24 +196,27 @@ export default {
         : 1;
     }
   },
-  watch: {
-    // currentPage() {
-    //   this.getList();
-    // },
-    // pageSize() {
-    //   this.getList();
-    // }
-  },
+  watch: {},
   async mounted() {
     this.getList();
   },
   methods: {
-    getAvatar(path) {
-      var url =
-        path === "" || path === null
-          ? ""
-          : Setting.avatarURL + path + "?t=" + Math.random();
-      return url;
+    getAvatar(row) {
+      var path = row.avatar;
+      var url = "";
+
+      // 不加这个判断，每次点击表格任意行都会重新载入图片，暂时这样解决
+      if (row.avatarPath) {
+        url = row.avatarPath;
+      } else {
+        url =
+          path === "" || path === null
+            ? ""
+            : Setting.avatarURL + path + "?t=" + Math.random();
+        row.avatarPath = url;
+      }
+
+      return row.avatarPath;
     },
     formatDt: function(row, column, time) {
       return formatTime(time);
