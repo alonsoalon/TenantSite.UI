@@ -29,7 +29,6 @@
         :page-size.sync="pageSize"
         :total="total"
         :page-count="pageCount"
-        :pager-count="3"
         @size-change="getList"
         @current-change="getList"
         background

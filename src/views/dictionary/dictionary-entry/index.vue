@@ -23,6 +23,7 @@
 <script>
 import AAutoContainer from "@/components/a-auto-container";
 import { Splitpanes, Pane } from "splitpanes";
+import "splitpanes/dist/splitpanes.css";
 import DicHeader from "./header";
 import DicEntry from "./entry";
 
