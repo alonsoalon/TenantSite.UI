@@ -42,8 +42,13 @@
           <el-divider content-position="left">
             数据条件
           </el-divider>
-
-          <el-form-item label="动态条件" prop="JsonWhere">
+          <a-condition
+            ref="refCondition"
+            v-model="dataItem.jsonWhere"
+            :fields="fields"
+          >
+          </a-condition>
+          <!-- <el-form-item label="动态条件" prop="JsonWhere">
             <a-condition
               ref="refCondition"
               v-model="dataItem.jsonWhere"
@@ -57,7 +62,7 @@
             </el-input>
 
             注：设置了SQL后，动态条件将失效。
-          </el-form-item>
+          </el-form-item> -->
 
           <el-divider content-position="left"></el-divider>
 
