@@ -216,7 +216,9 @@ export default {
     onChange(item) {
       if (item != null && item.length > 0) {
         let selectedNode = item[0].data;
-        this.dataItem.title = selectedNode.title;
+        if (this.dataItem.title == "" || this.dataItem.title == null) {
+          this.dataItem.title = selectedNode.title;
+        }
         if (selectedNode.ex1 == null || selectedNode.ex1 == "") {
           this.fields = [];
         } else {
