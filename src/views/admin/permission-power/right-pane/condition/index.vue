@@ -22,7 +22,7 @@
           </div>
 
           <div v-if="scope.row.condition != null && scope.row.condition != ''">
-            <el-divider content-position="left">Json Where</el-divider>
+            <!-- <el-divider content-position="left">Json Where</el-divider> -->
             {{ scope.row.condition }}
           </div>
         </template>

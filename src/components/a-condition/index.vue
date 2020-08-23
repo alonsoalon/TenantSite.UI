@@ -117,6 +117,7 @@
           <el-select
             v-else-if="variables.length > 0"
             v-model="data.value"
+            clearable
             filterable
             allow-create
             default-first-option
