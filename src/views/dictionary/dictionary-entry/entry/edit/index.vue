@@ -51,19 +51,19 @@
           <el-divider v-if="hasExs()" content-position="left"></el-divider>
 
           <el-form-item v-if="hasEx(1)" :label="headerItem.ex1" prop="ex1">
-            <el-input v-model="data.ex1" />
+            <el-input type="textarea" :rows="2" v-model="data.ex1" />
           </el-form-item>
           <el-form-item v-if="hasEx(2)" :label="headerItem.ex2" prop="ex2">
-            <el-input v-model="data.ex2" />
+            <el-input type="textarea" :rows="2" v-model="data.ex2" />
           </el-form-item>
-          <el-form-item v-if="hasEx(3)" :label="headerItem.ex2" prop="ex3">
-            <el-input v-model="data.ex3" />
+          <el-form-item v-if="hasEx(3)" :label="headerItem.ex3" prop="ex3">
+            <el-input type="textarea" :rows="2" v-model="data.ex3" />
           </el-form-item>
-          <el-form-item v-if="hasEx(4)" :label="headerItem.ex2" prop="ex4">
-            <el-input v-model="data.ex4" />
+          <el-form-item v-if="hasEx(4)" :label="headerItem.ex4" prop="ex4">
+            <el-input type="textarea" :rows="2" v-model="data.ex4" />
           </el-form-item>
-          <el-form-item v-if="hasEx(5)" :label="headerItem.ex2" prop="ex5">
-            <el-input v-model="data.ex5" />
+          <el-form-item v-if="hasEx(5)" :label="headerItem.ex5" prop="ex5">
+            <el-input type="textarea" :rows="2" v-model="data.ex5" />
           </el-form-item>
 
           <el-divider content-position="left"></el-divider>

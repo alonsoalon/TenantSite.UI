@@ -44,6 +44,7 @@
             ref="refCondition"
             v-model="dataItem.jsonWhere"
             :fields="fields"
+            :variables="variables"
           >
           </a-condition>
           <!-- <el-form-item label="动态条件" prop="JsonWhere">
@@ -155,6 +156,11 @@ export default {
         isDisabled: false,
         groupId: ""
       },
+      variables: [
+        { value: "{UserId}", label: "用户ID" },
+        { value: "{UserGroupId}", label: "用户所属机构ID" },
+        { value: "{UserPermissionId}", label: "用户权限模板ID" }
+      ],
       loading: false,
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],

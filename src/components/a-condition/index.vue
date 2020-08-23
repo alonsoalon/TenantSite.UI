@@ -113,6 +113,24 @@
             size="mini"
             style="margin-left:5px;"
           />
+
+          <el-select
+            v-else-if="variables.length > 0"
+            v-model="data.value"
+            filterable
+            allow-create
+            default-first-option
+            size="mini"
+            style="margin-left:5px;"
+          >
+            <el-option
+              v-for="(op, index) in variables"
+              :key="index"
+              :label="op.label"
+              :value="op.value"
+            />
+          </el-select>
+
           <el-input
             v-else
             v-model="data.value"
@@ -165,6 +183,12 @@ export default {
             filters: []
           }
         ];
+      }
+    },
+    variables: {
+      type: Array,
+      default: () => {
+        return [];
       }
     }
   },
