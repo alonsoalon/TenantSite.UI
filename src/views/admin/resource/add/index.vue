@@ -258,7 +258,7 @@ export default {
     },
     async onSubmit() {
       this.loading = true;
-      const para = cloneDeep(this.data);
+      const para = cloneDeep(this.dataItem);
       const res = await execCreate(para);
       this.loading = false;
 
