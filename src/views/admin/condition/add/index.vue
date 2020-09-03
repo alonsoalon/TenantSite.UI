@@ -157,9 +157,10 @@ export default {
         groupId: ""
       },
       variables: [
-        { value: "{UserId}", label: "用户ID" },
-        { value: "{UserGroupId}", label: "用户所属机构ID" },
-        { value: "{UserPermissionId}", label: "用户权限模板ID" }
+        { value: "{UserId}", label: "{用户ID}" },
+        { value: "{UserName}", label: "{用户名}" },
+        { value: "{UserGroupId}", label: "{用户所属机构ID}" },
+        { value: "{UserPermissionId}", label: "{用户权限模板ID}" }
       ],
       loading: false,
       formRules: {
