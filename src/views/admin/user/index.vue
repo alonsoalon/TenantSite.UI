@@ -68,11 +68,26 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="userName" label="用户名" width />
-
-      <el-table-column prop="displayName" label="显示名" />
-      <el-table-column prop="permissionName" label="权限模板" />
-      <el-table-column prop="groupName" label="所属组织" />
+      <el-table-column
+        prop="userName"
+        label="用户名"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="displayName"
+        label="显示名"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="permissionName"
+        label="权限模板"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="groupName"
+        label="所属组织"
+        :show-overflow-tooltip="true"
+      />
 
       <!-- <el-table-column
         prop="createdTime"

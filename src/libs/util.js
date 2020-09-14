@@ -145,6 +145,15 @@ export const param2Obj = url => {
   );
 };
 
+export const isNumber = val => {
+  var re = /^-?[0-9]*(\.\d*)?$|^-?0(\.\d*)?$/;
+  if (re.test(val)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 const util = {
   cookies,
   log,
@@ -155,7 +164,8 @@ const util = {
   getListParents,
   getTreeParents,
   formatTime,
-  param2Obj
+  param2Obj,
+  isNumber
 };
 
 export default util;

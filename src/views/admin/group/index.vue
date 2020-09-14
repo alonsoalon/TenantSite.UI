@@ -38,7 +38,7 @@
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       style="width: 100%;"
     >
-      <el-table-column type="selection" align="center" width="50" />
+      <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="80" label="#" />
       <el-table-column prop="title" label="名称" width />
       <el-table-column prop="code" label="编码" width />

@@ -255,8 +255,12 @@ export default {
     };
   },
   watch: {
-    data(val) {
-      this.dataItem = val;
+    data: {
+      handler(val) {
+        this.dataItem = val;
+      },
+      deep: true,
+      immediate: true
     }
   },
   async mounted() {},

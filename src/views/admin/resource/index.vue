@@ -39,22 +39,22 @@
       :tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
       style="width: 100%;"
     >
-      <el-table-column type="selection" align="center" width="50" />
+      <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="40" label="#" />
-      <el-table-column prop="title" label="名称" width>
+      <el-table-column prop="title" label="名称" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <i :class="scope.row.icon" />
           {{ scope.row.title }}
         </template>
       </el-table-column>
-      <el-table-column prop="code" label="编码" width />
+      <el-table-column prop="code" label="编码" :show-overflow-tooltip="true" />
       <el-table-column prop="resourceType" label="资源类型">
         <template slot-scope="scope">
           <span v-if="scope.row.resourceType === 1">
-            资源分组
+            分组
           </span>
           <span v-if="scope.row.resourceType === 2">
-            资源菜单
+            菜单
           </span>
           <span v-if="scope.row.resourceType === 3">
             功能点
@@ -96,7 +96,7 @@
       </el-table-column>
       <el-table-column prop="path" label="Path" width /> -->
 
-      <el-table-column prop="isDisabled" label="启用状态" width="80">
+      <el-table-column prop="isDisabled" label="启用/显示/缓存" width="160">
         <template slot-scope="scope">
           <el-tag
             :type="scope.row.isDisabled ? 'danger' : 'success'"
@@ -104,9 +104,24 @@
           >
             {{ scope.row.isDisabled ? "禁用" : "启用" }}
           </el-tag>
+          <el-tag
+            :type="scope.row.isHidden ? 'danger' : 'success'"
+            disable-transitions
+            style="margin-left:5px"
+          >
+            {{ scope.row.isHidden ? "隐藏" : "显示" }}
+          </el-tag>
+          <el-tag
+            :type="scope.row.viewCache ? 'primary' : 'success'"
+            disable-transitions
+            v-if="scope.row.viewCache"
+            style="margin-left:5px"
+          >
+            {{ scope.row.viewCache ? "缓存" : "" }}
+          </el-tag>
         </template>
       </el-table-column>
-      <el-table-column prop="isHidden" label="显示状态" width="80">
+      <!-- <el-table-column prop="isHidden" label="显示状态" width="80">
         <template slot-scope="scope">
           <el-tag
             :type="scope.row.isHidden ? 'danger' : 'success'"
@@ -115,7 +130,7 @@
             {{ scope.row.isHidden ? "隐藏" : "显示" }}
           </el-tag>
         </template>
-      </el-table-column>
+      </el-table-column> -->
 
       <Auth
         :authority="[
@@ -264,6 +279,7 @@ export default {
     },
     // -- add 事件 start --
     onAdd() {
+      this.addDefaultItem.resourceType = 2;
       this.addVisible = true;
     },
     onAddSub(index, row) {

@@ -219,7 +219,9 @@ export default {
       }
     }
   },
+
   data() {
+    //console.log(2, this.data);
     return {
       loading: false,
       dataItem: {
@@ -236,8 +238,12 @@ export default {
     };
   },
   watch: {
-    data(val) {
-      this.dataItem = val;
+    data: {
+      handler(val) {
+        this.dataItem = val;
+      },
+      deep: true,
+      immediate: true
     }
   },
 

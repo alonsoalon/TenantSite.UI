@@ -1,6 +1,7 @@
 <template>
   <div>
     <el-cascader
+      :placeholder="placeholder"
       v-loading="loading"
       v-model="currentValue"
       :options="groupOptions"
@@ -24,7 +25,17 @@ import { getUserGroups as getGroups } from "@/api/account";
 
 export default {
   name: "AGroupSelect",
-  props: ["value"],
+  //props: ["value"],
+  props: {
+    value: {
+      type: String,
+      default: ""
+    },
+    placeholder: {
+      type: String,
+      default: "请选择"
+    }
+  },
   data() {
     return {
       currentValue: this.value,

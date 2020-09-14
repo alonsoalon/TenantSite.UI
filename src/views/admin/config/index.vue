@@ -38,17 +38,71 @@
     >
       <!-- <el-table-column type="selection" align="center" width="50" /> -->
       <el-table-column type="index" width="40" label="#" />
-      <el-table-column prop="title" label="名称" width />
-      <el-table-column prop="code" label="编码" width />
-      <el-table-column prop="description" label="描述" width />
-      <!-- <el-table-column
-        prop="createdTime"
-        label="创建时间"
-        :formatter="formatDt"
+      <el-table-column
+        prop="configType"
+        label="配置类型"
+        width="100"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="targetLabel"
+        label="配置对象"
+        width="100"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="code"
+        label="编码"
+        width="200"
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="dataValue"
+        label="值"
+        :show-overflow-tooltip="true"
+      >
+        <template slot-scope="scope">
+          <el-switch
+            v-if="scope.row.dataType == 'Bool'"
+            v-model="scope.row.dataValue"
+            active-value="1"
+            inactive-value="0"
+            disabled
+          />
+          <span v-else>{{ scope.row.dataValue }} </span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="title"
+        label="名称"
         width
+        :show-overflow-tooltip="true"
+      />
+      <el-table-column
+        prop="description"
+        label="描述"
+        width
+        :show-overflow-tooltip="true"
+      />
+
+      <!-- <el-table-column
+        prop="dataType"
+        label="数据类型"
+        width="100"
+        :show-overflow-tooltip="true"
       /> -->
 
-      <el-table-column prop="isDisabled" label="启用状态" width="80">
+      <el-table-column prop="isPublic" label="公开状态" width="80">
+        <template slot-scope="scope">
+          <el-tag
+            :type="scope.row.isPublic ? 'danger' : 'success'"
+            disable-transitions
+          >
+            {{ scope.row.isPublic ? "Yes" : "No" }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <!-- <el-table-column prop="isDisabled" label="启用状态" width="80">
         <template slot-scope="scope">
           <el-tag
             :type="scope.row.isDisabled ? 'danger' : 'success'"
@@ -57,7 +111,7 @@
             {{ scope.row.isDisabled ? "禁用" : "启用" }}
           </el-tag>
         </template>
-      </el-table-column>
+      </el-table-column> -->
       <Auth
         :authority="[menuCode + 'Delete', menuCode + 'Edit']"
         :withContainer="false"
@@ -102,12 +156,12 @@
 <script>
 import { cloneDeep } from "lodash";
 import { formatTime } from "@/libs/util";
-import { getAll, execSoftDelete } from "@/api/admin/role";
+import { getAll, execSoftDelete } from "@/api/admin/config";
 import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
 export default {
-  name: "admin--role--index",
+  name: "admin--config--index",
   components: { ConfirmButton, AddPanl, EditPanl },
   data() {
     return {
