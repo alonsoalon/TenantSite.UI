@@ -157,6 +157,8 @@ import util from "@/libs/util.js";
 // apis
 import { execCreate } from "@/api/admin/config";
 
+import Setting from "@/settings";
+
 export default {
   name: "admin-role-add",
   components: {
@@ -281,6 +283,14 @@ export default {
   methods: {
     // 验证表单
     formValidate: function() {
+      if (Setting.isDemo) {
+        this.$message({
+          message: this.$t("common.demoTips"),
+          type: "warning"
+        });
+        return false;
+      }
+
       let isValid = false;
       this.$refs.refForm.validate(valid => {
         isValid = valid;
