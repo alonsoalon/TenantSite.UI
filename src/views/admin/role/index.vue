@@ -106,6 +106,7 @@ import { getAll, execSoftDelete } from "@/api/admin/role";
 import ConfirmButton from "@/components/confirm-button";
 import AddPanl from "./add/index";
 import EditPanl from "./edit/index";
+import Setting from "@/settings";
 export default {
   name: "admin--role--index",
   components: { ConfirmButton, AddPanl, EditPanl },
@@ -184,17 +185,16 @@ export default {
     },
     // -- edit 事件 end --
     // 删除验证
+    // eslint-disable-next-line no-unused-vars
     deleteValidate(row) {
-      let isValid = true;
-      if (row && row.createdByName.toUpperCase() === "INSTALL") {
+      if (Setting.isDemo) {
         this.$message({
-          message: row.title + " 为种子数据,禁止删除！",
+          message: this.$t("common.demoTips"),
           type: "warning"
         });
-        isValid = false;
+        return false;
       }
-
-      return isValid;
+      return true;
     },
 
     async onDelete(index, row) {
