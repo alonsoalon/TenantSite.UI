@@ -274,15 +274,17 @@ export default {
       this.$refs.refAddPanl.setData();
     },
     onAddSub(index, row) {
-      this.addDefaultItem.parentId = row.id;
+      let item = {};
+      item.parentId = row.id;
       if (row.resourceType === 1) {
-        this.addDefaultItem.resourceType = 2;
-        this.addDefaultItem.linkType = 1;
+        item.resourceType = 2;
+        item.linkType = 1;
       } else if (row.resourceType === 2) {
-        this.addDefaultItem.resourceType = 3;
-        this.addDefaultItem.linkType = 1;
+        item.resourceType = 3;
+        item.linkType = 1;
       }
       this.addVisible = true;
+      this.$refs.refAddPanl.setData(item);
     },
     onAddSuccess() {
       this.getTreeList();
