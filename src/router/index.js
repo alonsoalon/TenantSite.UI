@@ -95,7 +95,7 @@ function generateRoutes(menus = []) {
     }
 
     try {
-      if (m.path.startsWith("/bank/")) {
+      if (m.linkType === 1 && m.openMode === 2) {
         bankRoutes.push(route);
       } else {
         routes.children.push(route);

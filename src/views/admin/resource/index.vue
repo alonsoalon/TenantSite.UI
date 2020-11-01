@@ -170,8 +170,8 @@
 
     <add-panl
       title="新增"
+      ref="refAddPanl"
       :visible="addVisible"
-      :data="addDefaultItem"
       :parentOptions="treeData"
       @onChangeDrawer="onAddChangeDrawer"
       @onSuccess="onAddSuccess"
@@ -180,9 +180,9 @@
 
     <edit-panl
       title="编辑"
+      ref="refEditPanl"
       :visible="editVisible"
       :parentOptions="editTreeData"
-      :data="editItem"
       @onChangeDrawer="onEditChangeDrawer"
       @onSuccess="onEditSuccess"
       @onError="onEditError"
@@ -223,17 +223,8 @@ export default {
       listLoading: false,
       // 新增面板相关属性
       addVisible: false,
-      addDefaultItem: {
-        resourceType: 2,
-        linkType: 1,
-        parentId: "",
-        viewPath: "",
-        viewName: "",
-        viewCache: false
-      },
       // 编辑面板相关属性
       editVisible: false,
-      editItem: {},
       editTreeData: [],
       // 分配API面板相关属性
       apiAssginVisible: false,
@@ -279,8 +270,8 @@ export default {
     },
     // -- add 事件 start --
     onAdd() {
-      this.addDefaultItem.resourceType = 2;
       this.addVisible = true;
+      this.$refs.refAddPanl.setData();
     },
     onAddSub(index, row) {
       this.addDefaultItem.parentId = row.id;
@@ -304,7 +295,6 @@ export default {
     // -- edit 事件 start --
     onEdit(index, row) {
       this.editVisible = true;
-      this.editItem = cloneDeep(row);
 
       // 递归去除自己及自己子集数据，避免编辑自己 又选择了自己或自己的子集作为父出现的循环引用BUG
       const filterEditItem = (groupList, id) => {
@@ -323,7 +313,9 @@ export default {
 
       this.editTreeData = [];
       let treeData = cloneDeep(this.treeData);
-      this.editTreeData = filterEditItem(treeData, this.editItem.id);
+      this.editTreeData = filterEditItem(treeData, row.id);
+
+      this.$refs.refEditPanl.setData(row);
     },
     onEditSuccess() {
       this.getTreeList();

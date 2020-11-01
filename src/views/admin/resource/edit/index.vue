@@ -34,6 +34,25 @@
             <el-input v-model="dataItem.icon" />
           </el-form-item>
           <el-divider content-position="left"></el-divider>
+          <el-form-item label="父级" prop="parentId">
+            <el-cascader
+              v-model="dataItem.parentId"
+              :options="parentOptions"
+              :props="{
+                checkStrictly: true,
+                value: 'id',
+                label: 'title',
+                emitPath: false
+              }"
+              style="width:100%"
+              filterable
+              clearable
+            ></el-cascader>
+          </el-form-item>
+          <el-form-item label="归属组" prop="groupId">
+            <group-select v-model="dataItem.groupId"></group-select>
+          </el-form-item>
+          <el-divider content-position="left"></el-divider>
           <el-form-item label="资源类型" prop="resourceType">
             <el-radio-group v-model="dataItem.resourceType">
               <el-radio :label="1">资源分组</el-radio>
@@ -75,7 +94,6 @@
             "
           >
             <el-input v-model="dataItem.path" />
-            如果以/blank开头命名路径，系统将以新窗口打开，并不带菜单导航和顶栏页面
           </el-form-item>
           <el-form-item
             :label="dataItem.linkType === 2 ? '外链URL' : '视图路径'"
@@ -118,27 +136,14 @@
 
           <el-divider content-position="left"></el-divider>
 
-          <el-form-item label="父级" prop="parentId">
-            <el-cascader
-              v-model="dataItem.parentId"
-              :options="parentOptions"
-              :props="{
-                checkStrictly: true,
-                value: 'id',
-                label: 'title',
-                emitPath: false
-              }"
-              style="width:100%"
-              filterable
-              clearable
-            ></el-cascader>
-          </el-form-item>
           <el-form-item label="隐藏" prop="isHidden">
             <el-switch v-model="dataItem.isHidden" />
           </el-form-item>
           <el-form-item label="禁用" prop="isDisabled">
             <el-switch v-model="dataItem.isDisabled" />
           </el-form-item>
+
+          <el-divider content-position="left"></el-divider>
           <el-form-item v-if="dataItem.children" label="展开" prop="opened">
             <el-switch v-model="dataItem.opened" />
           </el-form-item>
@@ -147,12 +152,6 @@
               v-model="dataItem.orderIndex"
               :min="0"
             ></el-input-number>
-          </el-form-item>
-          <el-divider content-position="left">
-            <!-- 如果指定归属组，当前数据仅对拥有该组的权限岗开放，不指定则所有权限岗可见 -->
-          </el-divider>
-          <el-form-item label="归属组" prop="groupId">
-            <group-select v-model="dataItem.groupId"></group-select>
           </el-form-item>
           <el-divider content-position="left"></el-divider>
           <el-form-item label="创建人" prop="createdByName">
@@ -189,9 +188,11 @@
 import ConfirmButton from "@/components/confirm-button";
 import GroupSelect from "@/components/group-select";
 // 工具
-import { cloneDeep } from "lodash";
-// apis
+import { cloneDeep, merge } from "lodash";
+// 接口
 import { execUpdate } from "@/api/admin/resource";
+// 模块配置
+import { model } from "../module-config";
 
 export default {
   name: "admin-resource-edit",
@@ -222,10 +223,6 @@ export default {
     },
     parentOptions: {
       type: Array
-    },
-    data: {
-      type: Object,
-      default: () => {}
     }
   },
   computed: {
@@ -241,31 +238,24 @@ export default {
   data() {
     return {
       loading: false,
-      dataItem: {
-        resourceType: 2,
-        linkType: 1,
-        viewPath: "",
-        viewName: "",
-        viewCache: false
-      },
+      dataItem: {},
       formRules: {
         title: [{ required: true, message: "请输入标题", trigger: "blur" }],
         code: [{ required: true, message: "请输入Code", trigger: "blur" }]
       }
     };
   },
-  watch: {
-    data: {
-      handler(val) {
-        this.dataItem = val;
-      },
-      deep: true,
-      immediate: true
-    }
+  mounted() {
+    this.setData();
   },
-  async mounted() {},
-
   methods: {
+    setData(item) {
+      if (item) {
+        this.dataItem = merge(cloneDeep(model), item);
+      } else {
+        this.dataItem = cloneDeep(model);
+      }
+    },
     // 验证表单
     formValidate: function() {
       let isValid = false;
