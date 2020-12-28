@@ -237,6 +237,7 @@ export default {
         this.$message({ message: res.message, type: "error" });
         row.isStart = false;
       }
+
     },
     async onStop(index, row) {
       row._loading = true;
