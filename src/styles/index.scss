@@ -242,3 +242,18 @@ input:-webkit-autofill {
     -webkit-box-orient: vertical;
     white-space: normal;
 }
+
+// cron
+.cron-row{
+    > .el-row{
+        width: 610px;
+        margin-bottom: 5px;
+    }
+    > .el-tabs{
+       > .el-tabs__content{
+           .cell-div{
+               margin-top: 10px;
+           }
+       }
+    }
+}
