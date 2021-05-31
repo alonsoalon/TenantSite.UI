@@ -22,7 +22,7 @@ const Setting = {
   tenantCenterBaseURL:
     env === "development"
       ? "http://localhost:5188/"
-      : "http://www.iusaas.com:5188/",
+      : "http://demoapi.iusaas.com/",
 
   // 租户策略
   // 0:login 登录时指定
@@ -35,13 +35,13 @@ const Setting = {
   apiBaseURL:
     env === "development"
       ? "http://localhost:5188/${tenant}"
-      : "http://${tenant}.iusaas.com:5188/",
+      : "http://demoapi.iusaas.com/${tenant}",
 
   // 头像地址
   avatarURL:
     env === "development"
       ? "http://localhost:5188/upload/avatar/"
-      : "http://www.iusaas.com:5188/upload/avatar/",
+      : "http://demoapi.iusaas.com/upload/avatar/",
 
   layout: {
     // tab 类型 "" | border-card

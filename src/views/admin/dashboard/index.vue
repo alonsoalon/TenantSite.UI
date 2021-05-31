@@ -19,7 +19,7 @@
                 3.资源管理添加子项无法代入初始数据BUG <br />
                 4.文档更新用户选择组件a-user , 增加捐赠章节 <br />
                 <a
-                  href="http://www.iusaas.com/guide/ui.html#a-user"
+                  href="https://www.iusaas.com/guide/ui.html#a-user"
                   style="color:blue"
                   target="_blank"
                   >查看用户选择组件文档</a
