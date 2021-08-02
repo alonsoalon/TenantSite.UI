@@ -32,7 +32,7 @@
         :total="total"
         :pager-count="5"
         @current-change="getList"
-        @size-change="getList"
+        @size-change="pageSizeChange"
         background
         style="text-align:right;"
       >
@@ -108,7 +108,6 @@
 import { formatTime } from "@/libs/util";
 import { getList } from "@/api/admin/operation-log";
 // import log from "@/libs/util.log";
-let a = [];
 export default {
   name: "admin--operation-log--index",
   components: {},
@@ -144,6 +143,16 @@ export default {
     },
     onSearch() {
       this.currentPage = 1;
+      this.getList();
+    },
+
+    pageSizeChange() {
+      // 获取最大页数
+      let pageMax = Math.ceil(this.total / this.pageSize);
+      // 判断跳转页数是否大于最大页数，如果大于，跳转页数就等于最大页数
+      if (this.currentPage > pageMax) {
+        this.currentPage = pageMax;
+      }
       this.getList();
     },
 
