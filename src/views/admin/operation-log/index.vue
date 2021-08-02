@@ -30,10 +30,9 @@
         :current-page.sync="currentPage"
         :page-size.sync="pageSize"
         :total="total"
-        :page-count="pageCount"
         :pager-count="5"
-        @size-change="getList"
         @current-change="getList"
+        @size-change="getList"
         background
         style="text-align:right;"
       >
@@ -105,9 +104,11 @@
 </template>
 
 <script>
+// @size-change="getList('size-change')"
 import { formatTime } from "@/libs/util";
 import { getList } from "@/api/admin/operation-log";
-
+// import log from "@/libs/util.log";
+let a = [];
 export default {
   name: "admin--operation-log--index",
   components: {},
@@ -133,21 +134,7 @@ export default {
       generateApisLoading: false
     };
   },
-  computed: {
-    pageCount() {
-      return this.total > 0 && this.pageSize > 0
-        ? Math.ceil(this.total / this.pageSize)
-        : 1;
-    }
-  },
-  watch: {
-    // currentPage() {
-    //   this.getList();
-    // },
-    // pageSize() {
-    //   this.getList();
-    // }
-  },
+
   async mounted() {
     this.getList();
   },
@@ -159,6 +146,7 @@ export default {
       this.currentPage = 1;
       this.getList();
     },
+
     // 获取列表
     async getList() {
       const para = {
@@ -180,9 +168,9 @@ export default {
         data.forEach(d => {
           d._loading = false;
         });
-        this.data = data;
-        this.total = res.data.total;
       }
+      this.data = data;
+      this.total = res.data.total;
     }
   }
 };
